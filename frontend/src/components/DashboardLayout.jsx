@@ -17,6 +17,7 @@ const navItems = [
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
   { href: '/bills', icon: Receipt, label: 'Factures' },
   { href: '/history', icon: History, label: 'Historique' },
+  { href: '/settings', icon: Settings, label: 'Paramètres' },
 ];
 
 const adminItems = [
