@@ -1,0 +1,359 @@
+import React from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '@/App';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { 
+  ArrowRight, Smartphone, Shield, Zap, Globe, 
+  CreditCard, Send, Users, CheckCircle 
+} from 'lucide-react';
+
+const LOGO_URL = "https://customer-assets.emergentagent.com/job_ce75e416-36f1-4b25-8491-7de5dd466427/artifacts/jsqaea98_1024x1024%20%281030%20x%201024%20px%29_20251125_175229_0000.png";
+
+const GOOGLE_PLAY_BADGE = "https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg";
+const APP_STORE_BADGE = "https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg";
+
+const features = [
+  {
+    icon: Send,
+    title: "Transferts Instantanés",
+    description: "Envoyez de l'argent à vos proches en quelques secondes, partout dans le monde."
+  },
+  {
+    icon: Shield,
+    title: "Sécurité Maximale",
+    description: "Vos transactions sont protégées par un cryptage de niveau bancaire."
+  },
+  {
+    icon: Globe,
+    title: "Multi-Devises",
+    description: "Gérez vos comptes en EUR, USD, XOF et bien plus encore."
+  },
+  {
+    icon: CreditCard,
+    title: "Paiements Faciles",
+    description: "Payez vos factures et abonnements en un seul clic."
+  }
+];
+
+const stats = [
+  { value: "500K+", label: "Utilisateurs Actifs" },
+  { value: "50M€", label: "Transactions Mensuelles" },
+  { value: "150+", label: "Pays Couverts" },
+  { value: "99.9%", label: "Disponibilité" }
+];
+
+export default function LandingPage() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-b border-border">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <Link to="/" className="flex items-center gap-3" data-testid="landing-logo">
+              <img src={LOGO_URL} alt="SB Pay" className="w-10 h-10 object-contain" />
+              <span className="text-xl font-bold font-['Manrope'] text-foreground">SB Pay</span>
+            </Link>
+            
+            <nav className="hidden md:flex items-center gap-8">
+              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
+                Fonctionnalités
+              </a>
+              <a href="#about" className="text-muted-foreground hover:text-foreground transition-colors">
+                À propos
+              </a>
+              <a href="#download" className="text-muted-foreground hover:text-foreground transition-colors">
+                Télécharger
+              </a>
+            </nav>
+
+            <div className="flex items-center gap-4">
+              {isAuthenticated ? (
+                <Button onClick={() => navigate('/dashboard')} data-testid="go-to-dashboard-btn">
+                  Mon Espace
+                  <ArrowRight className="w-4 h-4 ml-2" />
+                </Button>
+              ) : (
+                <>
+                  <Button variant="ghost" onClick={() => navigate('/login')} data-testid="login-nav-btn">
+                    Connexion
+                  </Button>
+                  <Button onClick={() => navigate('/register')} data-testid="register-nav-btn">
+                    Créer un compte
+                  </Button>
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="pt-32 pb-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div className="animate-fadeIn">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent text-accent-foreground text-sm font-medium mb-6">
+                <Zap className="w-4 h-4" />
+                Nouveau: Transferts gratuits vers l'Afrique
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold font-['Manrope'] text-foreground leading-tight mb-6">
+                L'argent se déplace.
+                <span className="text-primary"> Rapidement.</span>
+              </h1>
+              
+              <p className="text-lg text-muted-foreground mb-8 max-w-lg">
+                SB Pay révolutionne vos paiements. Envoyez, recevez et gérez votre argent 
+                en toute simplicité, où que vous soyez dans le monde.
+              </p>
+              
+              <div className="flex flex-wrap gap-4 mb-10">
+                <Button 
+                  size="lg" 
+                  className="text-lg px-8 py-6"
+                  onClick={() => navigate('/register')}
+                  data-testid="hero-cta-btn"
+                >
+                  Commencer gratuitement
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+                <Button 
+                  size="lg" 
+                  variant="outline"
+                  className="text-lg px-8 py-6"
+                  onClick={() => navigate('/login')}
+                >
+                  Se connecter
+                </Button>
+              </div>
+
+              {/* App Store Badges */}
+              <div className="flex flex-wrap gap-4" id="download">
+                <a 
+                  href="#" 
+                  className="transition-transform hover:scale-105"
+                  data-testid="google-play-badge"
+                >
+                  <img 
+                    src={GOOGLE_PLAY_BADGE} 
+                    alt="Télécharger sur Google Play" 
+                    className="h-12"
+                  />
+                </a>
+                <a 
+                  href="#" 
+                  className="transition-transform hover:scale-105"
+                  data-testid="app-store-badge"
+                >
+                  <img 
+                    src={APP_STORE_BADGE} 
+                    alt="Télécharger sur l'App Store" 
+                    className="h-12"
+                  />
+                </a>
+              </div>
+            </div>
+
+            {/* Hero Image */}
+            <div className="relative animate-fadeIn" style={{ animationDelay: '0.2s' }}>
+              <div className="relative z-10">
+                <img 
+                  src="https://images.pexels.com/photos/4199583/pexels-photo-4199583.jpeg"
+                  alt="Paiement mobile SB Pay"
+                  className="rounded-2xl shadow-2xl w-full object-cover"
+                  style={{ maxHeight: '500px' }}
+                />
+              </div>
+              {/* Decorative Elements */}
+              <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-primary/20 rounded-2xl -z-10"></div>
+              <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/10 rounded-full -z-10"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, index) => (
+              <div 
+                key={index} 
+                className="text-center animate-fadeIn"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <div className="text-3xl sm:text-4xl font-bold font-['Manrope'] text-primary mb-2">
+                  {stat.value}
+                </div>
+                <div className="text-muted-foreground">{stat.label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section id="features" className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold font-['Manrope'] text-foreground mb-4">
+              Tout ce dont vous avez besoin
+            </h2>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              SB Pay offre une gamme complète de services financiers pour simplifier votre vie quotidienne.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {features.map((feature, index) => (
+              <Card 
+                key={index}
+                className="hover-lift border-border"
+                data-testid={`feature-card-${index}`}
+              >
+                <CardContent className="p-6">
+                  <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                    <feature.icon className="w-6 h-6 text-primary" />
+                  </div>
+                  <h3 className="text-lg font-semibold font-['Manrope'] text-foreground mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    {feature.description}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section id="about" className="py-20 px-4 sm:px-6 lg:px-8 bg-muted/50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <img 
+                src="https://images.pexels.com/photos/6612710/pexels-photo-6612710.jpeg"
+                alt="Solution Business SB Pay"
+                className="rounded-2xl shadow-xl w-full object-cover"
+                style={{ maxHeight: '400px' }}
+              />
+            </div>
+            <div>
+              <h2 className="text-3xl sm:text-4xl font-bold font-['Manrope'] text-foreground mb-6">
+                Conçu pour les particuliers et les entreprises
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8">
+                Que vous soyez un particulier qui souhaite envoyer de l'argent à sa famille 
+                ou une entreprise qui gère des paiements internationaux, SB Pay s'adapte à vos besoins.
+              </p>
+              
+              <div className="space-y-4">
+                {[
+                  "Transferts internationaux à faible coût",
+                  "Portefeuille multi-devises intégré",
+                  "Paiement de factures automatisé",
+                  "Support client 24/7"
+                ].map((item, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span className="text-foreground">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-gradient-to-br from-primary to-orange-600 rounded-3xl p-12 text-white">
+            <h2 className="text-3xl sm:text-4xl font-bold font-['Manrope'] mb-4">
+              Prêt à simplifier vos finances?
+            </h2>
+            <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
+              Rejoignez des milliers d'utilisateurs qui font confiance à SB Pay pour leurs 
+              transactions quotidiennes.
+            </p>
+            <Button 
+              size="lg" 
+              variant="secondary"
+              className="text-lg px-8 py-6 bg-white text-primary hover:bg-white/90"
+              onClick={() => navigate('/register')}
+              data-testid="cta-register-btn"
+            >
+              Créer mon compte gratuit
+              <ArrowRight className="w-5 h-5 ml-2" />
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 px-4 sm:px-6 lg:px-8 border-t border-border">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <div className="flex items-center gap-3 mb-4">
+                <img src={LOGO_URL} alt="SB Pay" className="w-10 h-10 object-contain" />
+                <span className="text-xl font-bold font-['Manrope']">SB Pay</span>
+              </div>
+              <p className="text-muted-foreground text-sm">
+                La solution de paiement moderne pour tous vos besoins financiers.
+              </p>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold font-['Manrope'] mb-4">Produit</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Transferts</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Portefeuille</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Factures</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Entreprises</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold font-['Manrope'] mb-4">Support</h4>
+              <ul className="space-y-2 text-sm text-muted-foreground">
+                <li><a href="#" className="hover:text-foreground transition-colors">Centre d'aide</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><a href="#" className="hover:text-foreground transition-colors">FAQ</a></li>
+              </ul>
+            </div>
+            
+            <div>
+              <h4 className="font-semibold font-['Manrope'] mb-4">Télécharger</h4>
+              <div className="flex flex-col gap-3">
+                <a href="#" className="transition-transform hover:scale-105">
+                  <img src={GOOGLE_PLAY_BADGE} alt="Google Play" className="h-10" />
+                </a>
+                <a href="#" className="transition-transform hover:scale-105">
+                  <img src={APP_STORE_BADGE} alt="App Store" className="h-10" />
+                </a>
+              </div>
+            </div>
+          </div>
+          
+          <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
+            <p className="text-sm text-muted-foreground">
+              © {new Date().getFullYear()} SB Pay. Tous droits réservés.
+            </p>
+            <div className="flex gap-6 text-sm text-muted-foreground">
+              <a href="#" className="hover:text-foreground transition-colors">Confidentialité</a>
+              <a href="#" className="hover:text-foreground transition-colors">Conditions</a>
+              <a href="#" className="hover:text-foreground transition-colors">Cookies</a>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </div>
+  );
+}
