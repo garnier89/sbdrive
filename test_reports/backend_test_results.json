@@ -1,0 +1,136 @@
+{
+  "summary": {
+    "tests_run": 21,
+    "tests_passed": 19,
+    "success_rate": 90.47619047619048
+  },
+  "results": [
+    {
+      "test_name": "API Health Check",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.186332"
+    },
+    {
+      "test_name": "User Registration",
+      "success": false,
+      "details": "Expected 200, got 400. Response: {\"detail\":\"Email already registered\"}",
+      "timestamp": "2026-01-29T11:23:29.225448"
+    },
+    {
+      "test_name": "User Login",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.487324"
+    },
+    {
+      "test_name": "Get Profile",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.531632"
+    },
+    {
+      "test_name": "Get Wallets",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.569478"
+    },
+    {
+      "test_name": "Wallet Currencies Check",
+      "success": true,
+      "details": "Found all expected currencies: ['EUR', 'USD', 'XOF']",
+      "timestamp": "2026-01-29T11:23:29.569932"
+    },
+    {
+      "test_name": "Get EUR Wallet",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.608664"
+    },
+    {
+      "test_name": "Create Recipient User",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:29.875608"
+    },
+    {
+      "test_name": "Money Transfer (Insufficient Balance)",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2026-01-29T11:23:29.916165"
+    },
+    {
+      "test_name": "Create Deposit Checkout",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:30.657377"
+    },
+    {
+      "test_name": "Checkout URL Generated",
+      "success": true,
+      "details": "URL: https://checkout.stripe.com/c/pay/cs_test_a1ssqCcP...",
+      "timestamp": "2026-01-29T11:23:30.657982"
+    },
+    {
+      "test_name": "Withdrawal Request (Insufficient Balance)",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2026-01-29T11:23:30.692718"
+    },
+    {
+      "test_name": "Bill Payment (Insufficient Balance)",
+      "success": true,
+      "details": "Status: 400",
+      "timestamp": "2026-01-29T11:23:30.771820"
+    },
+    {
+      "test_name": "Get Transactions",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:30.807835"
+    },
+    {
+      "test_name": "Transaction Structure Check",
+      "success": true,
+      "details": "Found 1 transactions",
+      "timestamp": "2026-01-29T11:23:30.808350"
+    },
+    {
+      "test_name": "Get Currencies",
+      "success": true,
+      "details": "Status: 200",
+      "timestamp": "2026-01-29T11:23:30.843578"
+    },
+    {
+      "test_name": "Currency Support Check",
+      "success": true,
+      "details": "All expected currencies supported: ['EUR', 'USD', 'XOF', 'GBP', 'CAD', 'CHF']",
+      "timestamp": "2026-01-29T11:23:30.844107"
+    },
+    {
+      "test_name": "Admin Registration",
+      "success": false,
+      "details": "Expected 200, got 400. Response: {\"detail\":\"Email already registered\"}",
+      "timestamp": "2026-01-29T11:23:30.881598"
+    },
+    {
+      "test_name": "Admin Get Users (Expected 403)",
+      "success": true,
+      "details": "Status: 403",
+      "timestamp": "2026-01-29T11:23:30.915886"
+    },
+    {
+      "test_name": "Admin Get Transactions (Expected 403)",
+      "success": true,
+      "details": "Status: 403",
+      "timestamp": "2026-01-29T11:23:30.955252"
+    },
+    {
+      "test_name": "Admin Get Stats (Expected 403)",
+      "success": true,
+      "details": "Status: 403",
+      "timestamp": "2026-01-29T11:23:30.991112"
+    }
+  ],
+  "timestamp": "2026-01-29T11:23:30.991812"
+}
