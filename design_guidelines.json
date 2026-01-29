@@ -1,0 +1,166 @@
+{
+  "identity": {
+    "name": "SB Pay",
+    "type": "Fintech SaaS",
+    "tone": "Trustworthy, Modern, Accessible, Warm",
+    "primary_color_name": "Matte Orange",
+    "logo_description": "SB logo in Red, Blue, and Orange. Provided by user."
+  },
+  "typography": {
+    "headings": {
+      "family": "Manrope, sans-serif",
+      "weights": ["600", "700", "800"],
+      "usage": "Landing page headlines, Dashboard section titles"
+    },
+    "body": {
+      "family": "Inter, sans-serif",
+      "weights": ["400", "500"],
+      "usage": "General text, UI elements, Data tables"
+    },
+    "mono": {
+      "family": "JetBrains Mono, monospace",
+      "usage": "Transaction IDs, API keys, Code snippets"
+    }
+  },
+  "colors": {
+    "light_theme": {
+      "background": "#F8FAFC",
+      "foreground": "#0F172A",
+      "card": "#FFFFFF",
+      "card_foreground": "#0F172A",
+      "popover": "#FFFFFF",
+      "popover_foreground": "#0F172A",
+      "primary": "#E87E04",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#1E293B",
+      "secondary_foreground": "#F8FAFC",
+      "muted": "#F1F5F9",
+      "muted_foreground": "#64748B",
+      "accent": "#FFF7ED",
+      "accent_foreground": "#E87E04",
+      "destructive": "#EF4444",
+      "destructive_foreground": "#FFFFFF",
+      "border": "#E2E8F0",
+      "input": "#E2E8F0",
+      "ring": "#E87E04"
+    },
+    "dark_theme": {
+      "background": "#020617",
+      "foreground": "#F8FAFC",
+      "card": "#0F172A",
+      "card_foreground": "#F8FAFC",
+      "popover": "#0F172A",
+      "popover_foreground": "#F8FAFC",
+      "primary": "#E87E04",
+      "primary_foreground": "#FFFFFF",
+      "secondary": "#1E293B",
+      "secondary_foreground": "#F8FAFC",
+      "muted": "#1E293B",
+      "muted_foreground": "#94A3B8",
+      "accent": "#1E293B",
+      "accent_foreground": "#E87E04",
+      "destructive": "#7F1D1D",
+      "destructive_foreground": "#F8FAFC",
+      "border": "#1E293B",
+      "input": "#1E293B",
+      "ring": "#E87E04"
+    }
+  },
+  "visual_enhancers": {
+    "border_radius": "0.5rem",
+    "shadows": {
+      "card": "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
+      "hover": "0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.05)"
+    },
+    "glassmorphism": {
+      "enabled": true,
+      "classes": "bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl border border-white/20"
+    },
+    "gradients": {
+      "primary_subtle": "bg-gradient-to-br from-orange-500 to-orange-600",
+      "surface_sheen": "bg-gradient-to-b from-white to-slate-50"
+    }
+  },
+  "layout_strategies": {
+    "landing_page": {
+      "type": "Bento Grid & Asymmetric",
+      "spacing": "Generous (py-20, gap-8)",
+      "container": "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8"
+    },
+    "dashboard": {
+      "type": "Sidebar + Topbar",
+      "sidebar_width": "w-64",
+      "content_padding": "p-8"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground hover:bg-primary/90 shadow-sm",
+      "secondary": "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+      "ghost": "hover:bg-accent hover:text-accent-foreground"
+    },
+    "cards": {
+      "style": "bg-card text-card-foreground rounded-lg border shadow-sm",
+      "hover_effect": "transition-all duration-200 hover:shadow-md hover:-translate-y-1"
+    },
+    "inputs": {
+      "style": "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+    }
+  },
+  "image_urls": {
+    "hero_section": {
+      "url": "https://images.pexels.com/photos/4199583/pexels-photo-4199583.jpeg",
+      "alt": "Happy person paying with smartphone in a cafe",
+      "usage": "Main hero image on landing page"
+    },
+    "business_feature": {
+      "url": "https://images.pexels.com/photos/6612710/pexels-photo-6612710.jpeg",
+      "alt": "Business owner using tablet for payments",
+      "usage": "Feature section for business solutions"
+    },
+    "card_visual": {
+      "url": "https://images.pexels.com/photos/6701375/pexels-photo-6701375.jpeg",
+      "alt": "Abstract 3D credit card visualization",
+      "usage": "Visual element for 'Virtual Cards' or 'Security' section"
+    },
+    "badges": {
+      "google_play": "https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg",
+      "app_store": "https://upload.wikimedia.org/wikipedia/commons/3/3c/Download_on_the_App_Store_Badge.svg",
+      "usage": "Footer and Hero section download links"
+    }
+  },
+  "icons": {
+    "library": "lucide-react",
+    "style": "Stroke width 1.5px or 2px, rounded caps"
+  },
+  "motion": {
+    "transitions": "transition-all duration-200 ease-in-out",
+    "hover_scale": "hover:scale-[1.02]",
+    "page_transition": "initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}"
+  },
+  "accessibility": {
+    "contrast_check": "Ensure text on orange background is white or dark slate depending on shade. Use APCA guidelines.",
+    "focus_states": "Visible focus rings on all interactive elements (orange ring).",
+    "aria_labels": "Required for all icon-only buttons."
+  },
+  "instructions_to_main_agent": [
+    "Implement the 'SB Pay' logo as a component that accepts className. Use text 'SB Pay' with the specified colors if image is missing.",
+    "Use the 'Manrope' font for all headings. Import it from Google Fonts.",
+    "Ensure the 'Matte Orange' (#E87E04) is used as the primary action color.",
+    "Build the Landing Page with a 'Bento Grid' layout for features.",
+    "The Dashboard must have a clean, sidebar-based layout.",
+    "Implement Dark Mode toggle in the settings or navbar.",
+    "Use 'sonner' for all toast notifications.",
+    "Ensure all forms use 'react-hook-form' and 'zod' for validation (standard in Shadcn).",
+    "For the 'Transfert d'argent' flow, use a multi-step wizard interface.",
+    "Admin dashboard should be dense, data-heavy, and use the 'High Density Grid' strategy."
+  ],
+  "universal_guidelines": [
+    "Do not use generic centered layouts. Use asymmetry.",
+    "Use 2-3x more spacing than typical designs.",
+    "Every interaction needs micro-animations.",
+    "Never use 'Inter' for headings.",
+    "Do not use gradients for text unless specifically requested for a 'hero' effect.",
+    "All interactive elements must have 'data-testid' attributes."
+  ]
+}
