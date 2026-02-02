@@ -21,7 +21,7 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
-#### 🌍 Module Afrique (NEW)
+#### 🌍 Module Afrique
 - [x] **Transferts Mobile Money Inter-opérateurs**
   - Wave ↔ Orange Money ↔ MTN MoMo ↔ Moov Money
   - Calcul des frais en temps réel
@@ -43,6 +43,23 @@
 - [x] **Gestion des Litiges**
   - Signalement de transactions
   - Suivi des réclamations
+
+#### 🔐 Module Sécurité & Gestion Avancée (NEW)
+- [x] **Approbation des Cartes Bancaires**
+  - Workflow: pending → active/rejected/blocked
+  - Notification utilisateur lors de l'ajout
+  - Page admin pour approuver/refuser
+  - Détection IP, pays, tentatives suspectes
+- [x] **CMS (Content Management System)**
+  - Gestion textes, images, tarifs
+  - Support multi-langue (FR, EN, AR)
+  - Catégories: Général, Légal, Marketing, Frais, Erreurs
+  - Interface admin complète
+- [x] **Super Admin & RBAC**
+  - Hiérarchie: Super Admin → Admin → Support → User
+  - Gestion des administrateurs (créer, modifier, supprimer)
+  - Permissions personnalisables par module
+  - Logs de toutes les actions admin
 
 #### QR Code Payments
 - [x] Generate QR codes for receiving payments
