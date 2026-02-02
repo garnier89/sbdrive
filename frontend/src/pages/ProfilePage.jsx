@@ -70,6 +70,7 @@ export default function ProfilePage() {
         last_name: user.last_name || user.full_name?.split(' ').slice(1).join(' ') || '',
         phone: user.phone || '',
         country: user.country || '',
+        date_of_birth: user.date_of_birth || '',
         preferred_language: user.preferred_language || 'fr',
         default_currency: user.default_currency || 'EUR'
       });
