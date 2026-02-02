@@ -31,7 +31,134 @@ export default function SettingsPage() {
   const [showOTPInput, setShowOTPInput] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState('');
   const [otpCode, setOtpCode] = useState('');
+  
+  // Quick PIN States
+  const [quickPinStatus, setQuickPinStatus] = useState(null);
+  const [loadingQuickPin, setLoadingQuickPin] = useState(true);
+  const [showPinSetup, setShowPinSetup] = useState(false);
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPin, setShowPin] = useState(false);
+  const [savingPin, setSavingPin] = useState(false);
+  
+  // Change PIN States
+  const [showChangePin, setShowChangePin] = useState(false);
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPinChange, setNewPinChange] = useState('');
+  
+  // Disable PIN States
+  const [showDisablePin, setShowDisablePin] = useState(false);
+  const [disablePin, setDisablePin] = useState('');
 
+  // Fetch Quick PIN status on load
+  useEffect(() => {
+    fetchQuickPinStatus();
+  }, []);
+
+  const fetchQuickPinStatus = async () => {
+    try {
+      const res = await axios.get(`${API}/auth/quick-pin/status`);
+      setQuickPinStatus(res.data);
+    } catch (error) {
+      console.error('Failed to fetch Quick PIN status');
+      setQuickPinStatus({ enabled: false });
+    } finally {
+      setLoadingQuickPin(false);
+    }
+  };
+
+  const handleSetupQuickPin = async () => {
+    if (newPin.length < 4 || newPin.length > 6) {
+      toast.error('Le PIN doit contenir entre 4 et 6 chiffres');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      toast.error('Les PINs ne correspondent pas');
+      return;
+    }
+    if (!currentPassword) {
+      toast.error('Veuillez entrer votre mot de passe');
+      return;
+    }
+
+    setSavingPin(true);
+    try {
+      const res = await axios.post(`${API}/auth/quick-pin/setup`, {
+        pin: newPin,
+        password: currentPassword
+      });
+      
+      // Store device token securely
+      localStorage.setItem(DEVICE_TOKEN_KEY, res.data.device_token);
+      
+      toast.success('PIN rapide configuré avec succès!');
+      setShowPinSetup(false);
+      setNewPin('');
+      setConfirmPin('');
+      setCurrentPassword('');
+      fetchQuickPinStatus();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la configuration du PIN');
+    } finally {
+      setSavingPin(false);
+    }
+  };
+
+  const handleChangeQuickPin = async () => {
+    if (newPinChange.length < 4 || newPinChange.length > 6) {
+      toast.error('Le nouveau PIN doit contenir entre 4 et 6 chiffres');
+      return;
+    }
+    if (!currentPin) {
+      toast.error('Veuillez entrer votre PIN actuel');
+      return;
+    }
+
+    setSavingPin(true);
+    try {
+      await axios.post(`${API}/auth/quick-pin/change`, {
+        current_pin: currentPin,
+        new_pin: newPinChange
+      });
+      
+      toast.success('PIN modifié avec succès!');
+      setShowChangePin(false);
+      setCurrentPin('');
+      setNewPinChange('');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la modification du PIN');
+    } finally {
+      setSavingPin(false);
+    }
+  };
+
+  const handleDisableQuickPin = async () => {
+    if (!disablePin) {
+      toast.error('Veuillez entrer votre PIN');
+      return;
+    }
+
+    setSavingPin(true);
+    try {
+      await axios.post(`${API}/auth/quick-pin/disable`, {
+        pin: disablePin
+      });
+      
+      // Remove device token
+      localStorage.removeItem(DEVICE_TOKEN_KEY);
+      
+      toast.success('PIN rapide désactivé');
+      setShowDisablePin(false);
+      setDisablePin('');
+      fetchQuickPinStatus();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la désactivation');
+    } finally {
+      setSavingPin(false);
+    }
+  };
   const handleLanguageChange = async (newLang) => {
     try {
       await setLanguage(newLang);
