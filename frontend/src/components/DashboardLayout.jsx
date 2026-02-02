@@ -25,6 +25,8 @@ const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
   { href: '/admin/transactions', icon: History, label: 'Transactions' },
+  { href: '/admin/documents', icon: Shield, label: 'Documents KYC' },
+  { href: '/admin/zones', icon: Shield, label: 'Zones' },
 ];
 
 export const DashboardLayout = ({ children }) => {
