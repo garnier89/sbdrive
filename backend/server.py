@@ -2399,6 +2399,215 @@ async def update_payment_gateway(
     
     return {"message": "Gateway configuration updated", "gateway_id": gateway_id}
 
+# ==================== PAYMENT RULES & SECURITY ====================
+
+class SecurityRules(BaseModel):
+    require_3d_secure: bool = True
+    require_cvv: bool = True
+    require_avs: bool = True
+    block_vpn: bool = True
+    block_tor: bool = True
+    velocity_check: bool = True
+    velocity_max_transactions: int = 10
+    velocity_time_window: int = 60
+    geo_restriction_enabled: bool = False
+    blocked_countries: List[str] = []
+    require_kyc_above: float = 1000
+    max_daily_deposit: float = 10000
+    max_single_transaction: float = 5000
+    fraud_score_threshold: int = 70
+
+class CaptureRules(BaseModel):
+    capture_mode: str = "automatic"
+    capture_delay_hours: int = 0
+    manual_review_threshold: float = 500
+    auto_capture_below: float = 100
+    hold_suspicious: bool = True
+    notify_admin_above: float = 1000
+
+class Secure3DSettings(BaseModel):
+    enabled: bool = True
+    challenge_threshold: int = 0
+    exemption_amount: float = 30
+    preferred_version: str = "2"
+    fallback_to_v1: bool = True
+
+class PaymentRulesUpdate(BaseModel):
+    security: Optional[SecurityRules] = None
+    capture: Optional[CaptureRules] = None
+    secure3d: Optional[Secure3DSettings] = None
+
+@api_router.get("/admin/payment-rules")
+async def get_payment_rules(current_user: dict = Depends(get_admin_user)):
+    """Get all payment security rules"""
+    rules = await db.app_settings.find_one({"type": "payment_rules"}, {"_id": 0})
+    if not rules:
+        return {
+            "security": SecurityRules().model_dump(),
+            "capture": CaptureRules().model_dump(),
+            "secure3d": Secure3DSettings().model_dump()
+        }
+    return {
+        "security": rules.get("security", SecurityRules().model_dump()),
+        "capture": rules.get("capture", CaptureRules().model_dump()),
+        "secure3d": rules.get("secure3d", Secure3DSettings().model_dump())
+    }
+
+@api_router.put("/admin/payment-rules")
+async def update_payment_rules(
+    rules: PaymentRulesUpdate,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Update payment security rules"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    update_data = {
+        "type": "payment_rules",
+        "updated_at": now,
+        "updated_by": current_user["id"]
+    }
+    
+    if rules.security:
+        update_data["security"] = rules.security.model_dump()
+    if rules.capture:
+        update_data["capture"] = rules.capture.model_dump()
+    if rules.secure3d:
+        update_data["secure3d"] = rules.secure3d.model_dump()
+    
+    await db.app_settings.update_one(
+        {"type": "payment_rules"},
+        {"$set": update_data},
+        upsert=True
+    )
+    
+    background_tasks.add_task(
+        log_admin_action,
+        current_user["id"],
+        "update_payment_rules",
+        "settings",
+        "payment_rules",
+        {"updated_fields": list(update_data.keys())}
+    )
+    
+    return {"message": "Payment rules updated"}
+
+@api_router.get("/admin/pending-captures")
+async def get_pending_captures(current_user: dict = Depends(get_admin_user)):
+    """Get transactions pending manual capture"""
+    captures = await db.payment_transactions.find(
+        {"capture_status": "pending", "payment_status": "authorized"},
+        {"_id": 0}
+    ).sort("created_at", -1).to_list(50)
+    
+    # Enrich with user data
+    for capture in captures:
+        user = await db.users.find_one({"id": capture.get("user_id")}, {"_id": 0, "email": 1})
+        if user:
+            capture["user_email"] = user["email"]
+    
+    return {"captures": captures}
+
+@api_router.post("/admin/capture/{transaction_id}")
+async def capture_payment(
+    transaction_id: str,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Manually capture an authorized payment"""
+    payment = await db.payment_transactions.find_one(
+        {"id": transaction_id, "capture_status": "pending"},
+        {"_id": 0}
+    )
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found or already captured")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # In real implementation, call Stripe API to capture
+    # stripe.PaymentIntent.capture(payment["stripe_payment_intent_id"])
+    
+    # Update payment status
+    await db.payment_transactions.update_one(
+        {"id": transaction_id},
+        {"$set": {
+            "capture_status": "captured",
+            "captured_at": now,
+            "captured_by": current_user["id"]
+        }}
+    )
+    
+    # Credit user wallet
+    if payment.get("user_id") and payment.get("amount"):
+        await db.wallets.update_one(
+            {"user_id": payment["user_id"], "currency": payment.get("currency", "EUR")},
+            {"$inc": {"balance": payment["amount"]}, "$set": {"updated_at": now}}
+        )
+        
+        # Update related transaction
+        await db.transactions.update_one(
+            {"id": payment.get("transaction_id")},
+            {"$set": {"status": "completed", "updated_at": now}}
+        )
+    
+    background_tasks.add_task(
+        log_admin_action,
+        current_user["id"],
+        "capture_payment",
+        "payment",
+        transaction_id,
+        {"amount": payment.get("amount"), "currency": payment.get("currency")}
+    )
+    
+    return {"message": "Payment captured successfully"}
+
+@api_router.post("/admin/void/{transaction_id}")
+async def void_payment(
+    transaction_id: str,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Void an authorized payment (release hold)"""
+    payment = await db.payment_transactions.find_one(
+        {"id": transaction_id, "capture_status": "pending"},
+        {"_id": 0}
+    )
+    
+    if not payment:
+        raise HTTPException(status_code=404, detail="Payment not found or already processed")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # In real implementation, call Stripe API to cancel
+    # stripe.PaymentIntent.cancel(payment["stripe_payment_intent_id"])
+    
+    await db.payment_transactions.update_one(
+        {"id": transaction_id},
+        {"$set": {
+            "capture_status": "voided",
+            "voided_at": now,
+            "voided_by": current_user["id"]
+        }}
+    )
+    
+    # Update related transaction
+    await db.transactions.update_one(
+        {"id": payment.get("transaction_id")},
+        {"$set": {"status": "cancelled", "updated_at": now}}
+    )
+    
+    background_tasks.add_task(
+        log_admin_action,
+        current_user["id"],
+        "void_payment",
+        "payment",
+        transaction_id,
+        {"amount": payment.get("amount"), "reason": "admin_void"}
+    )
+    
+    return {"message": "Payment voided successfully"}
+
 # ==================== PAYMENT LINKS ====================
 
 class PaymentLinkCreate(BaseModel):
