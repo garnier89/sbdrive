@@ -37,10 +37,13 @@ STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', '')
 DEMO_MODE = os.environ.get('DEMO_MODE', 'true').lower() == 'true'
 
 # Create the main app
-app = FastAPI(title="SB Pay API", version="3.0.0")
+app = FastAPI(title="SB Pay API", version="4.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
+
+# Import Africa Module
+from routes.africa_module import setup_africa_routes, africa_router
 
 # Configure logging
 logging.basicConfig(
