@@ -216,18 +216,38 @@
 - [x] 17 geographic zones
 - [x] Zone-specific payment methods
 
-### Database Collections (30+)
-users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**
+### Database Collections (35+)
+users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
 - **User:** user@sbpay.com / userpassword
 - **User 2:** test@sbpay.com / testpassword (phone: +221771234567)
 
-## API Endpoints (75+)
+## API Endpoints (90+)
 See /app/docs/API_REFERENCE.md for complete list
 
-### P2P User Transfer APIs (NEW)
+### Virtual Cards APIs (NEW)
+- `POST /api/virtual-card/create` - Créer une carte virtuelle
+- `GET /api/virtual-card/list` - Lister les cartes
+- `GET /api/virtual-card/{id}` - Détails d'une carte
+- `POST /api/virtual-card/block` - Bloquer/Débloquer carte
+- `POST /api/virtual-card/limit` - Modifier limites
+- `POST /api/virtual-card/simulate-payment` - Simuler paiement (DEMO)
+- `POST /api/virtual-card/toggle-feature/{id}` - Activer/désactiver features
+- `GET /api/virtual-card/transactions/{id}` - Historique transactions carte
+- `DELETE /api/virtual-card/{id}` - Supprimer carte
+
+### Notifications Zone APIs (NEW - Admin)
+- `GET /api/notifications/zones` - Liste pays/zones disponibles
+- `GET /api/notifications/filter-users` - Filtrer utilisateurs par zone
+- `POST /api/notifications/send` - Envoyer notification ciblée
+- `GET /api/notifications/history` - Historique campagnes
+- `GET /api/notifications/stats/overview` - Statistiques
+- `GET /api/notifications/{id}` - Détails notification
+- `POST /api/notifications/cancel/{id}` - Annuler notification programmée
+
+### P2P User Transfer APIs
 - `GET /api/wallet/users/lookup-phone` - Recherche utilisateur par téléphone
 - `POST /api/wallet/transfer-phone` - Créer un transfert P2P
 - `POST /api/wallet/transfer-phone/verify` - Vérifier OTP et compléter transfert
