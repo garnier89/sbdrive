@@ -6,7 +6,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://paynow-52.preview.emergentagent.com
+**Preview URL:** https://sbpay-fintech.preview.emergentagent.com
 
 ## Features Summary
 
