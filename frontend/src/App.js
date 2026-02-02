@@ -346,6 +346,12 @@ function App() {
             <Route path="/virtual-cards" element={
               <ProtectedRoute><VirtualCardsPage /></ProtectedRoute>
             } />
+            <Route path="/vault" element={
+              <ProtectedRoute><VaultPage /></ProtectedRoute>
+            } />
+            <Route path="/help" element={
+              <ProtectedRoute><HelpCenterPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
