@@ -335,6 +335,9 @@ function App() {
             <Route path="/user-transfer" element={
               <ProtectedRoute><UserTransferPage /></ProtectedRoute>
             } />
+            <Route path="/virtual-cards" element={
+              <ProtectedRoute><VirtualCardsPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
