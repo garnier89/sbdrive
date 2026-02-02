@@ -54,9 +54,11 @@ logger = logging.getLogger(__name__)
 class UserCreate(BaseModel):
     email: EmailStr
     password: str
-    full_name: str
+    first_name: str
+    last_name: str
     phone: Optional[str] = None
     preferred_language: str = "fr"
+    default_currency: str = "EUR"
     country: Optional[str] = None
 
 class UserLogin(BaseModel):
