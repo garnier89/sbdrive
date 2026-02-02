@@ -324,6 +324,12 @@ function App() {
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
+          
+          {/* WhatsApp Support Button */}
+          <WhatsAppButton 
+            phoneNumber="+33612345678" 
+            message="Bonjour, j'ai une question concernant SB Pay."
+          />
         </BrowserRouter>
       </AuthProvider>
     </LanguageProvider>
