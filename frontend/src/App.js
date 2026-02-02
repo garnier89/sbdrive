@@ -30,6 +30,8 @@ import AirtimePage from "@/pages/AirtimePage";
 import BillPaymentPage from "@/pages/BillPaymentPage";
 // User Transfer Page
 import UserTransferPage from "@/pages/UserTransferPage";
+// Virtual Cards Page
+import VirtualCardsPage from "@/pages/VirtualCardsPage";
 // Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
