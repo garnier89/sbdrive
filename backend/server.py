@@ -3469,6 +3469,10 @@ app.include_router(contact_router)
 setup_quick_login_routes(db, verify_password, create_access_token, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification)
 app.include_router(quick_login_router)
 
+# Setup and include Receipts module routes
+setup_receipts_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
+app.include_router(receipts_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
