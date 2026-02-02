@@ -41,6 +41,7 @@ import AdminCardApprovals from "@/pages/admin/AdminCardApprovals";
 import AdminCMSPage from "@/pages/admin/AdminCMSPage";
 import AdminManagementPage from "@/pages/admin/AdminManagementPage";
 import AdminAnalyticsPage from "@/pages/admin/AdminAnalyticsPage";
+import AdminAlertsPage from "@/pages/admin/AdminAlertsPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
