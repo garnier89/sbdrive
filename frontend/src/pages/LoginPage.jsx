@@ -82,6 +82,25 @@ export default function LoginPage() {
             </CardHeader>
             <CardContent>
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Quick PIN Login Button */}
+                {hasQuickPin && (
+                  <div className="pb-4 border-b border-border">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full h-12 text-primary border-primary/30 hover:bg-primary/5"
+                      onClick={() => navigate('/quick-login')}
+                      data-testid="quick-pin-login-btn"
+                    >
+                      <Fingerprint className="w-5 h-5 mr-2" />
+                      Connexion rapide avec PIN
+                    </Button>
+                    <p className="text-xs text-muted-foreground text-center mt-2">
+                      Vous avez configuré la connexion rapide sur cet appareil
+                    </p>
+                  </div>
+                )}
+                
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
                   <Input
