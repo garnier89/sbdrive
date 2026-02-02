@@ -3385,6 +3385,10 @@ async def root():
 # Include the router
 app.include_router(api_router)
 
+# Setup and include Africa module routes
+setup_africa_routes(db, get_current_user)
+app.include_router(africa_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
