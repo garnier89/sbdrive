@@ -33,6 +33,7 @@ export default function ProfilePage() {
     last_name: '',
     phone: '',
     country: '',
+    date_of_birth: '',
     preferred_language: 'fr',
     default_currency: 'EUR'
   });
