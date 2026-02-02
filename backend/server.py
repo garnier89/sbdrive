@@ -63,6 +63,12 @@ from routes.virtual_cards import setup_virtual_cards_routes, virtual_cards_route
 # Import Notifications Zone Module
 from routes.notifications_zone import setup_notifications_zone_routes, notifications_zone_router
 
+# Import Vault Module
+from routes.vault import setup_vault_routes, vault_router
+
+# Import Contact Module
+from routes.contact import setup_contact_routes, contact_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
