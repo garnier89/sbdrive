@@ -6,7 +6,7 @@
 **Created:** December 2025  
 **Last Updated:** December 2025  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://sbpay-fintech.preview.emergentagent.com
+**Preview URL:** https://easypay-africa.preview.emergentagent.com
 
 ## Features Summary
 
