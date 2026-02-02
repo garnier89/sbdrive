@@ -81,6 +81,40 @@
   - Utilisateurs par pays
   - Transferts par destination
 
+#### 🔔 Module Alertes & Seuils (NEW)
+- [x] **Seuils d'alerte configurables**
+  - Volume journalier (info à 10M, warning à 50M XOF)
+  - Transactions suspectes (critical)
+  - Échecs de transactions (warning)
+  - Nouveaux utilisateurs (objectif success)
+  - Cartes en attente > 24h
+  - Transaction unitaire élevée
+- [x] **Notifications dashboard**
+  - Liste des alertes déclenchées
+  - Marquer comme lu/non lu
+  - Filtrage par statut
+- [x] **Configuration notifications**
+  - Email, SMS, Dashboard
+  - Activer/Désactiver par seuil
+- [x] **Métriques en temps réel**
+  - Affichage des valeurs actuelles
+  - Vérification manuelle
+
+#### 🔑 RBAC Avancé (Permissions Détaillées)
+- [x] **45+ permissions granulaires**
+  - Utilisateurs (voir, créer, modifier, supprimer, bloquer)
+  - Transactions (voir, valider, rejeter, rembourser)
+  - Wallet (voir, créditer, débiter, limites)
+  - Passerelles (voir, configurer, activer)
+  - Mobile Money (voir, gérer, opérateurs)
+  - Banques, Devises, Zones
+  - CMS, KYC, Cartes, Liens paiement
+  - Logs, Analytics, Alertes
+  - Administration (admins, rôles)
+  - Système (paramètres, suspension)
+- [x] **Catalogue permissions par catégorie**
+- [x] **Attribution dynamique par admin**
+
 #### QR Code Payments
 - [x] Generate QR codes for receiving payments
 - [x] Scan QR codes to pay
