@@ -15,38 +15,64 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 1. **Client Standard** - Utilisateurs souhaitant envoyer/recevoir de l'argent et payer des factures
 2. **Administrateur** - Gestionnaires de la plateforme avec accès complet aux outils de gestion
 
+## Database Schema (16 Collections)
+1. **users** - User accounts with first_name, last_name, status, default_currency
+2. **wallets** - Multi-currency wallets per user
+3. **cards** - Saved payment cards (Stripe tokens)
+4. **bank_accounts** - Linked bank accounts
+5. **banks** - Bank directory (33 banks across 9 countries)
+6. **mobile_money_accounts** - User's mobile money accounts
+7. **mobile_money_providers** - Provider directory (Orange, MTN, Wave, Moov, M-Pesa, Airtel)
+8. **transactions** - All financial transactions with type, method, fees
+9. **currencies** - 12 active currencies
+10. **languages** - 8 supported languages
+11. **zones** - Geographic zones (17 countries)
+12. **zone_payment_methods** - Payment methods per zone with fees
+13. **documents** - KYC documents
+14. **admin_logs** - Admin action audit trail
+15. **exchange_rates** - Currency conversion rates
+16. **payment_transactions** - Stripe/PayPal payment tracking
+
 ## Core Requirements
 
 ### Authentication & Security
 - [x] JWT-based authentication
-- [x] User registration with email validation
+- [x] User registration with first_name/last_name
 - [x] Admin/User role separation
+- [x] User status management (active/suspended/deleted)
 - [x] 2FA setup flow (ready for Twilio integration)
 
 ### Multi-Currency & Wallets
-- [x] Multi-currency wallets (EUR, USD, XOF, GBP, MAD, NGN)
+- [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, XAF, GBP, MAD, NGN, GHS, KES, ZAR, CAD, CHF)
 - [x] Real-time balance display
-- [x] Exchange rate conversion (static rates - ready for live API)
+- [x] Exchange rate conversion API
+- [x] Currency conversion endpoint
 
-### Payments & Transfers
-- [x] P2P transfers between users
-- [x] Stripe deposits (DEMO MODE)
+### Payment Methods
+- [x] Cards management (add, delete, set default)
+- [x] Bank accounts management
+- [x] Mobile money accounts (6 providers)
+- [x] Stripe deposits (REAL MODE with test key)
 - [x] PayPal deposits (DEMO MODE)
-- [x] Mobile Money deposits (Orange, MTN, Wave, Moov) (DEMO MODE)
+- [x] Mobile Money deposits (DEMO MODE)
+
+### Transfers
+- [x] P2P wallet transfers
 - [x] Bank transfers
 - [x] Withdrawals
-- [x] Bill payments
 
 ### Admin Features
 - [x] Admin Dashboard with statistics
-- [x] User management (activate/deactivate)
+- [x] User management (activate/deactivate/suspend)
 - [x] Transaction monitoring
 - [x] KYC document management
 - [x] Geographic zone configuration
+- [x] Credit/Debit user accounts
 
 ### Internationalization
-- [x] Multi-language support (FR, EN, ES, PT, AR, DE, ZH)
-- [x] Language selector in settings
+- [x] 8 languages (FR, EN, ES, PT, AR, DE, ZH, SW)
+- [x] 17 geographic zones
+- [x] Zone-specific payment methods & fees
 
 ## What's Been Implemented
 
