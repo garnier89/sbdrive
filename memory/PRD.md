@@ -369,8 +369,9 @@ See /app/docs/API_REFERENCE.md for complete list
 │   │   ├── wallet_transfers.py (P2P transfers)
 │   │   ├── virtual_cards.py (Virtual cards)
 │   │   ├── notifications_zone.py (Admin notifications)
-│   │   ├── vault.py (NEW - Coffre-fort)
-│   │   ├── contact.py (NEW - Support tickets)
+│   │   ├── vault.py (Coffre-fort)
+│   │   ├── contact.py (Support tickets)
+│   │   ├── quick_login.py (NEW - Quick PIN Login)
 │   │   ├── africa_module.py
 │   │   ├── admin_advanced.py
 │   │   ├── analytics.py
@@ -381,20 +382,21 @@ See /app/docs/API_REFERENCE.md for complete list
 │       ├── pages/
 │       │   ├── UserTransferPage.jsx (P2P transfers)
 │       │   ├── VirtualCardsPage.jsx (Virtual cards)
-│       │   ├── VaultPage.jsx (NEW - Coffre-fort)
-│       │   ├── HelpCenterPage.jsx (NEW - Centre d'aide)
+│       │   ├── VaultPage.jsx (Coffre-fort)
+│       │   ├── HelpCenterPage.jsx (Centre d'aide)
+│       │   ├── QuickPinLoginPage.jsx (NEW - Connexion PIN)
+│       │   ├── SettingsPage.jsx (Updated - Section Quick PIN)
+│       │   ├── LoginPage.jsx (Updated - Bouton Quick PIN)
 │       │   ├── QRPaymentPage.jsx
 │       │   ├── RewardsPage.jsx
 │       │   ├── PaymentLinksPage.jsx
 │       │   ├── ProfilePage.jsx
 │       │   └── admin/
 │       │       ├── AdminNotificationsPage.jsx
-│       │       ├── AdminTicketsPage.jsx (NEW - Gestion tickets)
+│       │       ├── AdminTicketsPage.jsx (Gestion tickets)
 │       │       ├── AdminAnalyticsPage.jsx
 │       │       ├── AdminAlertsPage.jsx
 │       │       └── ...
-│       │       ├── AdminGateways.jsx
-│       │       └── AdminPaymentRules.jsx
 │       └── components/
 │           └── ChatSupport.jsx
 ├── docs/
