@@ -34,6 +34,12 @@ import UserTransferPage from "@/pages/UserTransferPage";
 import VirtualCardsPage from "@/pages/VirtualCardsPage";
 // Admin Notifications Page
 import AdminNotificationsPage from "@/pages/admin/AdminNotificationsPage";
+// Vault Page
+import VaultPage from "@/pages/VaultPage";
+// Help Center Page
+import HelpCenterPage from "@/pages/HelpCenterPage";
+// Admin Tickets Page
+import AdminTicketsPage from "@/pages/admin/AdminTicketsPage";
 // Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
