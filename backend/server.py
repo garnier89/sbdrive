@@ -3420,6 +3420,10 @@ app.include_router(admin_advanced_router)
 setup_analytics_routes(db, get_admin_user)
 app.include_router(analytics_router)
 
+# Setup and include Alerts module routes
+setup_alerts_routes(db, get_admin_user)
+app.include_router(alerts_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
