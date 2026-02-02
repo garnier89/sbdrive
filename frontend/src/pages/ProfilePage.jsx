@@ -725,11 +725,61 @@ export default function ProfilePage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
+                {/* KYC Alert Message */}
+                {user?.kyc_status !== 'verified' && (
+                  <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg" data-testid="kyc-alert">
+                    <div className="flex items-start gap-3">
+                      <AlertCircle className="w-5 h-5 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5" />
+                      <div>
+                        <p className="font-medium text-amber-800 dark:text-amber-200">
+                          Pour augmenter votre plafond
+                        </p>
+                        <p className="text-sm text-amber-700 dark:text-amber-300 mt-1">
+                          Vous devez ajouter votre pièce d'identité. Votre nom ne peut pas être modifié après l'inscription. 
+                          Veuillez également saisir votre date de naissance.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 {/* KYC Status */}
                 <div className="p-4 bg-muted rounded-lg">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">Statut de vérification</span>
                     {getKYCStatusBadge(user?.kyc_status)}
+                  </div>
+                </div>
+
+                {/* Date of Birth Field */}
+                <div className="p-4 border rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="font-medium flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        Date de naissance
+                      </p>
+                      <p className="text-sm text-muted-foreground">
+                        Requise pour la vérification d'identité
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {user?.date_of_birth ? (
+                        <Badge variant="outline" className="bg-green-50 text-green-700 dark:bg-green-900/20 dark:text-green-300">
+                          <CheckCircle className="w-3 h-3 mr-1" />
+                          {new Date(user.date_of_birth).toLocaleDateString('fr-FR')}
+                        </Badge>
+                      ) : (
+                        <Input
+                          type="date"
+                          value={profileData.date_of_birth}
+                          onChange={(e) => setProfileData({...profileData, date_of_birth: e.target.value})}
+                          className="w-40"
+                          max={new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0]}
+                          data-testid="date-of-birth-input"
+                        />
+                      )}
+                    </div>
                   </div>
                 </div>
 
