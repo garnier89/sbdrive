@@ -22,6 +22,8 @@ import ProfilePage from "@/pages/ProfilePage";
 import SettingsPage from "@/pages/SettingsPage";
 import PaymentLinksPage from "@/pages/PaymentLinksPage";
 import PayPage from "@/pages/PayPage";
+import QRPaymentPage from "@/pages/QRPaymentPage";
+import RewardsPage from "@/pages/RewardsPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminTransactions from "@/pages/admin/AdminTransactions";
