@@ -868,7 +868,7 @@ async def get_user_cards(current_user: dict = Depends(get_current_user)):
 
 @api_router.post("/cards")
 async def add_card(card: CardCreate, current_user: dict = Depends(get_current_user)):
-    """Add a new card for current user"""
+    """Add a new card for current user (requires approval)"""
     now = datetime.now(timezone.utc).isoformat()
     card_id = str(uuid.uuid4())
     
@@ -897,11 +897,25 @@ async def add_card(card: CardCreate, current_user: dict = Depends(get_current_us
         "expiry_year": card.expiry_year,
         "is_default": is_default,
         "created_at": now,
-        "deleted": False
+        "deleted": False,
+        # New security fields
+        "approval_status": "pending",  # pending, active, rejected, blocked
+        "approved_by": None,
+        "approved_at": None,
+        "approval_reason": None,
+        "added_ip": None,  # Would be filled from request
+        "added_country": None
     }
     await db.cards.insert_one(card_doc)
     
-    return {"message": "Card added", "card_id": card_id, "is_default": is_default}
+    # TODO: Send notification email to user about pending approval
+    
+    return {
+        "message": "Card added - pending approval",
+        "card_id": card_id,
+        "is_default": is_default,
+        "approval_status": "pending"
+    }
 
 @api_router.delete("/cards/{card_id}")
 async def delete_card(card_id: str, current_user: dict = Depends(get_current_user)):
