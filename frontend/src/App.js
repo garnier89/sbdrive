@@ -275,6 +275,9 @@ function App() {
             <Route path="/withdraw" element={
               <ProtectedRoute><WithdrawPage /></ProtectedRoute>
             } />
+            <Route path="/bank-accounts" element={
+              <ProtectedRoute><BankAccountsPage /></ProtectedRoute>
+            } />
             <Route path="/bills" element={
               <ProtectedRoute><BillsPage /></ProtectedRoute>
             } />
