@@ -28,6 +28,8 @@ import RewardsPage from "@/pages/RewardsPage";
 import MobileMoneyTransferPage from "@/pages/MobileMoneyTransferPage";
 import AirtimePage from "@/pages/AirtimePage";
 import BillPaymentPage from "@/pages/BillPaymentPage";
+// User Transfer Page
+import UserTransferPage from "@/pages/UserTransferPage";
 // Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
