@@ -124,6 +124,26 @@ export const DashboardLayout = ({ children }) => {
 
       {/* User Section */}
       <div className="p-4 border-t border-border">
+        {/* Theme Toggle */}
+        <Button 
+          variant="ghost" 
+          className="w-full justify-start text-muted-foreground mb-2"
+          onClick={toggleTheme}
+          data-testid="theme-toggle-btn"
+        >
+          {theme === 'light' ? (
+            <>
+              <Moon className="w-5 h-5 mr-3" />
+              Mode sombre
+            </>
+          ) : (
+            <>
+              <Sun className="w-5 h-5 mr-3" />
+              Mode clair
+            </>
+          )}
+        </Button>
+        
         <div className="flex items-center gap-3 px-4 py-3 mb-2">
           <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
             <User className="w-5 h-5 text-primary" />
