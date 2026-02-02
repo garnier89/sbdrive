@@ -35,6 +35,7 @@ export default function DashboardPage() {
   const [wallets, setWallets] = useState([]);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [monthlyData, setMonthlyData] = useState([]);
 
   useEffect(() => {
     fetchData();
@@ -44,15 +45,75 @@ export default function DashboardPage() {
     try {
       const [walletsRes, transactionsRes] = await Promise.all([
         axios.get(`${API}/wallets`),
-        axios.get(`${API}/transactions?limit=5`)
+        axios.get(`${API}/transactions?limit=50`)
       ]);
       setWallets(walletsRes.data);
       setTransactions(transactionsRes.data.transactions);
+      
+      // Generate monthly spending data from transactions
+      generateMonthlyData(transactionsRes.data.transactions);
     } catch (error) {
       toast.error('Erreur lors du chargement des données');
     } finally {
       setLoading(false);
     }
+  };
+
+  const generateMonthlyData = (txs) => {
+    const last6Months = [];
+    const now = new Date();
+    
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      last6Months.push({
+        month: d.toLocaleDateString('fr-FR', { month: 'short' }),
+        year: d.getFullYear(),
+        deposits: 0,
+        withdrawals: 0
+      });
+    }
+    
+    txs.forEach(tx => {
+      const txDate = new Date(tx.created_at);
+      const monthIdx = last6Months.findIndex(m => {
+        const monthDate = new Date(m.year, ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'août', 'sept.', 'oct.', 'nov.', 'déc.'].indexOf(m.month.replace('.', '') + '.'), 1);
+        return txDate.getMonth() === monthDate.getMonth() && txDate.getFullYear() === monthDate.getFullYear();
+      });
+      
+      if (monthIdx >= 0) {
+        if (tx.amount > 0) {
+          last6Months[monthIdx].deposits += Math.abs(tx.amount);
+        } else {
+          last6Months[monthIdx].withdrawals += Math.abs(tx.amount);
+        }
+      }
+    });
+    
+    setMonthlyData(last6Months);
+  };
+
+  // Calculate spending by category
+  const getSpendingByType = () => {
+    const spending = {};
+    transactions.filter(tx => tx.amount < 0).forEach(tx => {
+      const type = tx.type || 'other';
+      spending[type] = (spending[type] || 0) + Math.abs(tx.amount);
+    });
+    
+    const colors = ['#f97316', '#3b82f6', '#22c55e', '#a855f7', '#ef4444', '#eab308'];
+    const labels = {
+      transfer_out: 'Transferts',
+      withdrawal: 'Retraits',
+      bill_payment: 'Factures',
+      card_payment: 'Cartes',
+      other: 'Autre'
+    };
+    
+    return Object.entries(spending).map(([type, value], idx) => ({
+      name: labels[type] || type,
+      value: Math.round(value),
+      color: colors[idx % colors.length]
+    }));
   };
 
   const totalBalance = wallets.reduce((sum, w) => {
