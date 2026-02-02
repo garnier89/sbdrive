@@ -51,6 +51,9 @@ from routes.admin_advanced import setup_admin_advanced_routes, admin_advanced_ro
 # Import Analytics Module
 from routes.analytics import setup_analytics_routes, analytics_router
 
+# Import Alerts Module
+from routes.alerts import setup_alerts_routes, alerts_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
