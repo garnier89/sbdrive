@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 import { 
   User, Mail, Phone, Calendar, Shield, Camera, Edit2, Save, X,
   Lock, Smartphone, History, CreditCard, Building2, Wallet,
-  FileText, Upload, CheckCircle, Clock, AlertCircle, Globe, DollarSign
+  FileText, Upload, CheckCircle, Clock, AlertCircle, Globe, DollarSign, Loader2, Trash2
 } from 'lucide-react';
 import axios from 'axios';
 
@@ -22,10 +22,13 @@ export default function ProfilePage() {
   const { user, refreshUser } = useAuth();
   const { t } = useLanguage();
   const fileInputRef = useRef(null);
+  const documentInputRef = useRef(null);
   
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
+  const [uploadingDoc, setUploadingDoc] = useState(null);
+  const [selectedDocType, setSelectedDocType] = useState('');
   
   // Profile data
   const [profileData, setProfileData] = useState({
