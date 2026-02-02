@@ -3476,6 +3476,10 @@ app.include_router(quick_login_router)
 setup_receipts_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
 app.include_router(receipts_router)
 
+# Setup and include Documents KYC module routes
+setup_documents_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
+app.include_router(documents_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
