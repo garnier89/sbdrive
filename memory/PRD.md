@@ -339,8 +339,10 @@ See /app/docs/API_REFERENCE.md for complete list
 │   ├── models/schemas.py
 │   ├── routes/
 │   │   ├── wallet_transfers.py (P2P transfers)
-│   │   ├── virtual_cards.py (NEW - Virtual cards)
-│   │   ├── notifications_zone.py (NEW - Admin notifications)
+│   │   ├── virtual_cards.py (Virtual cards)
+│   │   ├── notifications_zone.py (Admin notifications)
+│   │   ├── vault.py (NEW - Coffre-fort)
+│   │   ├── contact.py (NEW - Support tickets)
 │   │   ├── africa_module.py
 │   │   ├── admin_advanced.py
 │   │   ├── analytics.py
@@ -350,13 +352,16 @@ See /app/docs/API_REFERENCE.md for complete list
 │   └── src/
 │       ├── pages/
 │       │   ├── UserTransferPage.jsx (P2P transfers)
-│       │   ├── VirtualCardsPage.jsx (NEW - Virtual cards)
+│       │   ├── VirtualCardsPage.jsx (Virtual cards)
+│       │   ├── VaultPage.jsx (NEW - Coffre-fort)
+│       │   ├── HelpCenterPage.jsx (NEW - Centre d'aide)
 │       │   ├── QRPaymentPage.jsx
 │       │   ├── RewardsPage.jsx
 │       │   ├── PaymentLinksPage.jsx
 │       │   ├── ProfilePage.jsx
 │       │   └── admin/
-│       │       ├── AdminNotificationsPage.jsx (NEW)
+│       │       ├── AdminNotificationsPage.jsx
+│       │       ├── AdminTicketsPage.jsx (NEW - Gestion tickets)
 │       │       ├── AdminAnalyticsPage.jsx
 │       │       ├── AdminAlertsPage.jsx
 │       │       └── ...
