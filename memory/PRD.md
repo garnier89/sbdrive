@@ -181,14 +181,22 @@
 - [x] Zone-specific payment methods
 
 ### Database Collections (30+)
-users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**
+users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
 - **User:** user@sbpay.com / userpassword
+- **User 2:** test@sbpay.com / testpassword (phone: +221771234567)
 
-## API Endpoints (70+)
+## API Endpoints (75+)
 See /app/docs/API_REFERENCE.md for complete list
+
+### P2P User Transfer APIs (NEW)
+- `GET /api/wallet/users/lookup-phone` - Recherche utilisateur par téléphone
+- `POST /api/wallet/transfer-phone` - Créer un transfert P2P
+- `POST /api/wallet/transfer-phone/verify` - Vérifier OTP et compléter transfert
+- `GET /api/wallet/transfer-phone/history` - Historique des transferts P2P
+- `GET /api/wallet/transfer-phone/contacts` - Contacts récents
 
 ### New Africa Module APIs
 - `GET /api/africa/mobile-money/operators` - Get MM operators by country
