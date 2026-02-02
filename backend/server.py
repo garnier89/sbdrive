@@ -1,4 +1,4 @@
-from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Header, BackgroundTasks
+from fastapi import FastAPI, APIRouter, HTTPException, Depends, Request, Header, BackgroundTasks, UploadFile, File
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -15,6 +15,7 @@ from bson import ObjectId
 import random
 import string
 import hashlib
+import base64
 
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
@@ -32,11 +33,11 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 
 # Stripe Config
 STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', '')
 
-# Demo Mode Config (simulated integrations)
+# Demo Mode Config
 DEMO_MODE = os.environ.get('DEMO_MODE', 'true').lower() == 'true'
 
 # Create the main app
-app = FastAPI(title="SB Pay API", version="2.0.0")
+app = FastAPI(title="SB Pay API", version="3.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -56,29 +57,31 @@ class UserCreate(BaseModel):
     full_name: str
     phone: Optional[str] = None
     preferred_language: str = "fr"
+    country: Optional[str] = None
 
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-class UserResponse(BaseModel):
-    id: str
-    email: str
-    full_name: str
-    phone: Optional[str] = None
-    role: str = "user"
-    is_active: bool = True
-    created_at: str
-    two_factor_enabled: bool = False
-    preferred_language: str = "fr"
+class BankAccountCreate(BaseModel):
+    account_holder_name: str
+    iban: Optional[str] = None
+    account_number: Optional[str] = None
+    swift_bic: Optional[str] = None
+    bank_name: str
+    bank_country: str
+    currency: str = "EUR"
+    is_default: bool = False
 
-class WalletResponse(BaseModel):
-    id: str
-    user_id: str
-    balance: float
-    currency: str
-    created_at: str
-    updated_at: str
+class BankAccountUpdate(BaseModel):
+    account_holder_name: Optional[str] = None
+    is_default: Optional[bool] = None
+
+class BankTransferRequest(BaseModel):
+    bank_account_id: str
+    amount: float
+    currency: str = "EUR"
+    description: Optional[str] = None
 
 class TransferRequest(BaseModel):
     recipient_email: str
@@ -94,13 +97,13 @@ class DepositRequest(BaseModel):
 class MobileMoneyRequest(BaseModel):
     amount: float
     currency: str = "XOF"
-    provider: str  # orange_money, mtn_momo, wave, moov_money
+    provider: str
     phone_number: str
 
 class WithdrawRequest(BaseModel):
     amount: float
     currency: str = "EUR"
-    bank_account: Optional[str] = None
+    bank_account_id: Optional[str] = None
 
 class BillPaymentRequest(BaseModel):
     bill_type: str
@@ -108,21 +111,16 @@ class BillPaymentRequest(BaseModel):
     amount: float
     currency: str = "EUR"
 
-class TransactionResponse(BaseModel):
-    id: str
-    user_id: str
-    type: str
-    amount: float
-    currency: str
-    status: str
-    description: Optional[str] = None
-    recipient_email: Optional[str] = None
-    sender_email: Optional[str] = None
-    created_at: str
-
 class AdminUserUpdate(BaseModel):
     is_active: Optional[bool] = None
     role: Optional[str] = None
+    kyc_status: Optional[str] = None
+
+class AdminCreditDebit(BaseModel):
+    user_id: str
+    amount: float
+    currency: str = "EUR"
+    description: str
 
 class CheckoutSessionRequest(BaseModel):
     amount: float
@@ -142,6 +140,25 @@ class PayPalCheckoutRequest(BaseModel):
     amount: float
     currency: str = "EUR"
     origin_url: str
+
+class ZoneConfigCreate(BaseModel):
+    zone_name: str
+    countries: List[str]
+    currencies: List[str]
+    payment_methods: List[str]
+    transfer_fees_percent: float = 1.0
+    min_transfer_amount: float = 1.0
+    max_transfer_amount: float = 10000.0
+    partner_banks: List[str] = []
+
+class DocumentUpload(BaseModel):
+    user_id: str
+    document_type: str  # id_card, passport, proof_of_address, bank_statement
+    document_name: str
+
+class DocumentStatusUpdate(BaseModel):
+    status: str  # pending, approved, rejected
+    rejection_reason: Optional[str] = None
 
 # ==================== AUTH HELPERS ====================
 
@@ -192,10 +209,8 @@ async def get_admin_user(current_user: dict = Depends(get_current_user)):
 # ==================== NOTIFICATION HELPERS ====================
 
 async def send_email_notification(to_email: str, subject: str, content: str, user_language: str = "fr"):
-    """Send email notification (demo mode - logs only)"""
     if DEMO_MODE:
         logger.info(f"[DEMO EMAIL] To: {to_email}, Subject: {subject}")
-        # Store in notifications collection for demo
         await db.notifications.insert_one({
             "id": str(uuid.uuid4()),
             "type": "email",
@@ -207,11 +222,9 @@ async def send_email_notification(to_email: str, subject: str, content: str, use
             "created_at": datetime.now(timezone.utc).isoformat()
         })
         return True
-    # Real SendGrid implementation would go here
     return True
 
 async def send_sms_notification(phone_number: str, message: str):
-    """Send SMS notification (demo mode - logs only)"""
     if DEMO_MODE:
         logger.info(f"[DEMO SMS] To: {phone_number}, Message: {message}")
         await db.notifications.insert_one({
@@ -223,11 +236,9 @@ async def send_sms_notification(phone_number: str, message: str):
             "created_at": datetime.now(timezone.utc).isoformat()
         })
         return True
-    # Real Twilio implementation would go here
     return True
 
 async def send_push_notification(user_id: str, title: str, body: str, data: dict = None):
-    """Send push notification (demo mode - stores for retrieval)"""
     notification = {
         "id": str(uuid.uuid4()),
         "user_id": user_id,
@@ -242,6 +253,20 @@ async def send_push_notification(user_id: str, title: str, body: str, data: dict
     logger.info(f"[PUSH] User: {user_id}, Title: {title}")
     return True
 
+async def log_admin_action(admin_id: str, action: str, target_type: str, target_id: str, details: dict = None):
+    """Log admin actions for audit trail"""
+    log_entry = {
+        "id": str(uuid.uuid4()),
+        "admin_id": admin_id,
+        "action": action,
+        "target_type": target_type,
+        "target_id": target_id,
+        "details": details or {},
+        "created_at": datetime.now(timezone.utc).isoformat()
+    }
+    await db.admin_logs.insert_one(log_entry)
+    logger.info(f"[ADMIN LOG] Admin: {admin_id}, Action: {action}, Target: {target_type}/{target_id}")
+
 # ==================== EXCHANGE RATES ====================
 
 EXCHANGE_RATES = {
@@ -250,7 +275,11 @@ EXCHANGE_RATES = {
     "XOF": 655.96,
     "GBP": 0.86,
     "CAD": 1.47,
-    "CHF": 0.94
+    "CHF": 0.94,
+    "MAD": 10.85,
+    "NGN": 1650.0,
+    "GHS": 15.5,
+    "KES": 155.0
 }
 
 def convert_currency(amount: float, from_currency: str, to_currency: str) -> float:
@@ -265,79 +294,30 @@ TRANSLATIONS = {
     "fr": {
         "welcome": "Bienvenue sur SB Pay",
         "transfer_success": "Transfert de {amount} {currency} effectué avec succès vers {recipient}",
+        "bank_transfer_pending": "Virement bancaire de {amount} {currency} en cours de traitement",
         "deposit_success": "Dépôt de {amount} {currency} effectué avec succès",
         "withdrawal_pending": "Demande de retrait de {amount} {currency} en cours de traitement",
         "bill_paid": "Facture {type} payée avec succès: {amount} {currency}",
         "otp_message": "Votre code de vérification SB Pay est: {code}",
         "login_alert": "Nouvelle connexion détectée sur votre compte SB Pay",
-        "2fa_enabled": "L'authentification à deux facteurs a été activée",
-        "2fa_disabled": "L'authentification à deux facteurs a été désactivée"
+        "account_credited": "Votre compte a été crédité de {amount} {currency}",
+        "account_debited": "Votre compte a été débité de {amount} {currency}",
+        "kyc_approved": "Votre document a été approuvé",
+        "kyc_rejected": "Votre document a été rejeté: {reason}"
     },
     "en": {
         "welcome": "Welcome to SB Pay",
         "transfer_success": "Transfer of {amount} {currency} successfully sent to {recipient}",
+        "bank_transfer_pending": "Bank transfer of {amount} {currency} is being processed",
         "deposit_success": "Deposit of {amount} {currency} completed successfully",
         "withdrawal_pending": "Withdrawal request of {amount} {currency} is being processed",
         "bill_paid": "Bill {type} paid successfully: {amount} {currency}",
         "otp_message": "Your SB Pay verification code is: {code}",
         "login_alert": "New login detected on your SB Pay account",
-        "2fa_enabled": "Two-factor authentication has been enabled",
-        "2fa_disabled": "Two-factor authentication has been disabled"
-    },
-    "es": {
-        "welcome": "Bienvenido a SB Pay",
-        "transfer_success": "Transferencia de {amount} {currency} enviada exitosamente a {recipient}",
-        "deposit_success": "Depósito de {amount} {currency} completado exitosamente",
-        "withdrawal_pending": "Solicitud de retiro de {amount} {currency} en proceso",
-        "bill_paid": "Factura {type} pagada exitosamente: {amount} {currency}",
-        "otp_message": "Tu código de verificación SB Pay es: {code}",
-        "login_alert": "Nuevo inicio de sesión detectado en tu cuenta SB Pay",
-        "2fa_enabled": "La autenticación de dos factores ha sido activada",
-        "2fa_disabled": "La autenticación de dos factores ha sido desactivada"
-    },
-    "pt": {
-        "welcome": "Bem-vindo ao SB Pay",
-        "transfer_success": "Transferência de {amount} {currency} enviada com sucesso para {recipient}",
-        "deposit_success": "Depósito de {amount} {currency} concluído com sucesso",
-        "withdrawal_pending": "Solicitação de saque de {amount} {currency} em processamento",
-        "bill_paid": "Conta {type} paga com sucesso: {amount} {currency}",
-        "otp_message": "Seu código de verificação SB Pay é: {code}",
-        "login_alert": "Novo login detectado em sua conta SB Pay",
-        "2fa_enabled": "A autenticação de dois fatores foi ativada",
-        "2fa_disabled": "A autenticação de dois fatores foi desativada"
-    },
-    "ar": {
-        "welcome": "مرحبًا بك في SB Pay",
-        "transfer_success": "تم تحويل {amount} {currency} بنجاح إلى {recipient}",
-        "deposit_success": "تم إيداع {amount} {currency} بنجاح",
-        "withdrawal_pending": "طلب سحب {amount} {currency} قيد المعالجة",
-        "bill_paid": "تم دفع فاتورة {type} بنجاح: {amount} {currency}",
-        "otp_message": "رمز التحقق الخاص بك في SB Pay هو: {code}",
-        "login_alert": "تم اكتشاف تسجيل دخول جديد على حسابك في SB Pay",
-        "2fa_enabled": "تم تفعيل المصادقة الثنائية",
-        "2fa_disabled": "تم تعطيل المصادقة الثنائية"
-    },
-    "de": {
-        "welcome": "Willkommen bei SB Pay",
-        "transfer_success": "Überweisung von {amount} {currency} erfolgreich an {recipient} gesendet",
-        "deposit_success": "Einzahlung von {amount} {currency} erfolgreich abgeschlossen",
-        "withdrawal_pending": "Auszahlungsanfrage von {amount} {currency} wird bearbeitet",
-        "bill_paid": "Rechnung {type} erfolgreich bezahlt: {amount} {currency}",
-        "otp_message": "Ihr SB Pay Verifizierungscode ist: {code}",
-        "login_alert": "Neue Anmeldung auf Ihrem SB Pay Konto erkannt",
-        "2fa_enabled": "Zwei-Faktor-Authentifizierung wurde aktiviert",
-        "2fa_disabled": "Zwei-Faktor-Authentifizierung wurde deaktiviert"
-    },
-    "zh": {
-        "welcome": "欢迎使用 SB Pay",
-        "transfer_success": "成功向 {recipient} 转账 {amount} {currency}",
-        "deposit_success": "成功存入 {amount} {currency}",
-        "withdrawal_pending": "提款请求 {amount} {currency} 正在处理中",
-        "bill_paid": "账单 {type} 支付成功: {amount} {currency}",
-        "otp_message": "您的 SB Pay 验证码是: {code}",
-        "login_alert": "检测到您的 SB Pay 账户有新的登录",
-        "2fa_enabled": "双重身份验证已启用",
-        "2fa_disabled": "双重身份验证已禁用"
+        "account_credited": "Your account has been credited with {amount} {currency}",
+        "account_debited": "Your account has been debited {amount} {currency}",
+        "kyc_approved": "Your document has been approved",
+        "kyc_rejected": "Your document has been rejected: {reason}"
     }
 }
 
@@ -345,6 +325,56 @@ def get_translation(key: str, language: str = "fr", **kwargs) -> str:
     lang_translations = TRANSLATIONS.get(language, TRANSLATIONS["fr"])
     template = lang_translations.get(key, TRANSLATIONS["fr"].get(key, key))
     return template.format(**kwargs) if kwargs else template
+
+# ==================== WORLD BANKS DATABASE ====================
+
+WORLD_BANKS = [
+    # France
+    {"name": "BNP Paribas", "country": "FR", "swift": "BNPAFRPP", "currency": "EUR"},
+    {"name": "Société Générale", "country": "FR", "swift": "SOGEFRPP", "currency": "EUR"},
+    {"name": "Crédit Agricole", "country": "FR", "swift": "AGRIFRPP", "currency": "EUR"},
+    {"name": "La Banque Postale", "country": "FR", "swift": "PSSTFRPP", "currency": "EUR"},
+    {"name": "Crédit Mutuel", "country": "FR", "swift": "CMCIFRPP", "currency": "EUR"},
+    # Germany
+    {"name": "Deutsche Bank", "country": "DE", "swift": "DEUTDEFF", "currency": "EUR"},
+    {"name": "Commerzbank", "country": "DE", "swift": "COBADEFF", "currency": "EUR"},
+    # UK
+    {"name": "HSBC UK", "country": "GB", "swift": "HBUKGB4B", "currency": "GBP"},
+    {"name": "Barclays", "country": "GB", "swift": "BARCGB22", "currency": "GBP"},
+    {"name": "Lloyds Bank", "country": "GB", "swift": "LOYDGB2L", "currency": "GBP"},
+    # USA
+    {"name": "Bank of America", "country": "US", "swift": "BOFAUS3N", "currency": "USD"},
+    {"name": "Chase Bank", "country": "US", "swift": "CHASUS33", "currency": "USD"},
+    {"name": "Wells Fargo", "country": "US", "swift": "WFBIUS6S", "currency": "USD"},
+    {"name": "Citibank", "country": "US", "swift": "CITIUS33", "currency": "USD"},
+    # Senegal
+    {"name": "CBAO Groupe Attijariwafa", "country": "SN", "swift": "CBAOSNDA", "currency": "XOF"},
+    {"name": "Banque de Dakar", "country": "SN", "swift": "BDKRSNDA", "currency": "XOF"},
+    {"name": "SGBS", "country": "SN", "swift": "SGSNSNDA", "currency": "XOF"},
+    # Ivory Coast
+    {"name": "Société Générale CI", "country": "CI", "swift": "SGBFCIAB", "currency": "XOF"},
+    {"name": "BICICI", "country": "CI", "swift": "BICICIAB", "currency": "XOF"},
+    {"name": "Ecobank CI", "country": "CI", "swift": "ABORCIAB", "currency": "XOF"},
+    # Morocco
+    {"name": "Attijariwafa Bank", "country": "MA", "swift": "BCMAMAMC", "currency": "MAD"},
+    {"name": "BMCE Bank", "country": "MA", "swift": "BMCEMAMC", "currency": "MAD"},
+    # Nigeria
+    {"name": "GTBank", "country": "NG", "swift": "GTBINGLA", "currency": "NGN"},
+    {"name": "Zenith Bank", "country": "NG", "swift": "ZEABORAD", "currency": "NGN"},
+    {"name": "First Bank", "country": "NG", "swift": "FBNINGLA", "currency": "NGN"},
+    # Ghana
+    {"name": "GCB Bank", "country": "GH", "swift": "GHCBGHAC", "currency": "GHS"},
+    {"name": "Ecobank Ghana", "country": "GH", "swift": "ECABORAD", "currency": "GHS"},
+    # Cameroon
+    {"name": "Afriland First Bank", "country": "CM", "swift": "AFRIHM2N", "currency": "XOF"},
+    {"name": "Société Générale Cameroun", "country": "CM", "swift": "SGCMCMCX", "currency": "XOF"},
+    # Spain
+    {"name": "Santander", "country": "ES", "swift": "BSCHESMM", "currency": "EUR"},
+    {"name": "BBVA", "country": "ES", "swift": "BBVAESMM", "currency": "EUR"},
+    # China
+    {"name": "Bank of China", "country": "CN", "swift": "BKCHCNBJ", "currency": "CNY"},
+    {"name": "ICBC", "country": "CN", "swift": "ICBKCNBJ", "currency": "CNY"},
+]
 
 # ==================== AUTH ROUTES ====================
 
@@ -363,18 +393,20 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
         "password_hash": hash_password(user_data.password),
         "full_name": user_data.full_name,
         "phone": user_data.phone,
+        "country": user_data.country,
         "role": "user",
         "is_active": True,
         "two_factor_enabled": False,
         "two_factor_phone": None,
         "preferred_language": user_data.preferred_language,
+        "kyc_status": "pending",  # pending, verified, rejected
         "created_at": now
     }
     
     await db.users.insert_one(user_doc)
     
     # Create wallets for each currency
-    for currency in ["EUR", "USD", "XOF"]:
+    for currency in ["EUR", "USD", "XOF", "GBP", "MAD", "NGN"]:
         wallet_doc = {
             "id": str(uuid.uuid4()),
             "user_id": user_id,
@@ -387,7 +419,6 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
     
     token = create_access_token({"sub": user_id, "email": user_data.email})
     
-    # Send welcome email
     background_tasks.add_task(
         send_email_notification,
         user_data.email,
@@ -404,7 +435,8 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
             "email": user_data.email,
             "full_name": user_data.full_name,
             "role": "user",
-            "preferred_language": user_data.preferred_language
+            "preferred_language": user_data.preferred_language,
+            "kyc_status": "pending"
         }
     }
 
@@ -420,9 +452,7 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
     if not user.get("is_active", True):
         raise HTTPException(status_code=403, detail="Account is disabled")
     
-    # Check if 2FA is enabled
     if user.get("two_factor_enabled") and user.get("two_factor_phone"):
-        # Generate and send OTP
         otp = generate_otp()
         otp_hash = hashlib.sha256(otp.encode()).hexdigest()
         
@@ -437,7 +467,6 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
             upsert=True
         )
         
-        # Send OTP via SMS
         lang = user.get("preferred_language", "fr")
         message = get_translation("otp_message", lang, code=otp)
         background_tasks.add_task(send_sms_notification, user["two_factor_phone"], message)
@@ -450,7 +479,6 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
     
     token = create_access_token({"sub": user["id"], "email": user["email"]})
     
-    # Send login alert
     lang = user.get("preferred_language", "fr")
     background_tasks.add_task(
         send_email_notification,
@@ -468,16 +496,14 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
             "email": user["email"],
             "full_name": user["full_name"],
             "role": user.get("role", "user"),
-            "preferred_language": user.get("preferred_language", "fr")
+            "preferred_language": user.get("preferred_language", "fr"),
+            "kyc_status": user.get("kyc_status", "pending")
         }
     }
 
 @api_router.post("/auth/verify-2fa")
 async def verify_2fa_login(user_id: str, code: str, background_tasks: BackgroundTasks):
-    otp_record = await db.otp_codes.find_one(
-        {"user_id": user_id, "type": "login"},
-        {"_id": 0}
-    )
+    otp_record = await db.otp_codes.find_one({"user_id": user_id, "type": "login"}, {"_id": 0})
     
     if not otp_record:
         raise HTTPException(status_code=400, detail="No OTP request found")
@@ -489,11 +515,7 @@ async def verify_2fa_login(user_id: str, code: str, background_tasks: Background
     if code_hash != otp_record["code_hash"]:
         raise HTTPException(status_code=400, detail="Invalid OTP")
     
-    # Mark as verified
-    await db.otp_codes.update_one(
-        {"user_id": user_id, "type": "login"},
-        {"$set": {"verified": True}}
-    )
+    await db.otp_codes.update_one({"user_id": user_id, "type": "login"}, {"$set": {"verified": True}})
     
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     token = create_access_token({"sub": user["id"], "email": user["email"]})
@@ -506,7 +528,8 @@ async def verify_2fa_login(user_id: str, code: str, background_tasks: Background
             "email": user["email"],
             "full_name": user["full_name"],
             "role": user.get("role", "user"),
-            "preferred_language": user.get("preferred_language", "fr")
+            "preferred_language": user.get("preferred_language", "fr"),
+            "kyc_status": user.get("kyc_status", "pending")
         }
     }
 
@@ -517,9 +540,11 @@ async def get_me(current_user: dict = Depends(get_current_user)):
         "email": current_user["email"],
         "full_name": current_user["full_name"],
         "phone": current_user.get("phone"),
+        "country": current_user.get("country"),
         "role": current_user.get("role", "user"),
         "two_factor_enabled": current_user.get("two_factor_enabled", False),
         "preferred_language": current_user.get("preferred_language", "fr"),
+        "kyc_status": current_user.get("kyc_status", "pending"),
         "created_at": current_user["created_at"]
     }
 
@@ -527,7 +552,6 @@ async def get_me(current_user: dict = Depends(get_current_user)):
 
 @api_router.post("/auth/2fa/setup")
 async def setup_2fa(request: TwoFactorSetupRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    # Generate OTP and send to phone
     otp = generate_otp()
     otp_hash = hashlib.sha256(otp.encode()).hexdigest()
     
@@ -551,10 +575,7 @@ async def setup_2fa(request: TwoFactorSetupRequest, background_tasks: Background
 
 @api_router.post("/auth/2fa/verify")
 async def verify_2fa_setup(request: TwoFactorVerifyRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    otp_record = await db.otp_codes.find_one(
-        {"user_id": current_user["id"], "type": "2fa_setup"},
-        {"_id": 0}
-    )
+    otp_record = await db.otp_codes.find_one({"user_id": current_user["id"], "type": "2fa_setup"}, {"_id": 0})
     
     if not otp_record:
         raise HTTPException(status_code=400, detail="No 2FA setup request found")
@@ -566,60 +587,26 @@ async def verify_2fa_setup(request: TwoFactorVerifyRequest, background_tasks: Ba
     if code_hash != otp_record["code_hash"]:
         raise HTTPException(status_code=400, detail="Invalid OTP")
     
-    # Enable 2FA for user
     await db.users.update_one(
         {"id": current_user["id"]},
-        {"$set": {
-            "two_factor_enabled": True,
-            "two_factor_phone": otp_record["phone"]
-        }}
-    )
-    
-    # Send confirmation
-    lang = current_user.get("preferred_language", "fr")
-    background_tasks.add_task(
-        send_email_notification,
-        current_user["email"],
-        get_translation("2fa_enabled", lang),
-        "2FA enabled",
-        lang
+        {"$set": {"two_factor_enabled": True, "two_factor_phone": otp_record["phone"]}}
     )
     
     return {"message": "2FA enabled successfully"}
 
 @api_router.post("/auth/2fa/disable")
-async def disable_2fa(background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+async def disable_2fa(current_user: dict = Depends(get_current_user)):
     await db.users.update_one(
         {"id": current_user["id"]},
-        {"$set": {
-            "two_factor_enabled": False,
-            "two_factor_phone": None
-        }}
+        {"$set": {"two_factor_enabled": False, "two_factor_phone": None}}
     )
-    
-    lang = current_user.get("preferred_language", "fr")
-    background_tasks.add_task(
-        send_email_notification,
-        current_user["email"],
-        get_translation("2fa_disabled", lang),
-        "2FA disabled",
-        lang
-    )
-    
     return {"message": "2FA disabled successfully"}
 
 # ==================== LANGUAGE ROUTES ====================
 
 @api_router.put("/user/language")
 async def update_language(request: LanguageUpdateRequest, current_user: dict = Depends(get_current_user)):
-    if request.language not in TRANSLATIONS:
-        raise HTTPException(status_code=400, detail="Unsupported language")
-    
-    await db.users.update_one(
-        {"id": current_user["id"]},
-        {"$set": {"preferred_language": request.language}}
-    )
-    
+    await db.users.update_one({"id": current_user["id"]}, {"$set": {"preferred_language": request.language}})
     return {"message": "Language updated", "language": request.language}
 
 @api_router.get("/languages")
@@ -636,14 +623,216 @@ async def get_languages():
         ]
     }
 
+# ==================== BANK ACCOUNTS ROUTES ====================
+
+@api_router.get("/bank-accounts")
+async def get_bank_accounts(current_user: dict = Depends(get_current_user)):
+    accounts = await db.bank_accounts.find(
+        {"user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0}
+    ).to_list(100)
+    return {"accounts": accounts}
+
+@api_router.post("/bank-accounts")
+async def add_bank_account(account: BankAccountCreate, current_user: dict = Depends(get_current_user)):
+    # Validate IBAN or account number
+    if not account.iban and not account.account_number:
+        raise HTTPException(status_code=400, detail="IBAN or account number required")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    account_id = str(uuid.uuid4())
+    
+    # If setting as default, unset other defaults
+    if account.is_default:
+        await db.bank_accounts.update_many(
+            {"user_id": current_user["id"]},
+            {"$set": {"is_default": False}}
+        )
+    
+    account_doc = {
+        "id": account_id,
+        "user_id": current_user["id"],
+        "account_holder_name": account.account_holder_name,
+        "iban": account.iban,
+        "account_number": account.account_number,
+        "swift_bic": account.swift_bic,
+        "bank_name": account.bank_name,
+        "bank_country": account.bank_country,
+        "currency": account.currency,
+        "is_default": account.is_default,
+        "verification_status": "pending",  # pending, verified, failed
+        "created_at": now,
+        "updated_at": now,
+        "deleted": False
+    }
+    
+    await db.bank_accounts.insert_one(account_doc)
+    
+    # In demo mode, auto-verify after a short delay simulation
+    if DEMO_MODE:
+        await db.bank_accounts.update_one(
+            {"id": account_id},
+            {"$set": {"verification_status": "verified"}}
+        )
+    
+    return {"message": "Bank account added", "account_id": account_id}
+
+@api_router.put("/bank-accounts/{account_id}")
+async def update_bank_account(account_id: str, update: BankAccountUpdate, current_user: dict = Depends(get_current_user)):
+    account = await db.bank_accounts.find_one(
+        {"id": account_id, "user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0}
+    )
+    if not account:
+        raise HTTPException(status_code=404, detail="Bank account not found")
+    
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if update.account_holder_name:
+        update_data["account_holder_name"] = update.account_holder_name
+    
+    if update.is_default:
+        await db.bank_accounts.update_many(
+            {"user_id": current_user["id"]},
+            {"$set": {"is_default": False}}
+        )
+        update_data["is_default"] = True
+    
+    await db.bank_accounts.update_one({"id": account_id}, {"$set": update_data})
+    return {"message": "Bank account updated"}
+
+@api_router.delete("/bank-accounts/{account_id}")
+async def delete_bank_account(account_id: str, current_user: dict = Depends(get_current_user)):
+    account = await db.bank_accounts.find_one(
+        {"id": account_id, "user_id": current_user["id"]},
+        {"_id": 0}
+    )
+    if not account:
+        raise HTTPException(status_code=404, detail="Bank account not found")
+    
+    await db.bank_accounts.update_one(
+        {"id": account_id},
+        {"$set": {"deleted": True, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": "Bank account deleted"}
+
+@api_router.post("/bank-accounts/{account_id}/set-default")
+async def set_default_bank_account(account_id: str, current_user: dict = Depends(get_current_user)):
+    account = await db.bank_accounts.find_one(
+        {"id": account_id, "user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0}
+    )
+    if not account:
+        raise HTTPException(status_code=404, detail="Bank account not found")
+    
+    await db.bank_accounts.update_many(
+        {"user_id": current_user["id"]},
+        {"$set": {"is_default": False}}
+    )
+    
+    await db.bank_accounts.update_one(
+        {"id": account_id},
+        {"$set": {"is_default": True}}
+    )
+    
+    return {"message": "Default bank account set"}
+
+# ==================== BANK TRANSFER ROUTES ====================
+
+@api_router.post("/bank-transfers")
+async def create_bank_transfer(transfer: BankTransferRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
+    # Verify bank account
+    bank_account = await db.bank_accounts.find_one(
+        {"id": transfer.bank_account_id, "user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0}
+    )
+    if not bank_account:
+        raise HTTPException(status_code=404, detail="Bank account not found")
+    
+    if bank_account.get("verification_status") != "verified":
+        raise HTTPException(status_code=400, detail="Bank account not verified")
+    
+    # Check wallet balance
+    wallet = await db.wallets.find_one(
+        {"user_id": current_user["id"], "currency": transfer.currency},
+        {"_id": 0}
+    )
+    if not wallet or wallet["balance"] < transfer.amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+    
+    # Get zone config for fees
+    user_country = current_user.get("country", "FR")
+    zone_config = await db.zone_configs.find_one(
+        {"countries": user_country},
+        {"_id": 0}
+    )
+    
+    fees = 0
+    if zone_config:
+        fees = transfer.amount * (zone_config.get("transfer_fees_percent", 1.0) / 100)
+    
+    total_amount = transfer.amount + fees
+    
+    if wallet["balance"] < total_amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance for transfer and fees")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    transaction_id = str(uuid.uuid4())
+    
+    # Deduct from wallet
+    await db.wallets.update_one(
+        {"id": wallet["id"]},
+        {"$inc": {"balance": -total_amount}, "$set": {"updated_at": now}}
+    )
+    
+    # Create transaction
+    transaction_doc = {
+        "id": transaction_id,
+        "user_id": current_user["id"],
+        "type": "bank_transfer",
+        "amount": -transfer.amount,
+        "fees": fees,
+        "currency": transfer.currency,
+        "status": "pending",
+        "bank_account_id": bank_account["id"],
+        "bank_account_iban": bank_account.get("iban", bank_account.get("account_number")),
+        "bank_name": bank_account["bank_name"],
+        "description": transfer.description or f"Bank transfer to {bank_account['bank_name']}",
+        "estimated_arrival": (datetime.now(timezone.utc) + timedelta(days=2)).isoformat(),
+        "created_at": now
+    }
+    await db.transactions.insert_one(transaction_doc)
+    
+    # Send notifications
+    lang = current_user.get("preferred_language", "fr")
+    background_tasks.add_task(
+        send_email_notification,
+        current_user["email"],
+        get_translation("bank_transfer_pending", lang, amount=transfer.amount, currency=transfer.currency),
+        f"Bank transfer initiated: {transfer.amount} {transfer.currency}",
+        lang
+    )
+    
+    background_tasks.add_task(
+        send_push_notification,
+        current_user["id"],
+        "Bank Transfer Initiated",
+        f"Transfer of {transfer.amount} {transfer.currency} to {bank_account['bank_name']} is being processed"
+    )
+    
+    return {
+        "message": "Bank transfer initiated",
+        "transaction_id": transaction_id,
+        "fees": fees,
+        "total_deducted": total_amount,
+        "estimated_arrival": transaction_doc["estimated_arrival"]
+    }
+
 # ==================== WALLET ROUTES ====================
 
 @api_router.get("/wallets")
 async def get_wallets(current_user: dict = Depends(get_current_user)):
-    wallets = await db.wallets.find(
-        {"user_id": current_user["id"]}, 
-        {"_id": 0}
-    ).to_list(100)
+    wallets = await db.wallets.find({"user_id": current_user["id"]}, {"_id": 0}).to_list(100)
     return wallets
 
 @api_router.get("/wallets/{currency}")
@@ -725,24 +914,14 @@ async def create_transfer(transfer: TransferRequest, background_tasks: Backgroun
     sender_lang = current_user.get("preferred_language", "fr")
     recipient_lang = recipient.get("preferred_language", "fr")
     
-    # Email notifications
     background_tasks.add_task(
         send_email_notification,
         current_user["email"],
         get_translation("transfer_success", sender_lang, amount=transfer.amount, currency=transfer.currency, recipient=transfer.recipient_email),
-        f"Transfer completed: {transfer.amount} {transfer.currency}",
+        f"Transfer completed",
         sender_lang
     )
     
-    background_tasks.add_task(
-        send_email_notification,
-        transfer.recipient_email,
-        f"Received {transfer.amount} {transfer.currency} from {current_user['email']}",
-        f"You received a transfer",
-        recipient_lang
-    )
-    
-    # Push notifications
     background_tasks.add_task(
         send_push_notification,
         current_user["id"],
@@ -757,17 +936,9 @@ async def create_transfer(transfer: TransferRequest, background_tasks: Backgroun
         f"You received {transfer.amount} {transfer.currency} from {current_user['email']}"
     )
     
-    # SMS if phone available
-    if current_user.get("phone"):
-        background_tasks.add_task(
-            send_sms_notification,
-            current_user["phone"],
-            f"SB Pay: {transfer.amount} {transfer.currency} sent to {transfer.recipient_email}"
-        )
-    
     return {"message": "Transfer successful", "transaction_id": transaction_id}
 
-# ==================== DEPOSIT ROUTES (STRIPE) ====================
+# ==================== DEPOSIT ROUTES ====================
 
 @api_router.post("/deposits/checkout")
 async def create_deposit_checkout(request: CheckoutSessionRequest, current_user: dict = Depends(get_current_user)):
@@ -779,7 +950,6 @@ async def create_deposit_checkout(request: CheckoutSessionRequest, current_user:
     now = datetime.now(timezone.utc).isoformat()
     transaction_id = str(uuid.uuid4())
     
-    # Create pending transaction
     transaction_doc = {
         "id": transaction_id,
         "user_id": current_user["id"],
@@ -793,7 +963,6 @@ async def create_deposit_checkout(request: CheckoutSessionRequest, current_user:
     }
     await db.transactions.insert_one(transaction_doc)
     
-    # Create Stripe checkout session
     success_url = f"{request.origin_url}/deposit/success?session_id={{CHECKOUT_SESSION_ID}}"
     cancel_url = f"{request.origin_url}/deposit"
     
@@ -814,13 +983,11 @@ async def create_deposit_checkout(request: CheckoutSessionRequest, current_user:
     
     session = await stripe_checkout.create_checkout_session(checkout_request)
     
-    # Update transaction with session ID
     await db.transactions.update_one(
         {"id": transaction_id},
         {"$set": {"stripe_session_id": session.session_id}}
     )
     
-    # Store in payment_transactions collection
     await db.payment_transactions.insert_one({
         "id": str(uuid.uuid4()),
         "session_id": session.session_id,
@@ -846,28 +1013,21 @@ async def check_deposit_status(session_id: str, background_tasks: BackgroundTask
     if not payment_record:
         raise HTTPException(status_code=404, detail="Payment not found")
     
-    # If already processed, return cached status
     if payment_record.get("payment_status") == "paid":
         return {"status": "paid", "message": "Payment already processed"}
     
-    # Check status from Stripe
     stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
     status = await stripe_checkout.get_checkout_status(session_id)
     
     now = datetime.now(timezone.utc).isoformat()
     
     if status.payment_status == "paid" and payment_record.get("payment_status") != "paid":
-        # Update payment transaction
         await db.payment_transactions.update_one(
             {"session_id": session_id},
             {"$set": {"payment_status": "paid", "updated_at": now}}
         )
         
-        # Update main transaction
-        transaction = await db.transactions.find_one(
-            {"id": payment_record["transaction_id"]},
-            {"_id": 0}
-        )
+        transaction = await db.transactions.find_one({"id": payment_record["transaction_id"]}, {"_id": 0})
         
         if transaction and transaction.get("status") != "completed":
             await db.transactions.update_one(
@@ -875,23 +1035,13 @@ async def check_deposit_status(session_id: str, background_tasks: BackgroundTask
                 {"$set": {"status": "completed", "updated_at": now}}
             )
             
-            # Credit user wallet
             currency = payment_record["currency"]
             await db.wallets.update_one(
                 {"user_id": current_user["id"], "currency": currency},
                 {"$inc": {"balance": payment_record["amount"]}, "$set": {"updated_at": now}}
             )
             
-            # Send notifications
             lang = current_user.get("preferred_language", "fr")
-            background_tasks.add_task(
-                send_email_notification,
-                current_user["email"],
-                get_translation("deposit_success", lang, amount=payment_record["amount"], currency=currency),
-                f"Deposit confirmed: {payment_record['amount']} {currency}",
-                lang
-            )
-            
             background_tasks.add_task(
                 send_push_notification,
                 current_user["id"],
@@ -910,12 +1060,10 @@ async def check_deposit_status(session_id: str, background_tasks: BackgroundTask
 
 @api_router.post("/deposits/paypal")
 async def create_paypal_checkout(request: PayPalCheckoutRequest, current_user: dict = Depends(get_current_user)):
-    """Create PayPal checkout session (demo mode)"""
     now = datetime.now(timezone.utc).isoformat()
     transaction_id = str(uuid.uuid4())
     order_id = f"PAYPAL-{uuid.uuid4().hex[:12].upper()}"
     
-    # Create pending transaction
     transaction_doc = {
         "id": transaction_id,
         "user_id": current_user["id"],
@@ -930,19 +1078,17 @@ async def create_paypal_checkout(request: PayPalCheckoutRequest, current_user: d
     }
     await db.transactions.insert_one(transaction_doc)
     
-    # In demo mode, return a simulated PayPal URL
     demo_url = f"{request.origin_url}/deposit/paypal-demo?order_id={order_id}&amount={request.amount}&currency={request.currency}"
     
     return {
         "order_id": order_id,
         "checkout_url": demo_url,
         "demo_mode": True,
-        "message": "Demo PayPal checkout - click to simulate payment"
+        "message": "Demo PayPal checkout"
     }
 
 @api_router.post("/deposits/paypal/capture/{order_id}")
 async def capture_paypal_payment(order_id: str, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    """Capture PayPal payment (demo mode - auto-approves)"""
     transaction = await db.transactions.find_one(
         {"paypal_order_id": order_id, "user_id": current_user["id"]},
         {"_id": 0}
@@ -956,26 +1102,14 @@ async def capture_paypal_payment(order_id: str, background_tasks: BackgroundTask
     
     now = datetime.now(timezone.utc).isoformat()
     
-    # Update transaction as completed
     await db.transactions.update_one(
         {"id": transaction["id"]},
         {"$set": {"status": "completed", "updated_at": now}}
     )
     
-    # Credit wallet
     await db.wallets.update_one(
         {"user_id": current_user["id"], "currency": transaction["currency"]},
         {"$inc": {"balance": transaction["amount"]}, "$set": {"updated_at": now}}
-    )
-    
-    # Send notifications
-    lang = current_user.get("preferred_language", "fr")
-    background_tasks.add_task(
-        send_email_notification,
-        current_user["email"],
-        get_translation("deposit_success", lang, amount=transaction["amount"], currency=transaction["currency"]),
-        f"PayPal deposit confirmed",
-        lang
     )
     
     background_tasks.add_task(
@@ -1002,7 +1136,6 @@ async def get_mobile_money_providers():
 
 @api_router.post("/mobile-money/deposit")
 async def create_mobile_money_deposit(request: MobileMoneyRequest, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    """Create mobile money deposit request (demo mode)"""
     if request.provider not in MOBILE_MONEY_PROVIDERS:
         raise HTTPException(status_code=400, detail="Invalid mobile money provider")
     
@@ -1010,7 +1143,6 @@ async def create_mobile_money_deposit(request: MobileMoneyRequest, background_ta
     transaction_id = str(uuid.uuid4())
     reference = f"MM-{uuid.uuid4().hex[:8].upper()}"
     
-    # Create pending transaction
     transaction_doc = {
         "id": transaction_id,
         "user_id": current_user["id"],
@@ -1026,12 +1158,11 @@ async def create_mobile_money_deposit(request: MobileMoneyRequest, background_ta
     }
     await db.transactions.insert_one(transaction_doc)
     
-    # In demo mode, send SMS with payment instructions
     provider_name = MOBILE_MONEY_PROVIDERS[request.provider]["name"]
     background_tasks.add_task(
         send_sms_notification,
         request.phone_number,
-        f"SB Pay: Paiement {provider_name} de {request.amount} {request.currency}. Ref: {reference}. [DEMO - Auto-confirmé en 5s]"
+        f"SB Pay: Paiement {provider_name} de {request.amount} {request.currency}. Ref: {reference}. [DEMO]"
     )
     
     return {
@@ -1042,13 +1173,11 @@ async def create_mobile_money_deposit(request: MobileMoneyRequest, background_ta
         "amount": request.amount,
         "currency": request.currency,
         "status": "pending",
-        "demo_mode": True,
-        "message": f"Demo {provider_name} - SMS sent with payment instructions"
+        "demo_mode": True
     }
 
 @api_router.post("/mobile-money/confirm/{reference}")
 async def confirm_mobile_money_payment(reference: str, background_tasks: BackgroundTasks, current_user: dict = Depends(get_current_user)):
-    """Confirm mobile money payment (demo mode - auto-confirms)"""
     transaction = await db.transactions.find_one(
         {"mobile_money_reference": reference, "user_id": current_user["id"]},
         {"_id": 0}
@@ -1062,20 +1191,13 @@ async def confirm_mobile_money_payment(reference: str, background_tasks: Backgro
     
     now = datetime.now(timezone.utc).isoformat()
     
-    # Update transaction
-    await db.transactions.update_one(
-        {"id": transaction["id"]},
-        {"$set": {"status": "completed", "updated_at": now}}
-    )
+    await db.transactions.update_one({"id": transaction["id"]}, {"$set": {"status": "completed", "updated_at": now}})
     
-    # Credit wallet
     await db.wallets.update_one(
         {"user_id": current_user["id"], "currency": transaction["currency"]},
         {"$inc": {"balance": transaction["amount"]}, "$set": {"updated_at": now}}
     )
     
-    # Send notifications
-    lang = current_user.get("preferred_language", "fr")
     background_tasks.add_task(
         send_push_notification,
         current_user["id"],
@@ -1084,50 +1206,6 @@ async def confirm_mobile_money_payment(reference: str, background_tasks: Backgro
     )
     
     return {"message": "Payment confirmed", "status": "completed", "amount": transaction["amount"]}
-
-# ==================== WEBHOOK ====================
-
-@api_router.post("/webhook/stripe")
-async def stripe_webhook(request: Request):
-    from emergentintegrations.payments.stripe.checkout import StripeCheckout
-    
-    body = await request.body()
-    signature = request.headers.get("Stripe-Signature")
-    
-    stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
-    
-    try:
-        webhook_response = await stripe_checkout.handle_webhook(body, signature)
-        
-        if webhook_response.payment_status == "paid":
-            session_id = webhook_response.session_id
-            now = datetime.now(timezone.utc).isoformat()
-            
-            payment_record = await db.payment_transactions.find_one(
-                {"session_id": session_id},
-                {"_id": 0}
-            )
-            
-            if payment_record and payment_record.get("payment_status") != "paid":
-                await db.payment_transactions.update_one(
-                    {"session_id": session_id},
-                    {"$set": {"payment_status": "paid", "updated_at": now}}
-                )
-                
-                await db.transactions.update_one(
-                    {"id": payment_record["transaction_id"]},
-                    {"$set": {"status": "completed", "updated_at": now}}
-                )
-                
-                await db.wallets.update_one(
-                    {"user_id": payment_record["user_id"], "currency": payment_record["currency"]},
-                    {"$inc": {"balance": payment_record["amount"]}, "$set": {"updated_at": now}}
-                )
-        
-        return {"status": "processed"}
-    except Exception as e:
-        logger.error(f"Webhook error: {e}")
-        return {"status": "error"}
 
 # ==================== WITHDRAWAL ROUTES ====================
 
@@ -1141,16 +1219,24 @@ async def create_withdrawal(withdraw: WithdrawRequest, background_tasks: Backgro
     if not wallet or wallet["balance"] < withdraw.amount:
         raise HTTPException(status_code=400, detail="Insufficient balance")
     
+    # If bank account specified, verify it
+    bank_account = None
+    if withdraw.bank_account_id:
+        bank_account = await db.bank_accounts.find_one(
+            {"id": withdraw.bank_account_id, "user_id": current_user["id"], "deleted": {"$ne": True}},
+            {"_id": 0}
+        )
+        if not bank_account:
+            raise HTTPException(status_code=404, detail="Bank account not found")
+    
     now = datetime.now(timezone.utc).isoformat()
     transaction_id = str(uuid.uuid4())
     
-    # Deduct from wallet
     await db.wallets.update_one(
         {"id": wallet["id"]},
         {"$inc": {"balance": -withdraw.amount}, "$set": {"updated_at": now}}
     )
     
-    # Create transaction
     transaction_doc = {
         "id": transaction_id,
         "user_id": current_user["id"],
@@ -1158,21 +1244,13 @@ async def create_withdrawal(withdraw: WithdrawRequest, background_tasks: Backgro
         "amount": -withdraw.amount,
         "currency": withdraw.currency,
         "status": "pending",
-        "description": f"Withdrawal to {withdraw.bank_account or 'bank account'}",
+        "bank_account_id": withdraw.bank_account_id,
+        "description": f"Withdrawal to {bank_account['bank_name'] if bank_account else 'bank account'}",
         "created_at": now
     }
     await db.transactions.insert_one(transaction_doc)
     
-    # Send notifications
     lang = current_user.get("preferred_language", "fr")
-    background_tasks.add_task(
-        send_email_notification,
-        current_user["email"],
-        get_translation("withdrawal_pending", lang, amount=withdraw.amount, currency=withdraw.currency),
-        f"Withdrawal request submitted",
-        lang
-    )
-    
     background_tasks.add_task(
         send_push_notification,
         current_user["id"],
@@ -1197,13 +1275,11 @@ async def pay_bill(bill: BillPaymentRequest, background_tasks: BackgroundTasks, 
     now = datetime.now(timezone.utc).isoformat()
     transaction_id = str(uuid.uuid4())
     
-    # Deduct from wallet
     await db.wallets.update_one(
         {"id": wallet["id"]},
         {"$inc": {"balance": -bill.amount}, "$set": {"updated_at": now}}
     )
     
-    # Create transaction
     transaction_doc = {
         "id": transaction_id,
         "user_id": current_user["id"],
@@ -1215,16 +1291,6 @@ async def pay_bill(bill: BillPaymentRequest, background_tasks: BackgroundTasks, 
         "created_at": now
     }
     await db.transactions.insert_one(transaction_doc)
-    
-    # Send notifications
-    lang = current_user.get("preferred_language", "fr")
-    background_tasks.add_task(
-        send_email_notification,
-        current_user["email"],
-        get_translation("bill_paid", lang, type=bill.bill_type, amount=bill.amount, currency=bill.currency),
-        f"Bill payment confirmed",
-        lang
-    )
     
     background_tasks.add_task(
         send_push_notification,
@@ -1238,11 +1304,7 @@ async def pay_bill(bill: BillPaymentRequest, background_tasks: BackgroundTasks, 
 # ==================== TRANSACTION HISTORY ====================
 
 @api_router.get("/transactions")
-async def get_transactions(
-    limit: int = 50,
-    offset: int = 0,
-    current_user: dict = Depends(get_current_user)
-):
+async def get_transactions(limit: int = 50, offset: int = 0, current_user: dict = Depends(get_current_user)):
     transactions = await db.transactions.find(
         {"user_id": current_user["id"]},
         {"_id": 0}
@@ -1261,9 +1323,7 @@ async def get_notifications(limit: int = 20, current_user: dict = Depends(get_cu
         {"_id": 0}
     ).sort("created_at", -1).limit(limit).to_list(limit)
     
-    unread_count = await db.push_notifications.count_documents(
-        {"user_id": current_user["id"], "read": False}
-    )
+    unread_count = await db.push_notifications.count_documents({"user_id": current_user["id"], "read": False})
     
     return {"notifications": notifications, "unread_count": unread_count}
 
@@ -1283,29 +1343,137 @@ async def mark_all_notifications_read(current_user: dict = Depends(get_current_u
     )
     return {"message": "All notifications marked as read"}
 
+# ==================== WORLD BANKS ====================
+
+@api_router.get("/banks")
+async def get_banks(country: Optional[str] = None):
+    banks = WORLD_BANKS
+    if country:
+        banks = [b for b in banks if b["country"] == country.upper()]
+    return {"banks": banks}
+
+@api_router.get("/banks/countries")
+async def get_bank_countries():
+    countries = list(set(b["country"] for b in WORLD_BANKS))
+    return {"countries": sorted(countries)}
+
+# ==================== ZONE CONFIGURATION ====================
+
+@api_router.get("/zones")
+async def get_zones():
+    zones = await db.zone_configs.find({}, {"_id": 0}).to_list(100)
+    return {"zones": zones}
+
+@api_router.get("/zones/{zone_id}")
+async def get_zone(zone_id: str):
+    zone = await db.zone_configs.find_one({"id": zone_id}, {"_id": 0})
+    if not zone:
+        raise HTTPException(status_code=404, detail="Zone not found")
+    return zone
+
+# ==================== KYC DOCUMENTS ====================
+
+@api_router.get("/documents")
+async def get_user_documents(current_user: dict = Depends(get_current_user)):
+    documents = await db.kyc_documents.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).to_list(100)
+    return {"documents": documents}
+
+@api_router.post("/documents/upload")
+async def upload_document(
+    document_type: str,
+    document_name: str,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_current_user)
+):
+    now = datetime.now(timezone.utc).isoformat()
+    doc_id = str(uuid.uuid4())
+    
+    document = {
+        "id": doc_id,
+        "user_id": current_user["id"],
+        "document_type": document_type,
+        "document_name": document_name,
+        "status": "pending",
+        "uploaded_at": now,
+        "reviewed_at": None,
+        "rejection_reason": None
+    }
+    
+    await db.kyc_documents.insert_one(document)
+    
+    return {"message": "Document uploaded", "document_id": doc_id}
+
 # ==================== ADMIN ROUTES ====================
 
 @api_router.get("/admin/users")
-async def admin_get_users(
-    limit: int = 50,
-    offset: int = 0,
-    admin: dict = Depends(get_admin_user)
-):
-    users = await db.users.find(
-        {},
-        {"_id": 0, "password_hash": 0}
-    ).skip(offset).limit(limit).to_list(limit)
-    
+async def admin_get_users(limit: int = 50, offset: int = 0, admin: dict = Depends(get_admin_user)):
+    users = await db.users.find({}, {"_id": 0, "password_hash": 0}).skip(offset).limit(limit).to_list(limit)
     total = await db.users.count_documents({})
-    
     return {"users": users, "total": total}
 
+@api_router.get("/admin/users/{user_id}")
+async def admin_get_user(user_id: str, admin: dict = Depends(get_admin_user)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0, "password_hash": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    wallets = await db.wallets.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    bank_accounts = await db.bank_accounts.find({"user_id": user_id, "deleted": {"$ne": True}}, {"_id": 0}).to_list(100)
+    documents = await db.kyc_documents.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    
+    return {
+        "user": user,
+        "wallets": wallets,
+        "bank_accounts": bank_accounts,
+        "documents": documents
+    }
+
+@api_router.post("/admin/users")
+async def admin_create_user(user_data: UserCreate, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    existing = await db.users.find_one({"email": user_data.email}, {"_id": 0})
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    user_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    user_doc = {
+        "id": user_id,
+        "email": user_data.email,
+        "password_hash": hash_password(user_data.password),
+        "full_name": user_data.full_name,
+        "phone": user_data.phone,
+        "country": user_data.country,
+        "role": "user",
+        "is_active": True,
+        "two_factor_enabled": False,
+        "preferred_language": user_data.preferred_language,
+        "kyc_status": "pending",
+        "created_at": now,
+        "created_by_admin": admin["id"]
+    }
+    
+    await db.users.insert_one(user_doc)
+    
+    for currency in ["EUR", "USD", "XOF", "GBP", "MAD", "NGN"]:
+        await db.wallets.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "balance": 0.0,
+            "currency": currency,
+            "created_at": now,
+            "updated_at": now
+        })
+    
+    await log_admin_action(admin["id"], "create_user", "user", user_id, {"email": user_data.email})
+    
+    return {"message": "User created", "user_id": user_id}
+
 @api_router.patch("/admin/users/{user_id}")
-async def admin_update_user(
-    user_id: str,
-    update: AdminUserUpdate,
-    admin: dict = Depends(get_admin_user)
-):
+async def admin_update_user(user_id: str, update: AdminUserUpdate, admin: dict = Depends(get_admin_user)):
     user = await db.users.find_one({"id": user_id}, {"_id": 0})
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
@@ -1315,18 +1483,304 @@ async def admin_update_user(
         update_data["is_active"] = update.is_active
     if update.role is not None:
         update_data["role"] = update.role
+    if update.kyc_status is not None:
+        update_data["kyc_status"] = update.kyc_status
     
     if update_data:
         await db.users.update_one({"id": user_id}, {"$set": update_data})
+        await log_admin_action(admin["id"], "update_user", "user", user_id, update_data)
     
     return {"message": "User updated successfully"}
 
+@api_router.delete("/admin/users/{user_id}")
+async def admin_delete_user(user_id: str, admin: dict = Depends(get_admin_user)):
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    if user.get("role") == "admin":
+        raise HTTPException(status_code=400, detail="Cannot delete admin user")
+    
+    await db.users.update_one({"id": user_id}, {"$set": {"is_active": False, "deleted": True}})
+    await log_admin_action(admin["id"], "delete_user", "user", user_id)
+    
+    return {"message": "User deleted"}
+
+# ==================== ADMIN CREDIT/DEBIT ====================
+
+@api_router.post("/admin/credit")
+async def admin_credit_account(request: AdminCreditDebit, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    user = await db.users.find_one({"id": request.user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    wallet = await db.wallets.find_one(
+        {"user_id": request.user_id, "currency": request.currency},
+        {"_id": 0}
+    )
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    transaction_id = str(uuid.uuid4())
+    
+    await db.wallets.update_one(
+        {"id": wallet["id"]},
+        {"$inc": {"balance": request.amount}, "$set": {"updated_at": now}}
+    )
+    
+    transaction_doc = {
+        "id": transaction_id,
+        "user_id": request.user_id,
+        "type": "admin_credit",
+        "amount": request.amount,
+        "currency": request.currency,
+        "status": "completed",
+        "description": request.description,
+        "admin_id": admin["id"],
+        "created_at": now
+    }
+    await db.transactions.insert_one(transaction_doc)
+    
+    await log_admin_action(admin["id"], "credit_account", "wallet", wallet["id"], {
+        "user_id": request.user_id,
+        "amount": request.amount,
+        "currency": request.currency
+    })
+    
+    lang = user.get("preferred_language", "fr")
+    background_tasks.add_task(
+        send_email_notification,
+        user["email"],
+        get_translation("account_credited", lang, amount=request.amount, currency=request.currency),
+        f"Your account has been credited",
+        lang
+    )
+    
+    background_tasks.add_task(
+        send_push_notification,
+        request.user_id,
+        "Account Credited",
+        f"+{request.amount} {request.currency} added to your wallet"
+    )
+    
+    return {"message": "Account credited", "transaction_id": transaction_id}
+
+@api_router.post("/admin/debit")
+async def admin_debit_account(request: AdminCreditDebit, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    user = await db.users.find_one({"id": request.user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    wallet = await db.wallets.find_one(
+        {"user_id": request.user_id, "currency": request.currency},
+        {"_id": 0}
+    )
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet not found")
+    
+    if wallet["balance"] < request.amount:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    transaction_id = str(uuid.uuid4())
+    
+    await db.wallets.update_one(
+        {"id": wallet["id"]},
+        {"$inc": {"balance": -request.amount}, "$set": {"updated_at": now}}
+    )
+    
+    transaction_doc = {
+        "id": transaction_id,
+        "user_id": request.user_id,
+        "type": "admin_debit",
+        "amount": -request.amount,
+        "currency": request.currency,
+        "status": "completed",
+        "description": request.description,
+        "admin_id": admin["id"],
+        "created_at": now
+    }
+    await db.transactions.insert_one(transaction_doc)
+    
+    await log_admin_action(admin["id"], "debit_account", "wallet", wallet["id"], {
+        "user_id": request.user_id,
+        "amount": request.amount,
+        "currency": request.currency
+    })
+    
+    lang = user.get("preferred_language", "fr")
+    background_tasks.add_task(
+        send_email_notification,
+        user["email"],
+        get_translation("account_debited", lang, amount=request.amount, currency=request.currency),
+        f"Your account has been debited",
+        lang
+    )
+    
+    background_tasks.add_task(
+        send_push_notification,
+        request.user_id,
+        "Account Debited",
+        f"-{request.amount} {request.currency} from your wallet"
+    )
+    
+    return {"message": "Account debited", "transaction_id": transaction_id}
+
+# ==================== ADMIN DOCUMENTS ====================
+
+@api_router.get("/admin/documents")
+async def admin_get_documents(status: Optional[str] = None, admin: dict = Depends(get_admin_user)):
+    query = {}
+    if status:
+        query["status"] = status
+    
+    pipeline = [
+        {"$match": query},
+        {"$lookup": {
+            "from": "users",
+            "localField": "user_id",
+            "foreignField": "id",
+            "as": "user"
+        }},
+        {"$unwind": {"path": "$user", "preserveNullAndEmptyArrays": True}},
+        {"$project": {
+            "_id": 0,
+            "id": 1,
+            "user_id": 1,
+            "user_email": "$user.email",
+            "user_name": "$user.full_name",
+            "document_type": 1,
+            "document_name": 1,
+            "status": 1,
+            "uploaded_at": 1,
+            "reviewed_at": 1,
+            "rejection_reason": 1
+        }},
+        {"$sort": {"uploaded_at": -1}}
+    ]
+    
+    documents = await db.kyc_documents.aggregate(pipeline).to_list(100)
+    return {"documents": documents}
+
+@api_router.patch("/admin/documents/{document_id}")
+async def admin_update_document(document_id: str, update: DocumentStatusUpdate, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    document = await db.kyc_documents.find_one({"id": document_id}, {"_id": 0})
+    if not document:
+        raise HTTPException(status_code=404, detail="Document not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    update_data = {
+        "status": update.status,
+        "reviewed_at": now,
+        "reviewed_by": admin["id"]
+    }
+    
+    if update.status == "rejected" and update.rejection_reason:
+        update_data["rejection_reason"] = update.rejection_reason
+    
+    await db.kyc_documents.update_one({"id": document_id}, {"$set": update_data})
+    
+    # Update user KYC status if all documents approved
+    user_id = document["user_id"]
+    user_docs = await db.kyc_documents.find({"user_id": user_id}, {"_id": 0}).to_list(100)
+    
+    if all(d.get("status") == "approved" for d in user_docs if d["id"] != document_id) and update.status == "approved":
+        await db.users.update_one({"id": user_id}, {"$set": {"kyc_status": "verified"}})
+    elif update.status == "rejected":
+        await db.users.update_one({"id": user_id}, {"$set": {"kyc_status": "rejected"}})
+    
+    await log_admin_action(admin["id"], "review_document", "document", document_id, {"status": update.status})
+    
+    # Notify user
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if user:
+        lang = user.get("preferred_language", "fr")
+        if update.status == "approved":
+            background_tasks.add_task(
+                send_push_notification,
+                user_id,
+                "Document Approved",
+                get_translation("kyc_approved", lang)
+            )
+        elif update.status == "rejected":
+            background_tasks.add_task(
+                send_push_notification,
+                user_id,
+                "Document Rejected",
+                get_translation("kyc_rejected", lang, reason=update.rejection_reason or "Non conforme")
+            )
+    
+    return {"message": "Document status updated"}
+
+# ==================== ADMIN ZONE MANAGEMENT ====================
+
+@api_router.post("/admin/zones")
+async def admin_create_zone(zone: ZoneConfigCreate, admin: dict = Depends(get_admin_user)):
+    zone_id = str(uuid.uuid4())
+    now = datetime.now(timezone.utc).isoformat()
+    
+    zone_doc = {
+        "id": zone_id,
+        "zone_name": zone.zone_name,
+        "countries": zone.countries,
+        "currencies": zone.currencies,
+        "payment_methods": zone.payment_methods,
+        "transfer_fees_percent": zone.transfer_fees_percent,
+        "min_transfer_amount": zone.min_transfer_amount,
+        "max_transfer_amount": zone.max_transfer_amount,
+        "partner_banks": zone.partner_banks,
+        "is_active": True,
+        "created_at": now,
+        "updated_at": now
+    }
+    
+    await db.zone_configs.insert_one(zone_doc)
+    await log_admin_action(admin["id"], "create_zone", "zone", zone_id, {"zone_name": zone.zone_name})
+    
+    return {"message": "Zone created", "zone_id": zone_id}
+
+@api_router.put("/admin/zones/{zone_id}")
+async def admin_update_zone(zone_id: str, zone: ZoneConfigCreate, admin: dict = Depends(get_admin_user)):
+    existing = await db.zone_configs.find_one({"id": zone_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Zone not found")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    
+    update_data = {
+        "zone_name": zone.zone_name,
+        "countries": zone.countries,
+        "currencies": zone.currencies,
+        "payment_methods": zone.payment_methods,
+        "transfer_fees_percent": zone.transfer_fees_percent,
+        "min_transfer_amount": zone.min_transfer_amount,
+        "max_transfer_amount": zone.max_transfer_amount,
+        "partner_banks": zone.partner_banks,
+        "updated_at": now
+    }
+    
+    await db.zone_configs.update_one({"id": zone_id}, {"$set": update_data})
+    await log_admin_action(admin["id"], "update_zone", "zone", zone_id)
+    
+    return {"message": "Zone updated"}
+
+@api_router.delete("/admin/zones/{zone_id}")
+async def admin_delete_zone(zone_id: str, admin: dict = Depends(get_admin_user)):
+    existing = await db.zone_configs.find_one({"id": zone_id}, {"_id": 0})
+    if not existing:
+        raise HTTPException(status_code=404, detail="Zone not found")
+    
+    await db.zone_configs.update_one({"id": zone_id}, {"$set": {"is_active": False}})
+    await log_admin_action(admin["id"], "delete_zone", "zone", zone_id)
+    
+    return {"message": "Zone deleted"}
+
+# ==================== ADMIN TRANSACTIONS ====================
+
 @api_router.get("/admin/transactions")
-async def admin_get_transactions(
-    limit: int = 100,
-    offset: int = 0,
-    admin: dict = Depends(get_admin_user)
-):
+async def admin_get_transactions(limit: int = 100, offset: int = 0, admin: dict = Depends(get_admin_user)):
     pipeline = [
         {"$lookup": {
             "from": "users",
@@ -1343,6 +1797,7 @@ async def admin_get_transactions(
             "user_name": "$user.full_name",
             "type": 1,
             "amount": 1,
+            "fees": 1,
             "currency": 1,
             "status": 1,
             "description": 1,
@@ -1359,96 +1814,84 @@ async def admin_get_transactions(
     
     return {"transactions": transactions, "total": total}
 
-@api_router.get("/admin/stats")
-async def admin_get_stats(admin: dict = Depends(get_admin_user)):
-    total_users = await db.users.count_documents({})
-    active_users = await db.users.count_documents({"is_active": True})
-    total_transactions = await db.transactions.count_documents({})
-    
-    # Calculate total volume by currency
-    pipeline = [
-        {"$match": {"type": {"$in": ["deposit", "transfer_in"]}, "status": "completed"}},
-        {"$group": {
-            "_id": "$currency",
-            "total": {"$sum": {"$abs": "$amount"}}
-        }}
-    ]
-    volume_by_currency = await db.transactions.aggregate(pipeline).to_list(10)
-    
-    # Recent transactions count (last 24h)
-    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
-    recent_transactions = await db.transactions.count_documents({
-        "created_at": {"$gte": yesterday}
-    })
-    
-    # Users by language
-    lang_pipeline = [
-        {"$group": {"_id": "$preferred_language", "count": {"$sum": 1}}}
-    ]
-    users_by_language = await db.users.aggregate(lang_pipeline).to_list(10)
-    
-    return {
-        "total_users": total_users,
-        "active_users": active_users,
-        "total_transactions": total_transactions,
-        "recent_transactions_24h": recent_transactions,
-        "volume_by_currency": {v["_id"]: v["total"] for v in volume_by_currency},
-        "users_by_language": {v["_id"]: v["count"] for v in users_by_language if v["_id"]}
-    }
-
 @api_router.patch("/admin/transactions/{transaction_id}/status")
-async def admin_update_transaction_status(
-    transaction_id: str,
-    status: str,
-    admin: dict = Depends(get_admin_user)
-):
+async def admin_update_transaction_status(transaction_id: str, status: str, admin: dict = Depends(get_admin_user)):
     transaction = await db.transactions.find_one({"id": transaction_id}, {"_id": 0})
     if not transaction:
         raise HTTPException(status_code=404, detail="Transaction not found")
     
     now = datetime.now(timezone.utc).isoformat()
     
-    # Handle withdrawal approval
     if transaction["type"] == "withdrawal" and status == "completed" and transaction["status"] == "pending":
-        await db.transactions.update_one(
-            {"id": transaction_id},
-            {"$set": {"status": "completed", "updated_at": now}}
-        )
+        await db.transactions.update_one({"id": transaction_id}, {"$set": {"status": "completed", "updated_at": now}})
+        await log_admin_action(admin["id"], "approve_withdrawal", "transaction", transaction_id)
         return {"message": "Withdrawal approved"}
     
-    # Handle withdrawal rejection - refund the amount
     if transaction["type"] == "withdrawal" and status == "rejected" and transaction["status"] == "pending":
         await db.wallets.update_one(
             {"user_id": transaction["user_id"], "currency": transaction["currency"]},
             {"$inc": {"balance": abs(transaction["amount"])}, "$set": {"updated_at": now}}
         )
-        await db.transactions.update_one(
-            {"id": transaction_id},
-            {"$set": {"status": "rejected", "updated_at": now}}
-        )
+        await db.transactions.update_one({"id": transaction_id}, {"$set": {"status": "rejected", "updated_at": now}})
+        await log_admin_action(admin["id"], "reject_withdrawal", "transaction", transaction_id)
         return {"message": "Withdrawal rejected and refunded"}
     
-    await db.transactions.update_one(
-        {"id": transaction_id},
-        {"$set": {"status": status, "updated_at": now}}
-    )
+    if transaction["type"] == "bank_transfer" and status == "completed" and transaction["status"] == "pending":
+        await db.transactions.update_one({"id": transaction_id}, {"$set": {"status": "completed", "updated_at": now}})
+        await log_admin_action(admin["id"], "complete_bank_transfer", "transaction", transaction_id)
+        return {"message": "Bank transfer completed"}
+    
+    await db.transactions.update_one({"id": transaction_id}, {"$set": {"status": status, "updated_at": now}})
+    await log_admin_action(admin["id"], "update_transaction_status", "transaction", transaction_id, {"status": status})
     
     return {"message": "Transaction status updated"}
+
+@api_router.get("/admin/stats")
+async def admin_get_stats(admin: dict = Depends(get_admin_user)):
+    total_users = await db.users.count_documents({})
+    active_users = await db.users.count_documents({"is_active": True})
+    verified_users = await db.users.count_documents({"kyc_status": "verified"})
+    total_transactions = await db.transactions.count_documents({})
+    
+    pipeline = [
+        {"$match": {"type": {"$in": ["deposit", "transfer_in"]}, "status": "completed"}},
+        {"$group": {"_id": "$currency", "total": {"$sum": {"$abs": "$amount"}}}}
+    ]
+    volume_by_currency = await db.transactions.aggregate(pipeline).to_list(10)
+    
+    yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).isoformat()
+    recent_transactions = await db.transactions.count_documents({"created_at": {"$gte": yesterday}})
+    
+    pending_withdrawals = await db.transactions.count_documents({"type": "withdrawal", "status": "pending"})
+    pending_documents = await db.kyc_documents.count_documents({"status": "pending"})
+    
+    return {
+        "total_users": total_users,
+        "active_users": active_users,
+        "verified_users": verified_users,
+        "total_transactions": total_transactions,
+        "recent_transactions_24h": recent_transactions,
+        "volume_by_currency": {v["_id"]: v["total"] for v in volume_by_currency},
+        "pending_withdrawals": pending_withdrawals,
+        "pending_documents": pending_documents
+    }
+
+@api_router.get("/admin/logs")
+async def admin_get_logs(limit: int = 100, admin: dict = Depends(get_admin_user)):
+    logs = await db.admin_logs.find({}, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
+    return {"logs": logs}
 
 # ==================== UTILITY ROUTES ====================
 
 @api_router.get("/currencies")
 async def get_currencies():
-    return {
-        "currencies": list(EXCHANGE_RATES.keys()),
-        "rates": EXCHANGE_RATES
-    }
+    return {"currencies": list(EXCHANGE_RATES.keys()), "rates": EXCHANGE_RATES}
 
 @api_router.get("/")
 async def root():
-    return {"message": "SB Pay API v2.0", "status": "healthy", "demo_mode": DEMO_MODE}
+    return {"message": "SB Pay API v3.0", "status": "healthy", "demo_mode": DEMO_MODE}
 
-# Include the router in the main app
+# Include the router
 app.include_router(api_router)
 
 app.add_middleware(
