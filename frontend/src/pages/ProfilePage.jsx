@@ -112,6 +112,58 @@ export default function ProfilePage() {
     }
   };
 
+  const handleDocumentUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file || !selectedDocType) return;
+    
+    // Validate file
+    const maxSize = 5 * 1024 * 1024; // 5MB
+    const allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
+    
+    if (file.size > maxSize) {
+      toast.error('Le fichier est trop volumineux (max 5MB)');
+      return;
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+      toast.error('Format non supporté. Utilisez JPG, PNG ou PDF');
+      return;
+    }
+    
+    setUploadingDoc(selectedDocType);
+    
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      formData.append('document_type', selectedDocType);
+      
+      await axios.post(`${API}/documents/upload`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
+      
+      toast.success('Document téléchargé avec succès');
+      fetchLinkedAccounts();
+      setSelectedDocType('');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors du téléchargement');
+    } finally {
+      setUploadingDoc(null);
+      if (documentInputRef.current) {
+        documentInputRef.current.value = '';
+      }
+    }
+  };
+
+  const handleDeleteDocument = async (docId) => {
+    try {
+      await axios.delete(`${API}/documents/${docId}`);
+      toast.success('Document supprimé');
+      fetchLinkedAccounts();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la suppression');
+    }
+  };
+
   const handleSaveProfile = async () => {
     setLoading(true);
     try {
