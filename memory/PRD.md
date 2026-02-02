@@ -56,7 +56,7 @@
 - [x] Security & Capture rules (3D Secure, Anti-fraud, Velocity)
 
 #### Support & Communication
-- [x] WhatsApp floating button
+- [x] WhatsApp link in footer contact section
 - [x] Tawk.to integration ready
 - [x] Support settings admin
 
