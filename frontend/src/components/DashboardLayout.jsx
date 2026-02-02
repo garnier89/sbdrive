@@ -16,12 +16,14 @@ const navItems = [
   { href: '/transfer', icon: Send, label: 'Transfert' },
   { href: '/user-transfer', icon: Users, label: 'Entre Utilisateurs' },
   { href: '/virtual-cards', icon: CreditCard, label: 'Cartes Virtuelles' },
+  { href: '/vault', icon: Lock, label: 'Coffre-Fort' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
   { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
   { href: '/payment-links', icon: Link2, label: 'Liens Paiement' },
   { href: '/rewards', icon: Gift, label: 'Récompenses' },
   { href: '/history', icon: History, label: 'Historique' },
+  { href: '/help', icon: HelpCircle, label: 'Centre d\'Aide' },
   { href: '/settings', icon: Settings, label: 'Paramètres' },
 ];
 
