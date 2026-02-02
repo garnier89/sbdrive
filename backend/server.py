@@ -3392,6 +3392,10 @@ app.include_router(api_router)
 setup_africa_routes(db, get_current_user)
 app.include_router(africa_router)
 
+# Setup and include Admin Advanced module routes
+setup_admin_advanced_routes(db, get_current_user, get_admin_user)
+app.include_router(admin_advanced_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
