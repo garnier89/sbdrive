@@ -22,7 +22,22 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
-#### 🔑 Connexion Rapide par PIN (NEW - Feb 2026)
+#### 📄 Reçus PDF & Améliorations UX (NEW - Feb 2026)
+- [x] **Reçus PDF téléchargeables**
+  - Génération PDF professionnelle via ReportLab
+  - Design avec logo, couleurs, statuts
+  - Téléchargement depuis l'historique
+  - API: GET /api/receipts/transaction/{id}
+- [x] **Mode Sombre**
+  - Toggle dans la sidebar (icône lune/soleil)
+  - Persistence en localStorage
+  - Styles dark: adaptés sur tous composants
+- [x] **Dashboard enrichi avec graphiques**
+  - Graphique d'activité mensuelle (AreaChart)
+  - Répartition des dépenses par catégorie (PieChart)
+  - Utilise Recharts
+
+#### 🔑 Connexion Rapide par PIN (Feb 2026)
 - [x] **Configuration du PIN**
   - PIN 4-6 chiffres personnalisé
   - Vérification du mot de passe actuel requise
