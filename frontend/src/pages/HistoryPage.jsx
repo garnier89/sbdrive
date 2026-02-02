@@ -34,6 +34,7 @@ export default function HistoryPage() {
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
   const [page, setPage] = useState(0);
+  const [downloadingId, setDownloadingId] = useState(null);
   const [filters, setFilters] = useState({
     search: '',
     type: 'all'
@@ -55,6 +56,31 @@ export default function HistoryPage() {
       toast.error('Erreur lors du chargement des transactions');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const downloadReceipt = async (transactionId) => {
+    setDownloadingId(transactionId);
+    try {
+      const response = await axios.get(`${API}/receipts/transaction/${transactionId}`, {
+        responseType: 'blob'
+      });
+      
+      // Create download link
+      const url = window.URL.createObjectURL(new Blob([response.data]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `recu_sbpay_${transactionId.slice(0, 8)}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      
+      toast.success('Reçu téléchargé!');
+    } catch (error) {
+      toast.error('Erreur lors du téléchargement du reçu');
+    } finally {
+      setDownloadingId(null);
     }
   };
 
