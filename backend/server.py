@@ -3441,6 +3441,10 @@ app.include_router(wallet_transfers_router)
 setup_virtual_cards_routes(db, get_current_user, send_push_notification, send_sms_notification, send_email_notification)
 app.include_router(virtual_cards_router)
 
+# Setup and include Notifications Zone module routes
+setup_notifications_zone_routes(db, get_admin_user, send_push_notification, send_sms_notification, send_email_notification)
+app.include_router(notifications_zone_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
