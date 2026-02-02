@@ -19,6 +19,8 @@ import BillsPage from "@/pages/BillsPage";
 import HistoryPage from "@/pages/HistoryPage";
 import ProfilePage from "@/pages/ProfilePage";
 import SettingsPage from "@/pages/SettingsPage";
+import PaymentLinksPage from "@/pages/PaymentLinksPage";
+import PayPage from "@/pages/PayPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminTransactions from "@/pages/admin/AdminTransactions";
