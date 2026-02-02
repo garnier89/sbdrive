@@ -423,7 +423,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
         """
         user_id = current_user["id"]
         
-        # Get unique recipients from recent transfers
+        # Get unique recipients from recent transfers - simplified pipeline
         pipeline = [
             {"$match": {"sender_id": user_id, "status": "completed"}},
             {"$sort": {"created_at": -1}},
@@ -434,18 +434,24 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
                 "last_transfer_at": {"$first": "$created_at"},
                 "transfer_count": {"$sum": 1}
             }},
-            {"$limit": limit},
-            {"$project": {
-                "_id": 0,
-                "user_id": "$_id",
-                "name": "$recipient_name",
-                "phone_masked": {"$concat": ["***", {"$substr": ["$recipient_phone", -4, 4]}]},
-                "last_transfer_at": 1,
-                "transfer_count": 1
-            }}
+            {"$limit": limit}
         ]
         
-        contacts = await db.p2p_transfers.aggregate(pipeline).to_list(length=limit)
+        raw_contacts = await db.p2p_transfers.aggregate(pipeline).to_list(length=limit)
+        
+        # Process contacts in Python to mask phone numbers safely
+        contacts = []
+        for c in raw_contacts:
+            phone = c.get("recipient_phone", "")
+            phone_masked = f"***{phone[-4:]}" if len(phone) >= 4 else phone
+            contacts.append({
+                "user_id": c["_id"],
+                "name": c.get("recipient_name", ""),
+                "phone_masked": phone_masked,
+                "last_transfer_at": c.get("last_transfer_at"),
+                "transfer_count": c.get("transfer_count", 0)
+            })
+        
         return {"contacts": contacts}
 
     return wallet_transfers_router
