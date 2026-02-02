@@ -15,14 +15,50 @@
 #### Core Payment Features
 - [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, etc.)
 - [x] P2P transfers between users (by email)
-- [x] **P2P transfers via phone number (NEW)**
+- [x] **P2P transfers via phone number**
 - [x] Bank transfers
 - [x] Deposits (Stripe REAL, PayPal/MM DEMO)
 - [x] Withdrawals
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
-#### 📱 Transferts entre Utilisateurs SB Pay (NEW)
+#### 💳 Cartes Virtuelles (NEW)
+- [x] **Création de cartes virtuelles**
+  - Génération instantanée VISA/Mastercard
+  - Numéro, CVV, expiration (affichés une seule fois)
+  - Choix de devise et limites personnalisables
+- [x] **Paiements simulés (Mode DEMO)**
+  - Paiements en ligne
+  - Paiements sans contact (NFC)
+- [x] **Gestion complète**
+  - Bloquer/Débloquer instantanément
+  - Modifier les limites (journalière, par transaction)
+  - Activer/Désactiver paiements en ligne ou sans contact
+  - Historique des transactions par carte
+  - Supprimer la carte
+- [x] **Sécurité**
+  - Limites basées sur statut KYC
+  - Numéro masqué après création (**** 7140)
+  - OTP pour transactions élevées (prévu)
+
+#### 🔔 Notifications par Zone/Pays (NEW - Admin)
+- [x] **Ciblage géographique**
+  - 10 pays africains (SN, CI, ML, BF, BJ, TG, CM, GH, NG) + France
+  - Zones/villes par pays
+  - Types d'utilisateurs (standard, commerçant, premium)
+- [x] **Multi-canaux (Mode DEMO)**
+  - Push App (actif)
+  - SMS, Email, WhatsApp (simulés)
+- [x] **Gestion des campagnes**
+  - Envoi immédiat ou programmé
+  - Priorités (basse, normale, haute, urgente)
+  - Lien personnalisé
+- [x] **Statistiques**
+  - Total campagnes, envoyées, programmées
+  - Utilisateurs atteints
+  - Historique avec détails
+
+#### 📱 Transferts entre Utilisateurs SB Pay
 - [x] **Recherche par numéro de téléphone**
   - Validation utilisateur SB Pay
   - Nom masqué pour confidentialité (Test U.)
