@@ -406,6 +406,9 @@ function App() {
             <Route path="/admin/tickets" element={
               <ProtectedRoute adminOnly><AdminTicketsPage /></ProtectedRoute>
             } />
+            <Route path="/admin/kyc" element={
+              <ProtectedRoute adminOnly><AdminKYCPage /></ProtectedRoute>
+            } />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
