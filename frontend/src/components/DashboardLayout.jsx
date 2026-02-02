@@ -14,6 +14,7 @@ const LOGO_URL = "https://customer-assets.emergentagent.com/job_ce75e416-36f1-4b
 const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },
   { href: '/transfer', icon: Send, label: 'Transfert' },
+  { href: '/user-transfer', icon: Users, label: 'Entre Utilisateurs' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
   { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
