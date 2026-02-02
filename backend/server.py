@@ -72,6 +72,9 @@ from routes.contact import setup_contact_routes, contact_router
 # Import Quick Login Module
 from routes.quick_login import setup_quick_login_routes, quick_login_router
 
+# Import Receipts Module
+from routes.receipts import setup_receipts_routes, receipts_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
