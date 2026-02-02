@@ -284,7 +284,9 @@ See /app/docs/API_REFERENCE.md for complete list
 │   ├── server.py (main API)
 │   ├── models/schemas.py
 │   ├── routes/
-│   │   ├── wallet_transfers.py (NEW - P2P transfers)
+│   │   ├── wallet_transfers.py (P2P transfers)
+│   │   ├── virtual_cards.py (NEW - Virtual cards)
+│   │   ├── notifications_zone.py (NEW - Admin notifications)
 │   │   ├── africa_module.py
 │   │   ├── admin_advanced.py
 │   │   ├── analytics.py
@@ -293,12 +295,17 @@ See /app/docs/API_REFERENCE.md for complete list
 ├── frontend/
 │   └── src/
 │       ├── pages/
-│       │   ├── UserTransferPage.jsx (NEW - P2P transfers)
+│       │   ├── UserTransferPage.jsx (P2P transfers)
+│       │   ├── VirtualCardsPage.jsx (NEW - Virtual cards)
 │       │   ├── QRPaymentPage.jsx
 │       │   ├── RewardsPage.jsx
 │       │   ├── PaymentLinksPage.jsx
 │       │   ├── ProfilePage.jsx
 │       │   └── admin/
+│       │       ├── AdminNotificationsPage.jsx (NEW)
+│       │       ├── AdminAnalyticsPage.jsx
+│       │       ├── AdminAlertsPage.jsx
+│       │       └── ...
 │       │       ├── AdminGateways.jsx
 │       │       └── AdminPaymentRules.jsx
 │       └── components/
