@@ -227,10 +227,17 @@ See /app/docs/API_REFERENCE.md for complete list
 ├── backend/
 │   ├── server.py (main API)
 │   ├── models/schemas.py
+│   ├── routes/
+│   │   ├── wallet_transfers.py (NEW - P2P transfers)
+│   │   ├── africa_module.py
+│   │   ├── admin_advanced.py
+│   │   ├── analytics.py
+│   │   └── alerts.py
 │   └── services/db_init.py
 ├── frontend/
 │   └── src/
 │       ├── pages/
+│       │   ├── UserTransferPage.jsx (NEW - P2P transfers)
 │       │   ├── QRPaymentPage.jsx
 │       │   ├── RewardsPage.jsx
 │       │   ├── PaymentLinksPage.jsx
