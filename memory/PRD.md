@@ -22,7 +22,25 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
-#### 📄 Reçus PDF & Améliorations UX (NEW - Feb 2026)
+#### 📱 Boutons Téléchargement Mobile (NEW - Feb 2026)
+- [x] **Landing Page**
+  - Boutons stylisés Google Play et App Store
+  - Liens vers les stores (à configurer avec vrais IDs)
+  - Message "Applications mobiles bientôt disponibles"
+- [x] **Footer**
+  - Boutons de téléchargement dans la section Télécharger
+
+#### 📋 Amélioration KYC (NEW - Feb 2026)
+- [x] **Message informatif**
+  - "Pour augmenter votre plafond, vous devez ajouter votre pièce d'identité"
+  - "Votre nom ne peut pas être modifié après l'inscription"
+  - "Veuillez également saisir votre date de naissance"
+- [x] **Champ date de naissance**
+  - Ajouté dans la section Documents KYC
+  - Limite d'âge minimum (18 ans)
+  - Sauvegarde du profil
+
+#### 📄 Reçus PDF & Améliorations UX (Feb 2026)
 - [x] **Reçus PDF téléchargeables**
   - Génération PDF professionnelle via ReportLab
   - Design avec logo, couleurs, statuts
