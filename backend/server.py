@@ -57,6 +57,9 @@ from routes.alerts import setup_alerts_routes, alerts_router
 # Import Wallet Transfers Module
 from routes.wallet_transfers import setup_wallet_transfer_routes, wallet_transfers_router
 
+# Import Virtual Cards Module
+from routes.virtual_cards import setup_virtual_cards_routes, virtual_cards_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
