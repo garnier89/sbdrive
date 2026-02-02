@@ -321,6 +321,9 @@ function App() {
             <Route path="/admin/gateways" element={
               <ProtectedRoute adminOnly><AdminGateways /></ProtectedRoute>
             } />
+            <Route path="/admin/payment-rules" element={
+              <ProtectedRoute adminOnly><AdminPaymentRules /></ProtectedRoute>
+            } />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
