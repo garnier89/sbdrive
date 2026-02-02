@@ -389,26 +389,37 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
     user_id = str(uuid.uuid4())
     now = datetime.now(timezone.utc).isoformat()
     
+    # Build full_name from first_name and last_name
+    full_name = f"{user_data.first_name} {user_data.last_name}"
+    
     user_doc = {
         "id": user_id,
         "email": user_data.email,
         "password_hash": hash_password(user_data.password),
-        "full_name": user_data.full_name,
+        "first_name": user_data.first_name,
+        "last_name": user_data.last_name,
+        "full_name": full_name,
         "phone": user_data.phone,
         "country": user_data.country,
+        "default_currency": user_data.default_currency,
         "role": "user",
+        "status": "active",
         "is_active": True,
         "two_factor_enabled": False,
         "two_factor_phone": None,
         "preferred_language": user_data.preferred_language,
-        "kyc_status": "pending",  # pending, verified, rejected
+        "kyc_status": "pending",
         "created_at": now
     }
     
     await db.users.insert_one(user_doc)
     
-    # Create wallets for each currency
-    for currency in ["EUR", "USD", "XOF", "GBP", "MAD", "NGN"]:
+    # Get active currencies from database
+    currencies = await db.currencies.find({"active": True}, {"code": 1}).to_list(20)
+    currency_codes = [c["code"] for c in currencies] if currencies else ["EUR", "USD", "XOF", "GBP", "MAD", "NGN"]
+    
+    # Create wallets for each active currency
+    for currency in currency_codes:
         wallet_doc = {
             "id": str(uuid.uuid4()),
             "user_id": user_id,
@@ -425,7 +436,7 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
         send_email_notification,
         user_data.email,
         get_translation("welcome", user_data.preferred_language),
-        f"Bienvenue {user_data.full_name}!",
+        f"Bienvenue {full_name}!",
         user_data.preferred_language
     )
     
@@ -435,7 +446,10 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
         "user": {
             "id": user_id,
             "email": user_data.email,
-            "full_name": user_data.full_name,
+            "first_name": user_data.first_name,
+            "last_name": user_data.last_name,
+            "full_name": full_name,
+            "default_currency": user_data.default_currency,
             "role": "user",
             "preferred_language": user_data.preferred_language,
             "kyc_status": "pending"
