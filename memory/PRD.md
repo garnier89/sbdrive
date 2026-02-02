@@ -5,7 +5,8 @@
 **Type:** Online Payment System (PayPal-like)  
 **Created:** December 2025  
 **Last Updated:** February 2026  
-**Stack:** React + FastAPI + MongoDB
+**Stack:** React + FastAPI + MongoDB  
+**Preview URL:** https://paynow-52.preview.emergentagent.com
 
 ## Original Problem Statement
 Générer un système de paiement en ligne tel que PayPal tout le système complet le nom c'est SB Pay avec une application et le site internet, une application complète avec les accès administrateur et les accès clients, fond de couleur orange mat avec le logo SB qui est téléchargé, plus les balises de téléchargement play store et apple store.
