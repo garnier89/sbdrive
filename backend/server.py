@@ -3462,6 +3462,10 @@ app.include_router(vault_router)
 setup_contact_routes(db, get_current_user, get_admin_user, send_push_notification, send_email_notification)
 app.include_router(contact_router)
 
+# Setup and include Quick Login module routes
+setup_quick_login_routes(db, verify_password, create_access_token, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification)
+app.include_router(quick_login_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
