@@ -38,28 +38,36 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 
 ## Implemented Features
 
-### ✅ User Profile (NEW)
+### ✅ User Profile
 - Personal information management (first_name, last_name, phone, country)
 - Language and currency preferences
 - Security settings (password change, 2FA setup)
 - Linked payments overview (cards, bank accounts, mobile money)
 - KYC document management
 
-### ✅ Payment Gateways Admin (NEW)
+### ✅ Payment Gateways Admin
 - Admin configuration for: Stripe, PayPal, Orange Money, MTN, Wave, Moov Money, Flutterwave
 - Enable/disable per gateway
 - API key management (encrypted)
 - Webhook URL configuration
 - Supported currencies per gateway
 
-### ✅ Payment Links (NEW)
+### ✅ Payment Links
 - Create shareable payment links
 - Set amount, currency, description, expiration
 - Pay via wallet or card
 - Track link status (active, paid, expired, cancelled)
 - API: POST/GET/DELETE /payment-links, POST /payment-links/{id}/pay
 
-### ✅ WhatsApp Support (NEW)
+### ✅ Payment Security & Capture (NEW)
+- **3D Secure Configuration**: Enable/disable, version selection (2.0/1.0), exemption amounts
+- **Security Rules**: CVV required, AVS verification, VPN/Tor blocking
+- **Anti-Fraud**: Velocity checks (max transactions per time window), fraud score threshold
+- **Transaction Limits**: Max single transaction, daily limits, KYC threshold
+- **Capture Modes**: Automatic, Manual, Delayed
+- **Pending Captures**: Admin interface to capture or void pending payments
+
+### ✅ WhatsApp Support
 - Floating WhatsApp button on all pages
 - Direct contact via WhatsApp Business
 - Configurable phone number and message
