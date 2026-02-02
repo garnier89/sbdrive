@@ -3095,6 +3095,270 @@ async def update_support_settings(
     
     return {"message": "Support settings updated"}
 
+# ==================== REWARDS SYSTEM ====================
+
+@api_router.get("/rewards/me")
+async def get_my_rewards(current_user: dict = Depends(get_current_user)):
+    """Get current user's rewards"""
+    rewards = await db.rewards.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    
+    if not rewards:
+        # Create rewards account for user
+        now = datetime.now(timezone.utc).isoformat()
+        referral_code = current_user["id"][:8].upper()
+        
+        rewards = {
+            "id": str(uuid.uuid4()),
+            "user_id": current_user["id"],
+            "points": 0,
+            "tier": "bronze",
+            "total_earned": 0,
+            "total_redeemed": 0,
+            "referral_code": referral_code,
+            "referral_count": 0,
+            "cashback_earned": 0,
+            "referred_by": None,
+            "created_at": now
+        }
+        await db.rewards.insert_one(rewards)
+    
+    return rewards
+
+@api_router.get("/rewards/history")
+async def get_rewards_history(
+    limit: int = 20,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get rewards history for current user"""
+    history = await db.rewards_history.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(limit).to_list(limit)
+    
+    return {"history": history}
+
+@api_router.get("/rewards/referrals")
+async def get_my_referrals(current_user: dict = Depends(get_current_user)):
+    """Get users referred by current user"""
+    rewards = await db.rewards.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if not rewards:
+        return {"referrals": []}
+    
+    referrals = await db.rewards.find(
+        {"referred_by": rewards.get("referral_code")},
+        {"_id": 0, "user_id": 1, "created_at": 1}
+    ).to_list(100)
+    
+    # Enrich with user data
+    for ref in referrals:
+        user = await db.users.find_one({"id": ref["user_id"]}, {"_id": 0, "email": 1})
+        if user:
+            ref["email"] = user["email"][:3] + "***@***" + user["email"].split("@")[1][-4:]
+        ref["is_active"] = True  # Check transaction count in production
+    
+    return {"referrals": referrals}
+
+@api_router.post("/rewards/redeem")
+async def redeem_rewards(
+    points: int,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_current_user)
+):
+    """Convert rewards points to wallet balance"""
+    if points < 100:
+        raise HTTPException(status_code=400, detail="Minimum 100 points to redeem")
+    
+    rewards = await db.rewards.find_one({"user_id": current_user["id"]}, {"_id": 0})
+    if not rewards or rewards["points"] < points:
+        raise HTTPException(status_code=400, detail="Insufficient points")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    amount = points / 100  # 100 points = 1€
+    
+    # Deduct points
+    await db.rewards.update_one(
+        {"user_id": current_user["id"]},
+        {
+            "$inc": {"points": -points, "total_redeemed": points},
+            "$set": {"updated_at": now}
+        }
+    )
+    
+    # Credit wallet
+    await db.wallets.update_one(
+        {"user_id": current_user["id"], "currency": "EUR"},
+        {"$inc": {"balance": amount}, "$set": {"updated_at": now}}
+    )
+    
+    # Record history
+    history_entry = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "type": "redemption",
+        "points": -points,
+        "description": f"Conversion de {points} points en €{amount}",
+        "created_at": now
+    }
+    await db.rewards_history.insert_one(history_entry)
+    
+    # Create transaction
+    transaction = {
+        "id": str(uuid.uuid4()),
+        "user_id": current_user["id"],
+        "type": "rewards_redemption",
+        "method": "rewards",
+        "amount": amount,
+        "fee": 0,
+        "currency": "EUR",
+        "status": "completed",
+        "description": f"Conversion de {points} points de fidélité",
+        "created_at": now
+    }
+    await db.transactions.insert_one(transaction)
+    
+    return {"message": f"Successfully redeemed {points} points for €{amount}"}
+
+async def award_points(user_id: str, points: int, description: str, point_type: str = "transaction"):
+    """Award points to a user (internal function)"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    # Update rewards
+    result = await db.rewards.update_one(
+        {"user_id": user_id},
+        {
+            "$inc": {"points": points, "total_earned": points},
+            "$set": {"updated_at": now}
+        }
+    )
+    
+    if result.modified_count == 0:
+        # Create rewards if doesn't exist
+        await db.rewards.insert_one({
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "points": points,
+            "tier": "bronze",
+            "total_earned": points,
+            "total_redeemed": 0,
+            "referral_code": user_id[:8].upper(),
+            "referral_count": 0,
+            "cashback_earned": 0,
+            "created_at": now
+        })
+    
+    # Update tier
+    rewards = await db.rewards.find_one({"user_id": user_id}, {"_id": 0})
+    if rewards:
+        new_tier = "bronze"
+        if rewards["points"] >= 50000:
+            new_tier = "diamond"
+        elif rewards["points"] >= 20000:
+            new_tier = "platinum"
+        elif rewards["points"] >= 5000:
+            new_tier = "gold"
+        elif rewards["points"] >= 1000:
+            new_tier = "silver"
+        
+        if new_tier != rewards.get("tier"):
+            await db.rewards.update_one(
+                {"user_id": user_id},
+                {"$set": {"tier": new_tier}}
+            )
+    
+    # Record history
+    history_entry = {
+        "id": str(uuid.uuid4()),
+        "user_id": user_id,
+        "type": point_type,
+        "points": points,
+        "description": description,
+        "created_at": now
+    }
+    await db.rewards_history.insert_one(history_entry)
+
+# ==================== PDF RECEIPTS ====================
+
+from io import BytesIO
+from fastapi.responses import StreamingResponse
+
+@api_router.get("/transactions/{transaction_id}/receipt")
+async def get_transaction_receipt(transaction_id: str, current_user: dict = Depends(get_current_user)):
+    """Generate PDF receipt for a transaction"""
+    from reportlab.lib.pagesizes import A4
+    from reportlab.lib import colors
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+    from reportlab.lib.units import cm
+    
+    transaction = await db.transactions.find_one(
+        {"id": transaction_id, "user_id": current_user["id"]},
+        {"_id": 0}
+    )
+    
+    if not transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, topMargin=2*cm, bottomMargin=2*cm)
+    story = []
+    styles = getSampleStyleSheet()
+    
+    # Title
+    title_style = ParagraphStyle(
+        'Title',
+        parent=styles['Heading1'],
+        fontSize=24,
+        textColor=colors.HexColor('#FF6B00'),
+        spaceAfter=20
+    )
+    story.append(Paragraph("SB Pay - Reçu de Transaction", title_style))
+    story.append(Spacer(1, 20))
+    
+    # Transaction details
+    data = [
+        ["Référence:", transaction_id[:8].upper()],
+        ["Date:", datetime.fromisoformat(transaction["created_at"]).strftime("%d/%m/%Y %H:%M")],
+        ["Type:", transaction.get("type", "N/A").replace("_", " ").title()],
+        ["Montant:", f"{transaction.get('amount', 0):,.2f} {transaction.get('currency', 'EUR')}"],
+        ["Frais:", f"{transaction.get('fee', 0):,.2f} {transaction.get('currency', 'EUR')}"],
+        ["Statut:", transaction.get("status", "N/A").title()],
+        ["Description:", transaction.get("description", "N/A")],
+    ]
+    
+    table = Table(data, colWidths=[4*cm, 10*cm])
+    table.setStyle(TableStyle([
+        ('FONTNAME', (0, 0), (-1, -1), 'Helvetica'),
+        ('FONTSIZE', (0, 0), (-1, -1), 11),
+        ('FONTNAME', (0, 0), (0, -1), 'Helvetica-Bold'),
+        ('TEXTCOLOR', (0, 0), (0, -1), colors.HexColor('#666666')),
+        ('VALIGN', (0, 0), (-1, -1), 'TOP'),
+        ('TOPPADDING', (0, 0), (-1, -1), 8),
+        ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
+    ]))
+    story.append(table)
+    
+    story.append(Spacer(1, 40))
+    
+    # Footer
+    footer_style = ParagraphStyle(
+        'Footer',
+        parent=styles['Normal'],
+        fontSize=9,
+        textColor=colors.gray,
+        alignment=1
+    )
+    story.append(Paragraph("Ce document est généré automatiquement par SB Pay.", footer_style))
+    story.append(Paragraph("Pour toute question, contactez support@sbpay.com", footer_style))
+    
+    doc.build(story)
+    buffer.seek(0)
+    
+    return StreamingResponse(
+        buffer,
+        media_type="application/pdf",
+        headers={"Content-Disposition": f"attachment; filename=sbpay_receipt_{transaction_id[:8]}.pdf"}
+    )
+
 # ==================== ZONES API ====================
 
 @api_router.get("/zones")
