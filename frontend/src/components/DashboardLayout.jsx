@@ -36,6 +36,7 @@ const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
   { href: '/admin/analytics', icon: BarChart3, label: 'Analytics & KPIs' },
   { href: '/admin/alerts', icon: AlertTriangle, label: 'Alertes & Seuils' },
+  { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
   { href: '/admin/transactions', icon: History, label: 'Transactions' },
   { href: '/admin/card-approvals', icon: CreditCard, label: 'Approbation Cartes' },
