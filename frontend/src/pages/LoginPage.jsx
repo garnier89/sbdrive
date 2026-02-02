@@ -17,8 +17,28 @@ export default function LoginPage() {
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hasQuickPin, setHasQuickPin] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  // Check if device has Quick PIN configured
+  useEffect(() => {
+    const checkQuickPin = async () => {
+      const deviceToken = localStorage.getItem(DEVICE_TOKEN_KEY);
+      if (deviceToken) {
+        try {
+          const res = await axios.post(`${API}/auth/quick-pin/check-device?device_token=${deviceToken}`);
+          if (res.data.valid) {
+            setHasQuickPin(true);
+          }
+        } catch (error) {
+          // Token invalid, remove it
+          localStorage.removeItem(DEVICE_TOKEN_KEY);
+        }
+      }
+    };
+    checkQuickPin();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
