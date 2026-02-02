@@ -44,7 +44,7 @@
   - Signalement de transactions
   - Suivi des réclamations
 
-#### 🔐 Module Sécurité & Gestion Avancée (NEW)
+#### 🔐 Module Sécurité & Gestion Avancée
 - [x] **Approbation des Cartes Bancaires**
   - Workflow: pending → active/rejected/blocked
   - Notification utilisateur lors de l'ajout
@@ -60,6 +60,26 @@
   - Gestion des administrateurs (créer, modifier, supprimer)
   - Permissions personnalisables par module
   - Logs de toutes les actions admin
+
+#### 📊 Module Analytics & KPIs (NEW)
+- [x] **Dashboard Analytics**
+  - KPIs en temps réel (Volume, Revenus, Transactions)
+  - Filtres par période (jour, semaine, mois, année)
+  - Comparaison avec période précédente
+  - Indicateurs de croissance
+- [x] **Revenus par Source**
+  - Répartition par type de transaction
+  - Pourcentages et volumes
+  - Barres de progression
+- [x] **Top Utilisateurs**
+  - Classement par volume
+  - Statistiques par utilisateur
+- [x] **Stats Mobile Money**
+  - Par corridor (Wave → Orange, etc.)
+  - Par opérateur source
+- [x] **Répartition Géographique**
+  - Utilisateurs par pays
+  - Transferts par destination
 
 #### QR Code Payments
 - [x] Generate QR codes for receiving payments
