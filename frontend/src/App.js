@@ -330,6 +330,9 @@ function App() {
             <Route path="/bill-payment" element={
               <ProtectedRoute><BillPaymentPage /></ProtectedRoute>
             } />
+            <Route path="/user-transfer" element={
+              <ProtectedRoute><UserTransferPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
