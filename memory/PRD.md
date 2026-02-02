@@ -4,6 +4,7 @@
 **Name:** SB Pay  
 **Type:** Online Payment System (PayPal-like)  
 **Created:** December 2025  
+**Last Updated:** February 2026  
 **Stack:** React + FastAPI + MongoDB
 
 ## Original Problem Statement
@@ -11,101 +12,155 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 
 ## User Personas
 1. **Client Standard** - Utilisateurs souhaitant envoyer/recevoir de l'argent et payer des factures
-2. **Administrateur** - Gestionnaires de la plateforme avec accès complet
+2. **Administrateur** - Gestionnaires de la plateforme avec accès complet aux outils de gestion
 
-## Core Requirements (Static)
-- ✅ Système d'authentification JWT
-- ✅ Multi-devises (EUR, USD, XOF)
-- ✅ Transferts entre utilisateurs
-- ✅ Dépôts via Stripe
-- ✅ Retraits
-- ✅ Paiement de factures
-- ✅ Historique des transactions
-- ✅ Dashboard Admin
-- ✅ Logo SB intégré
-- ✅ Badges Play Store / App Store
+## Core Requirements
+
+### Authentication & Security
+- [x] JWT-based authentication
+- [x] User registration with email validation
+- [x] Admin/User role separation
+- [x] 2FA setup flow (ready for Twilio integration)
+
+### Multi-Currency & Wallets
+- [x] Multi-currency wallets (EUR, USD, XOF, GBP, MAD, NGN)
+- [x] Real-time balance display
+- [x] Exchange rate conversion (static rates - ready for live API)
+
+### Payments & Transfers
+- [x] P2P transfers between users
+- [x] Stripe deposits (DEMO MODE)
+- [x] PayPal deposits (DEMO MODE)
+- [x] Mobile Money deposits (Orange, MTN, Wave, Moov) (DEMO MODE)
+- [x] Bank transfers
+- [x] Withdrawals
+- [x] Bill payments
+
+### Admin Features
+- [x] Admin Dashboard with statistics
+- [x] User management (activate/deactivate)
+- [x] Transaction monitoring
+- [x] KYC document management
+- [x] Geographic zone configuration
+
+### Internationalization
+- [x] Multi-language support (FR, EN, ES, PT, AR, DE, ZH)
+- [x] Language selector in settings
 
 ## What's Been Implemented
 
-### December 2025 - MVP Complete
-- **Backend API (FastAPI)**
-  - Auth: register, login, me endpoints
-  - Wallets: multi-currency (EUR, USD, XOF)
-  - Transfers: P2P money transfer
-  - Deposits: Stripe checkout integration
-  - Withdrawals: withdrawal requests
-  - Bills: pay various bill types
-  - Transactions: full history
-  - Admin: users, transactions, stats
+### Phase 1 - MVP (December 2025) - COMPLETE
+- Basic authentication (JWT)
+- Multi-currency wallets (EUR, USD, XOF)
+- P2P transfers
+- Transaction history
+- User dashboard
+- Admin dashboard (basic)
 
-- **Frontend (React)**
-  - Landing page with SB logo and store badges
-  - Login/Register with JWT
-  - Dashboard with wallet overview
-  - Transfer wizard (3 steps)
-  - Deposit via Stripe
-  - Withdrawal form
-  - Bill payment (electricity, phone, internet, water, rent)
-  - Transaction history with filters
-  - Profile page
-  - Admin dashboard
-  - Admin users management
-  - Admin transactions view
+### Phase 2 - Extended Features (February 2026) - COMPLETE (DEMO MODE)
+- PayPal integration (simulated)
+- Mobile Money providers (Orange, MTN, Wave, Moov - simulated)
+- Bank account linking
+- KYC document system
+- Admin zones configuration
+- Multi-language framework (7 languages)
+- 2FA setup flow (simulated)
+- Admin credit/debit accounts
+- Enhanced admin dashboard with volume statistics
 
-- **Design**
-  - Orange mat primary color (#E87E04)
-  - Manrope font for headings
-  - Inter font for body
-  - Light theme with Shadcn UI components
+## Current Status: DEMO MODE
+All third-party integrations are currently SIMULATED:
+- Stripe payments - checkout URLs generated but not real charges
+- PayPal - auto-capture simulation
+- Mobile Money - auto-confirm simulation
+- Twilio SMS (2FA) - logs to database instead of sending
+- Exchange rates - static rates in code
 
 ## Tech Architecture
 ```
 Frontend (React) --> FastAPI Backend --> MongoDB
-                         |
-                         v
-                   Stripe (Payments)
+    |                    |
+    |                    ├── Stripe (DEMO)
+    |                    ├── PayPal (DEMO)
+    |                    ├── Mobile Money (DEMO)
+    |                    └── Twilio SMS (DEMO)
+    |
+    └── Multi-language (i18n)
 ```
 
 ## API Endpoints
+
+### Auth
 - `/api/auth/register` - User registration
 - `/api/auth/login` - User login
 - `/api/auth/me` - Get current user
+- `/api/auth/verify-2fa` - Verify 2FA code
+
+### Wallets & Transactions
 - `/api/wallets` - Get user wallets
-- `/api/transfers` - Create transfer
-- `/api/deposits/checkout` - Create Stripe checkout
-- `/api/deposits/status/{session_id}` - Check payment status
-- `/api/withdrawals` - Request withdrawal
-- `/api/bills/pay` - Pay a bill
 - `/api/transactions` - Get transaction history
-- `/api/admin/*` - Admin endpoints
+- `/api/transfers` - Create P2P transfer
+- `/api/bank-transfers` - Create bank transfer
+
+### Deposits
+- `/api/deposit/stripe/checkout` - Create Stripe checkout
+- `/api/deposit/paypal` - Create PayPal deposit
+- `/api/deposit/mobile-money` - Create Mobile Money deposit
+
+### Bank Accounts
+- `/api/bank-accounts` - CRUD for linked bank accounts
+- `/api/banks` - Get available banks list
+
+### Admin
+- `/api/admin/stats` - Dashboard statistics
+- `/api/admin/users` - User management
+- `/api/admin/transactions` - All transactions
+- `/api/admin/documents` - KYC documents
+- `/api/admin/zones` - Geographic zones
+- `/api/admin/credit` - Credit user account
+- `/api/admin/debit` - Debit user account
+
+## Test Credentials
+- **Admin:** admin@sbpay.com / adminpassword
+- **User:** user@sbpay.com / userpassword
 
 ## Prioritized Backlog
 
-### P0 (Critical) - ✅ Done
-- Authentication system
-- Multi-currency wallets
-- Money transfers
-- Stripe deposits
+### P0 (Critical) - Requires User API Keys
+1. **Activate Live Stripe Integration** - User needs to provide Stripe API keys
+2. **Activate Live PayPal Integration** - User needs to provide PayPal API keys
+3. **Activate Live Mobile Money** - Recommend Flutterwave/Paydunya aggregator
+4. **Activate Live Twilio SMS** - User needs to provide Twilio credentials
+5. **Exchange Rate API** - Integrate live currency rates (ExchangeRate-API, Fixer)
 
-### P1 (Important) - Future
-- PayPal integration (requested but not fully implemented)
-- Email notifications
-- Mobile app (native iOS/Android)
-- 2FA authentication
+### P1 (Important)
+- Push notifications for transaction confirmations
+- Email notifications (Resend/SendGrid)
+- PDF receipt generation
 
 ### P2 (Nice to Have)
-- Currency conversion feature
-- Recurring payments
 - QR code payments
+- User rewards/loyalty system
 - Contact list for transfers
+- Recurring payments
 
-## Test Credentials
-- **Admin:** admin@sbpay.com / Admin123!
-- **User:** user@sbpay.com / User123!
+### Technical Debt
+- Refactor backend/server.py (~1900 lines) into modules:
+  - routes/auth.py
+  - routes/wallets.py
+  - routes/admin.py
+  - models/
+  - services/
 
-## Next Tasks
-1. Implement PayPal as additional payment method
-2. Add email notifications for transactions
-3. Implement 2FA for enhanced security
-4. Create mobile-responsive improvements
-5. Add PDF receipt generation
+## Files Reference
+- `/app/backend/server.py` - Main backend (monolithic)
+- `/app/frontend/src/App.js` - React router and contexts
+- `/app/frontend/src/pages/admin/*` - Admin pages
+- `/app/frontend/src/components/DashboardLayout.jsx` - Main layout
+- `/app/frontend/src/i18n/translations.js` - Language files
+- `/app/docs/DATABASE_SCHEMA.md` - Database documentation
+- `/app/docs/SCREENS_LIST.md` - UI screens documentation
+
+## Test Reports
+- `/app/test_reports/iteration_2.json` - Latest test results (100% pass rate)
+- `/app/backend/tests/test_sbpay_api.py` - API test suite
