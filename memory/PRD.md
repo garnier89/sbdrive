@@ -14,12 +14,33 @@
 
 #### Core Payment Features
 - [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, etc.)
-- [x] P2P transfers between users
+- [x] P2P transfers between users (by email)
+- [x] **P2P transfers via phone number (NEW)**
 - [x] Bank transfers
 - [x] Deposits (Stripe REAL, PayPal/MM DEMO)
 - [x] Withdrawals
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
+
+#### 📱 Transferts entre Utilisateurs SB Pay (NEW)
+- [x] **Recherche par numéro de téléphone**
+  - Validation utilisateur SB Pay
+  - Nom masqué pour confidentialité (Test U.)
+  - Numéro masqué (***4567)
+- [x] **Transferts P2P gratuits**
+  - 0% frais entre utilisateurs
+  - Instantané
+  - Multi-devises (XOF, EUR, USD)
+- [x] **Sécurité renforcée**
+  - OTP SMS pour montants > 100,000 XOF
+  - Limites journalières par statut KYC
+  - Max 500,000 XOF par transaction
+- [x] **Contacts récents**
+  - Historique des destinataires
+  - Sélection rapide
+- [x] **Historique P2P**
+  - Transferts envoyés/reçus
+  - Direction (sent/received)
 
 #### 🌍 Module Afrique
 - [x] **Transferts Mobile Money Inter-opérateurs**
