@@ -41,7 +41,7 @@
   - Numéro masqué après création (**** 7140)
   - OTP pour transactions élevées (prévu)
 
-#### 🔔 Notifications par Zone/Pays (NEW - Admin)
+#### 🔔 Notifications par Zone/Pays (Admin)
 - [x] **Ciblage géographique**
   - 10 pays africains (SN, CI, ML, BF, BJ, TG, CM, GH, NG) + France
   - Zones/villes par pays
@@ -57,6 +57,41 @@
   - Total campagnes, envoyées, programmées
   - Utilisateurs atteints
   - Historique avec détails
+
+#### 🔐 Coffre-Fort SB Pay (NEW)
+- [x] **Sécurisation de l'argent**
+  - Coffre-fort séparé du wallet principal
+  - PIN à 6 chiffres obligatoire
+  - Hashage SHA256 du PIN
+- [x] **Opérations**
+  - Dépôt depuis wallet vers coffre-fort
+  - Retrait du coffre-fort vers wallet
+  - Historique des transactions
+- [x] **Limites basées sur KYC**
+  - Unverified: max 500K, retrait/jour 50K
+  - Pending: max 2M, retrait/jour 200K
+  - Verified: max 50M, retrait/jour 5M
+- [x] **Sécurité**
+  - Verrouillage après 5 tentatives PIN échouées
+  - Délai de 30 minutes avant déblocage
+  - Notifications à chaque opération
+
+#### 📨 Centre d'Aide / Contact (NEW)
+- [x] **Création de tickets**
+  - 6 catégories (technique, transaction, compte, sécurité, suggestion, autre)
+  - 4 niveaux de priorité
+  - Suivi par numéro de ticket (TKT-XXXXXXXX)
+- [x] **Conversation**
+  - Messages utilisateur <-> support
+  - Historique complet
+- [x] **Gestion Admin**
+  - Liste tous les tickets
+  - Filtres (statut, priorité, recherche)
+  - Changer statut (ouvert, en cours, résolu, fermé)
+  - Répondre aux tickets
+- [x] **Notifications**
+  - Confirmation création ticket
+  - Notification nouvelle réponse
 
 #### 📱 Transferts entre Utilisateurs SB Pay
 - [x] **Recherche par numéro de téléphone**
