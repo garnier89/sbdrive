@@ -4,7 +4,7 @@
 **Name:** SB Pay  
 **Type:** Online Payment System (PayPal-like Fintech Platform)  
 **Created:** December 2025  
-**Last Updated:** December 2025  
+**Last Updated:** February 2026  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://moneyhub-sb.preview.emergentagent.com
 
@@ -22,7 +22,27 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
-#### 💳 Cartes Virtuelles (NEW)
+#### 🔑 Connexion Rapide par PIN (NEW - Feb 2026)
+- [x] **Configuration du PIN**
+  - PIN 4-6 chiffres personnalisé
+  - Vérification du mot de passe actuel requise
+  - Device token sécurisé généré (valide 30 jours)
+  - Hashage SHA256 avec salt
+- [x] **Connexion rapide**
+  - Page /quick-login dédiée
+  - Affichage du nom utilisateur masqué
+  - Saisie PIN avec indicateur visuel (dots)
+  - Verrouillage après 5 tentatives (30 min)
+- [x] **Gestion dans Paramètres**
+  - Section dédiée dans /settings
+  - Modifier le PIN (avec vérification PIN actuel)
+  - Désactiver le PIN
+  - Statut et dernière utilisation visibles
+- [x] **Intégration Login Page**
+  - Bouton "Connexion rapide avec PIN" si device configuré
+  - Navigation fluide vers /quick-login
+
+#### 💳 Cartes Virtuelles
 - [x] **Création de cartes virtuelles**
   - Génération instantanée VISA/Mastercard
   - Numéro, CVV, expiration (affichés une seule fois)
