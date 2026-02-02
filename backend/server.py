@@ -2634,6 +2634,66 @@ async def cancel_payment_link(link_id: str, current_user: dict = Depends(get_cur
     
     return {"message": "Payment link cancelled"}
 
+# ==================== SUPPORT SETTINGS (WhatsApp, Tawk.to) ====================
+
+class SupportSettings(BaseModel):
+    whatsapp_number: Optional[str] = None
+    whatsapp_message: Optional[str] = None
+    tawkto_property_id: Optional[str] = None
+    tawkto_widget_id: Optional[str] = None
+    support_email: Optional[str] = None
+    enabled: bool = True
+
+@api_router.get("/support/settings")
+async def get_support_settings():
+    """Get public support settings"""
+    settings = await db.app_settings.find_one({"type": "support"}, {"_id": 0})
+    if not settings:
+        return {
+            "whatsapp_number": "+33612345678",
+            "whatsapp_message": "Bonjour, j'ai une question concernant SB Pay.",
+            "tawkto_property_id": None,
+            "tawkto_widget_id": None,
+            "enabled": True
+        }
+    return settings
+
+@api_router.put("/admin/support/settings")
+async def update_support_settings(
+    settings: SupportSettings,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Update support settings (admin only)"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    settings_doc = {
+        "type": "support",
+        "whatsapp_number": settings.whatsapp_number,
+        "whatsapp_message": settings.whatsapp_message,
+        "tawkto_property_id": settings.tawkto_property_id,
+        "tawkto_widget_id": settings.tawkto_widget_id,
+        "support_email": settings.support_email,
+        "enabled": settings.enabled,
+        "updated_at": now,
+        "updated_by": current_user["id"]
+    }
+    
+    await db.app_settings.update_one(
+        {"type": "support"},
+        {"$set": settings_doc},
+        upsert=True
+    )
+    
+    return {"message": "Support settings updated"}
+
+# ==================== ZONES API ====================
+
+@api_router.get("/zones")
+async def get_zones():
+    """Get all zones"""
+    zones = await db.zones.find({}, {"_id": 0}).to_list(100)
+    return {"zones": zones}
+
 # ==================== UTILITY ROUTES ====================
 
 @api_router.get("/currencies")
