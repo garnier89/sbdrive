@@ -4,7 +4,7 @@ import { useAuth } from '@/App';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
