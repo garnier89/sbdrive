@@ -32,6 +32,8 @@ import BillPaymentPage from "@/pages/BillPaymentPage";
 import UserTransferPage from "@/pages/UserTransferPage";
 // Virtual Cards Page
 import VirtualCardsPage from "@/pages/VirtualCardsPage";
+// Admin Notifications Page
+import AdminNotificationsPage from "@/pages/admin/AdminNotificationsPage";
 // Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
