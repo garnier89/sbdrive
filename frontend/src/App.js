@@ -24,6 +24,11 @@ import PaymentLinksPage from "@/pages/PaymentLinksPage";
 import PayPage from "@/pages/PayPage";
 import QRPaymentPage from "@/pages/QRPaymentPage";
 import RewardsPage from "@/pages/RewardsPage";
+// Africa Module Pages
+import MobileMoneyTransferPage from "@/pages/MobileMoneyTransferPage";
+import AirtimePage from "@/pages/AirtimePage";
+import BillPaymentPage from "@/pages/BillPaymentPage";
+// Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminTransactions from "@/pages/admin/AdminTransactions";
