@@ -312,6 +312,17 @@ function App() {
               <ProtectedRoute><RewardsPage /></ProtectedRoute>
             } />
             
+            {/* Africa Module Routes */}
+            <Route path="/mobile-money-transfer" element={
+              <ProtectedRoute><MobileMoneyTransferPage /></ProtectedRoute>
+            } />
+            <Route path="/airtime" element={
+              <ProtectedRoute><AirtimePage /></ProtectedRoute>
+            } />
+            <Route path="/bill-payment" element={
+              <ProtectedRoute><BillPaymentPage /></ProtectedRoute>
+            } />
+            
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
             
