@@ -251,18 +251,37 @@
 - [x] 17 geographic zones
 - [x] Zone-specific payment methods
 
-### Database Collections (35+)
-users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**
+### Database Collections (40+)
+users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**, **vaults**, **vault_transactions**, **vault_activity_logs**, **support_tickets**, **admin_notifications**
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
-- **User:** user@sbpay.com / userpassword
+- **User:** user@sbpay.com / userpassword (vault PIN: 123456)
 - **User 2:** test@sbpay.com / testpassword (phone: +221771234567)
 
-## API Endpoints (90+)
+## API Endpoints (110+)
 See /app/docs/API_REFERENCE.md for complete list
 
-### Virtual Cards APIs (NEW)
+### Vault APIs (NEW)
+- `GET /api/vault/balance` - Solde et limites du coffre-fort
+- `POST /api/vault/set-pin` - Définir/modifier PIN
+- `POST /api/vault/verify-pin` - Vérifier PIN
+- `POST /api/vault/deposit` - Déposer depuis wallet
+- `POST /api/vault/withdraw` - Retirer vers wallet
+- `GET /api/vault/transactions` - Historique transactions coffre-fort
+
+### Contact/Support APIs (NEW)
+- `GET /api/contact/categories` - Catégories et priorités
+- `POST /api/contact/submit` - Créer ticket
+- `GET /api/contact/tickets` - Mes tickets (utilisateur)
+- `GET /api/contact/tickets/{id}` - Détails ticket
+- `POST /api/contact/tickets/{id}/reply` - Répondre au ticket
+- `GET /api/contact/admin/tickets` - Tous les tickets (admin)
+- `GET /api/contact/admin/tickets/{id}` - Détails ticket (admin)
+- `POST /api/contact/admin/tickets/{id}/reply` - Réponse admin
+- `PUT /api/contact/admin/tickets/{id}/status` - Changer statut
+
+### Virtual Cards APIs
 - `POST /api/virtual-card/create` - Créer une carte virtuelle
 - `GET /api/virtual-card/list` - Lister les cartes
 - `GET /api/virtual-card/{id}` - Détails d'une carte
