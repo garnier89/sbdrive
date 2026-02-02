@@ -394,6 +394,281 @@ export default function SettingsPage() {
           </CardContent>
         </Card>
 
+        {/* Quick PIN Login Settings */}
+        <Card data-testid="quick-pin-settings">
+          <CardHeader>
+            <CardTitle className="font-['Manrope'] flex items-center gap-2">
+              <Fingerprint className="w-5 h-5 text-primary" />
+              Connexion Rapide par PIN
+              {quickPinStatus?.enabled && (
+                <Badge className="bg-green-100 text-green-700 ml-2">Activé</Badge>
+              )}
+            </CardTitle>
+            <CardDescription>
+              Connectez-vous rapidement avec un code PIN à 4-6 chiffres sur cet appareil
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            {loadingQuickPin ? (
+              <div className="flex items-center justify-center py-8">
+                <Loader2 className="w-6 h-6 animate-spin text-primary" />
+              </div>
+            ) : quickPinStatus?.enabled ? (
+              <div className="space-y-4">
+                {/* PIN is enabled */}
+                <div className="flex items-center gap-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg">
+                  <Check className="w-6 h-6 text-green-600" />
+                  <div className="flex-1">
+                    <p className="font-medium text-green-700 dark:text-green-400">
+                      PIN rapide activé
+                    </p>
+                    <p className="text-sm text-green-600 dark:text-green-500">
+                      Dernière utilisation: {quickPinStatus.last_used ? 
+                        new Date(quickPinStatus.last_used).toLocaleDateString('fr-FR', {
+                          day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        }) : 'Jamais'}
+                    </p>
+                    <p className="text-xs text-green-600 dark:text-green-500">
+                      Expire le: {new Date(quickPinStatus.expires_at).toLocaleDateString('fr-FR')}
+                    </p>
+                  </div>
+                </div>
+
+                {/* Change PIN */}
+                {showChangePin ? (
+                  <div className="space-y-4 p-4 bg-muted rounded-lg">
+                    <h4 className="font-medium">Modifier le PIN</h4>
+                    <div className="space-y-2">
+                      <Label>PIN actuel</Label>
+                      <Input
+                        type={showPin ? "text" : "password"}
+                        maxLength={6}
+                        placeholder="••••••"
+                        value={currentPin}
+                        onChange={(e) => setCurrentPin(e.target.value.replace(/\D/g, ''))}
+                        className="text-center text-xl tracking-widest"
+                        data-testid="current-pin-input"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label>Nouveau PIN (4-6 chiffres)</Label>
+                      <Input
+                        type={showPin ? "text" : "password"}
+                        maxLength={6}
+                        placeholder="••••••"
+                        value={newPinChange}
+                        onChange={(e) => setNewPinChange(e.target.value.replace(/\D/g, ''))}
+                        className="text-center text-xl tracking-widest"
+                        data-testid="new-pin-change-input"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setShowChangePin(false);
+                          setCurrentPin('');
+                          setNewPinChange('');
+                        }}
+                      >
+                        Annuler
+                      </Button>
+                      <Button 
+                        onClick={handleChangeQuickPin}
+                        disabled={savingPin || currentPin.length < 4 || newPinChange.length < 4}
+                        data-testid="confirm-change-pin-btn"
+                      >
+                        {savingPin ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                        Modifier
+                      </Button>
+                    </div>
+                  </div>
+                ) : showDisablePin ? (
+                  <div className="space-y-4 p-4 bg-red-50 dark:bg-red-950 rounded-lg">
+                    <h4 className="font-medium text-red-700 dark:text-red-400">Désactiver le PIN rapide</h4>
+                    <p className="text-sm text-red-600 dark:text-red-500">
+                      Entrez votre PIN actuel pour confirmer la désactivation
+                    </p>
+                    <div className="space-y-2">
+                      <Label>PIN actuel</Label>
+                      <Input
+                        type={showPin ? "text" : "password"}
+                        maxLength={6}
+                        placeholder="••••••"
+                        value={disablePin}
+                        onChange={(e) => setDisablePin(e.target.value.replace(/\D/g, ''))}
+                        className="text-center text-xl tracking-widest"
+                        data-testid="disable-pin-input"
+                      />
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        variant="outline" 
+                        onClick={() => {
+                          setShowDisablePin(false);
+                          setDisablePin('');
+                        }}
+                      >
+                        Annuler
+                      </Button>
+                      <Button 
+                        variant="destructive"
+                        onClick={handleDisableQuickPin}
+                        disabled={savingPin || disablePin.length < 4}
+                        data-testid="confirm-disable-pin-btn"
+                      >
+                        {savingPin ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                        Désactiver
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-wrap gap-3">
+                    <Button 
+                      variant="outline"
+                      onClick={() => setShowChangePin(true)}
+                      data-testid="change-pin-btn"
+                    >
+                      <RefreshCw className="w-4 h-4 mr-2" />
+                      Modifier le PIN
+                    </Button>
+                    <Button 
+                      variant="destructive"
+                      onClick={() => setShowDisablePin(true)}
+                      data-testid="disable-pin-btn"
+                    >
+                      <Trash2 className="w-4 h-4 mr-2" />
+                      Désactiver
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ) : showPinSetup ? (
+              /* Setup PIN Form */
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label>Nouveau PIN (4-6 chiffres)</Label>
+                  <div className="relative">
+                    <Input
+                      type={showPin ? "text" : "password"}
+                      maxLength={6}
+                      placeholder="••••••"
+                      value={newPin}
+                      onChange={(e) => setNewPin(e.target.value.replace(/\D/g, ''))}
+                      className="text-center text-xl tracking-widest pr-10"
+                      data-testid="new-pin-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPin(!showPin)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                  {/* PIN dots indicator */}
+                  <div className="flex justify-center gap-2 pt-1">
+                    {[...Array(6)].map((_, i) => (
+                      <div
+                        key={i}
+                        className={`w-2.5 h-2.5 rounded-full transition-colors ${
+                          i < newPin.length ? 'bg-primary' : 'bg-muted'
+                        }`}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Confirmer le PIN</Label>
+                  <Input
+                    type={showPin ? "text" : "password"}
+                    maxLength={6}
+                    placeholder="••••••"
+                    value={confirmPin}
+                    onChange={(e) => setConfirmPin(e.target.value.replace(/\D/g, ''))}
+                    className="text-center text-xl tracking-widest"
+                    data-testid="confirm-pin-input"
+                  />
+                  {confirmPin && newPin && confirmPin !== newPin && (
+                    <p className="text-xs text-red-500">Les PINs ne correspondent pas</p>
+                  )}
+                  {confirmPin && newPin && confirmPin === newPin && newPin.length >= 4 && (
+                    <p className="text-xs text-green-500">✓ Les PINs correspondent</p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Mot de passe actuel (pour vérification)</Label>
+                  <div className="relative">
+                    <Input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Votre mot de passe"
+                      value={currentPassword}
+                      onChange={(e) => setCurrentPassword(e.target.value)}
+                      className="pr-10"
+                      data-testid="password-verify-input"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    >
+                      {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    </button>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <Button 
+                    variant="outline" 
+                    onClick={() => {
+                      setShowPinSetup(false);
+                      setNewPin('');
+                      setConfirmPin('');
+                      setCurrentPassword('');
+                    }}
+                  >
+                    Annuler
+                  </Button>
+                  <Button 
+                    onClick={handleSetupQuickPin}
+                    disabled={savingPin || newPin.length < 4 || newPin !== confirmPin || !currentPassword}
+                    data-testid="save-pin-btn"
+                  >
+                    {savingPin ? (
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    ) : (
+                      <Fingerprint className="w-4 h-4 mr-2" />
+                    )}
+                    Activer le PIN
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              /* Not enabled - show setup prompt */
+              <div className="space-y-4">
+                <div className="p-4 bg-muted rounded-lg">
+                  <h4 className="font-medium mb-2">Avantages du PIN rapide:</h4>
+                  <ul className="text-sm text-muted-foreground space-y-1">
+                    <li>• Connexion en quelques secondes</li>
+                    <li>• Plus besoin de saisir email/mot de passe</li>
+                    <li>• Sécurisé par verrouillage après 5 tentatives</li>
+                    <li>• Valide 30 jours sur cet appareil</li>
+                  </ul>
+                </div>
+                <Button 
+                  onClick={() => setShowPinSetup(true)}
+                  data-testid="setup-pin-btn"
+                >
+                  <Fingerprint className="w-4 h-4 mr-2" />
+                  Configurer le PIN rapide
+                </Button>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
         {/* Demo Notice */}
         <Card className="border-orange-200 bg-orange-50 dark:bg-orange-950 dark:border-orange-800">
           <CardContent className="p-4">
