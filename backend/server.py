@@ -2843,6 +2843,206 @@ async def cancel_payment_link(link_id: str, current_user: dict = Depends(get_cur
     
     return {"message": "Payment link cancelled"}
 
+# ==================== QR CODE PAYMENTS ====================
+
+class QRCodeCreate(BaseModel):
+    amount: float
+    currency: str = "EUR"
+    description: Optional[str] = None
+
+@api_router.post("/qr/generate")
+async def generate_qr_code(qr_data: QRCodeCreate, current_user: dict = Depends(get_current_user)):
+    """Generate a QR code for receiving payment"""
+    if qr_data.amount <= 0:
+        raise HTTPException(status_code=400, detail="Amount must be positive")
+    
+    now = datetime.now(timezone.utc)
+    qr_id = str(uuid.uuid4())
+    short_code = uuid.uuid4().hex[:8].upper()
+    
+    qr_doc = {
+        "id": qr_id,
+        "code": short_code,
+        "recipient_id": current_user["id"],
+        "recipient_email": current_user["email"],
+        "amount": qr_data.amount,
+        "currency": qr_data.currency.upper(),
+        "description": qr_data.description,
+        "status": "active",  # active, paid, expired
+        "paid_at": None,
+        "paid_by": None,
+        "transaction_id": None,
+        "expires_at": (now + timedelta(hours=24)).isoformat(),
+        "created_at": now.isoformat()
+    }
+    
+    await db.qr_payments.insert_one(qr_doc)
+    
+    return {
+        "id": qr_id,
+        "code": short_code,
+        "amount": qr_data.amount,
+        "currency": qr_data.currency.upper(),
+        "expires_at": qr_doc["expires_at"]
+    }
+
+@api_router.get("/qr/{code}")
+async def get_qr_payment(code: str):
+    """Get QR payment details"""
+    qr = await db.qr_payments.find_one(
+        {"$or": [{"id": code}, {"code": code}]},
+        {"_id": 0}
+    )
+    
+    if not qr:
+        raise HTTPException(status_code=404, detail="QR Code not found")
+    
+    # Check expiration
+    if qr["status"] == "active":
+        if datetime.fromisoformat(qr["expires_at"]) < datetime.now(timezone.utc):
+            await db.qr_payments.update_one({"id": qr["id"]}, {"$set": {"status": "expired"}})
+            qr["status"] = "expired"
+    
+    return {
+        "code": qr["code"],
+        "amount": qr["amount"],
+        "currency": qr["currency"],
+        "description": qr.get("description"),
+        "recipient_email": qr["recipient_email"],
+        "status": qr["status"],
+        "expires_at": qr["expires_at"]
+    }
+
+@api_router.post("/qr/{code}/pay")
+async def pay_qr_code(
+    code: str,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_current_user)
+):
+    """Pay a QR code from wallet"""
+    qr = await db.qr_payments.find_one(
+        {"$or": [{"id": code}, {"code": code}]},
+        {"_id": 0}
+    )
+    
+    if not qr:
+        raise HTTPException(status_code=404, detail="QR Code not found")
+    
+    if qr["status"] != "active":
+        raise HTTPException(status_code=400, detail=f"QR Code is {qr['status']}")
+    
+    if datetime.fromisoformat(qr["expires_at"]) < datetime.now(timezone.utc):
+        await db.qr_payments.update_one({"id": qr["id"]}, {"$set": {"status": "expired"}})
+        raise HTTPException(status_code=400, detail="QR Code has expired")
+    
+    if qr["recipient_id"] == current_user["id"]:
+        raise HTTPException(status_code=400, detail="Cannot pay your own QR code")
+    
+    # Check payer wallet balance
+    payer_wallet = await db.wallets.find_one(
+        {"user_id": current_user["id"], "currency": qr["currency"]},
+        {"_id": 0}
+    )
+    
+    if not payer_wallet or payer_wallet["balance"] < qr["amount"]:
+        raise HTTPException(status_code=400, detail="Insufficient balance")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    transaction_id = str(uuid.uuid4())
+    
+    # Deduct from payer
+    await db.wallets.update_one(
+        {"id": payer_wallet["id"]},
+        {"$inc": {"balance": -qr["amount"]}, "$set": {"updated_at": now}}
+    )
+    
+    # Credit to recipient
+    recipient_wallet = await db.wallets.find_one(
+        {"user_id": qr["recipient_id"], "currency": qr["currency"]},
+        {"_id": 0}
+    )
+    if recipient_wallet:
+        await db.wallets.update_one(
+            {"id": recipient_wallet["id"]},
+            {"$inc": {"balance": qr["amount"]}, "$set": {"updated_at": now}}
+        )
+    
+    # Create transaction for payer
+    payer_transaction = {
+        "id": transaction_id,
+        "user_id": current_user["id"],
+        "type": "qr_payment",
+        "method": "wallet",
+        "amount": -qr["amount"],
+        "fee": 0,
+        "currency": qr["currency"],
+        "status": "completed",
+        "reference": qr["code"],
+        "description": f"QR Payment: {qr.get('description', 'N/A')}",
+        "recipient_id": qr["recipient_id"],
+        "recipient_email": qr["recipient_email"],
+        "created_at": now
+    }
+    await db.transactions.insert_one(payer_transaction)
+    
+    # Create transaction for recipient
+    recipient_transaction = {
+        "id": str(uuid.uuid4()),
+        "user_id": qr["recipient_id"],
+        "type": "qr_received",
+        "method": "wallet",
+        "amount": qr["amount"],
+        "fee": 0,
+        "currency": qr["currency"],
+        "status": "completed",
+        "reference": qr["code"],
+        "description": f"QR Payment received from {current_user['email']}",
+        "sender_id": current_user["id"],
+        "sender_email": current_user["email"],
+        "created_at": now
+    }
+    await db.transactions.insert_one(recipient_transaction)
+    
+    # Update QR status
+    await db.qr_payments.update_one(
+        {"id": qr["id"]},
+        {"$set": {
+            "status": "paid",
+            "paid_at": now,
+            "paid_by": current_user["id"],
+            "transaction_id": transaction_id
+        }}
+    )
+    
+    # Send notifications
+    background_tasks.add_task(
+        send_push_notification,
+        qr["recipient_id"],
+        "Payment Received",
+        f"You received {qr['amount']} {qr['currency']} via QR Code"
+    )
+    
+    return {
+        "message": "Payment successful",
+        "transaction_id": transaction_id,
+        "amount": qr["amount"],
+        "currency": qr["currency"]
+    }
+
+@api_router.get("/qr/my/codes")
+async def get_my_qr_codes(
+    status: Optional[str] = None,
+    limit: int = 20,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get QR codes created by current user"""
+    query = {"recipient_id": current_user["id"]}
+    if status:
+        query["status"] = status
+    
+    codes = await db.qr_payments.find(query, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
+    return {"codes": codes}
+
 # ==================== SUPPORT SETTINGS (WhatsApp, Tawk.to) ====================
 
 class SupportSettings(BaseModel):
