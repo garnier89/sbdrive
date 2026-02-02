@@ -2339,6 +2339,301 @@ async def admin_get_logs(limit: int = 100, admin: dict = Depends(get_admin_user)
     logs = await db.admin_logs.find({}, {"_id": 0}).sort("created_at", -1).limit(limit).to_list(limit)
     return {"logs": logs}
 
+# ==================== ADMIN PAYMENT GATEWAYS ====================
+
+class PaymentGatewayConfig(BaseModel):
+    enabled: bool = False
+    config: Dict[str, str] = {}
+    supported_currencies: List[str] = []
+    allowed_zones: List[str] = []
+
+@api_router.get("/admin/payment-gateways")
+async def get_payment_gateways(current_user: dict = Depends(get_admin_user)):
+    """Get all payment gateway configurations"""
+    gateways = await db.payment_gateways.find({}, {"_id": 0}).to_list(20)
+    return {"gateways": gateways}
+
+@api_router.get("/admin/payment-gateways/{gateway_id}")
+async def get_payment_gateway(gateway_id: str, current_user: dict = Depends(get_admin_user)):
+    """Get specific payment gateway configuration"""
+    gateway = await db.payment_gateways.find_one({"gateway_id": gateway_id}, {"_id": 0})
+    if not gateway:
+        return {"gateway_id": gateway_id, "enabled": False, "config": {}}
+    return gateway
+
+@api_router.put("/admin/payment-gateways/{gateway_id}")
+async def update_payment_gateway(
+    gateway_id: str,
+    config: PaymentGatewayConfig,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_admin_user)
+):
+    """Update payment gateway configuration"""
+    now = datetime.now(timezone.utc).isoformat()
+    
+    gateway_doc = {
+        "gateway_id": gateway_id,
+        "enabled": config.enabled,
+        "config": config.config,
+        "supported_currencies": config.supported_currencies,
+        "allowed_zones": config.allowed_zones,
+        "updated_at": now,
+        "updated_by": current_user["id"]
+    }
+    
+    await db.payment_gateways.update_one(
+        {"gateway_id": gateway_id},
+        {"$set": gateway_doc, "$setOnInsert": {"created_at": now}},
+        upsert=True
+    )
+    
+    # Log admin action
+    background_tasks.add_task(
+        log_admin_action,
+        current_user["id"],
+        "update_gateway",
+        "payment_gateway",
+        gateway_id,
+        {"enabled": config.enabled}
+    )
+    
+    return {"message": "Gateway configuration updated", "gateway_id": gateway_id}
+
+# ==================== PAYMENT LINKS ====================
+
+class PaymentLinkCreate(BaseModel):
+    amount: float
+    currency: str = "EUR"
+    description: str
+    expires_in_hours: int = 24
+    allowed_methods: List[str] = ["card", "wallet"]
+    customer_email: Optional[str] = None
+
+class PaymentLinkPay(BaseModel):
+    method: str  # card, wallet, mobile_money
+    wallet_currency: Optional[str] = None  # For wallet payments
+    mobile_money_account_id: Optional[str] = None  # For MM payments
+
+@api_router.post("/payment-links")
+async def create_payment_link(
+    link_data: PaymentLinkCreate,
+    current_user: dict = Depends(get_current_user)
+):
+    """Create a shareable payment link"""
+    now = datetime.now(timezone.utc)
+    link_id = str(uuid.uuid4())
+    short_code = uuid.uuid4().hex[:8].upper()
+    
+    link_doc = {
+        "id": link_id,
+        "short_code": short_code,
+        "created_by": current_user["id"],
+        "creator_email": current_user["email"],
+        "amount": link_data.amount,
+        "currency": link_data.currency.upper(),
+        "description": link_data.description,
+        "allowed_methods": link_data.allowed_methods,
+        "customer_email": link_data.customer_email,
+        "status": "active",  # active, paid, expired, cancelled
+        "paid_at": None,
+        "paid_by": None,
+        "transaction_id": None,
+        "expires_at": (now + timedelta(hours=link_data.expires_in_hours)).isoformat(),
+        "created_at": now.isoformat()
+    }
+    
+    await db.payment_links.insert_one(link_doc)
+    
+    return {
+        "id": link_id,
+        "short_code": short_code,
+        "payment_url": f"/pay/{short_code}",
+        "amount": link_data.amount,
+        "currency": link_data.currency.upper(),
+        "expires_at": link_doc["expires_at"]
+    }
+
+@api_router.get("/payment-links")
+async def get_my_payment_links(
+    status: Optional[str] = None,
+    limit: int = 20,
+    offset: int = 0,
+    current_user: dict = Depends(get_current_user)
+):
+    """Get payment links created by current user"""
+    query = {"created_by": current_user["id"]}
+    if status:
+        query["status"] = status
+    
+    links = await db.payment_links.find(query, {"_id": 0}).sort("created_at", -1).skip(offset).limit(limit).to_list(limit)
+    total = await db.payment_links.count_documents(query)
+    
+    return {"links": links, "total": total}
+
+@api_router.get("/payment-links/{link_id}")
+async def get_payment_link(link_id: str):
+    """Get payment link details (public)"""
+    # Try by ID or short_code
+    link = await db.payment_links.find_one(
+        {"$or": [{"id": link_id}, {"short_code": link_id}]},
+        {"_id": 0}
+    )
+    
+    if not link:
+        raise HTTPException(status_code=404, detail="Payment link not found")
+    
+    # Check expiration
+    if link["status"] == "active":
+        if datetime.fromisoformat(link["expires_at"]) < datetime.now(timezone.utc):
+            await db.payment_links.update_one({"id": link["id"]}, {"$set": {"status": "expired"}})
+            link["status"] = "expired"
+    
+    # Don't expose sensitive creator info
+    return {
+        "id": link["id"],
+        "short_code": link["short_code"],
+        "amount": link["amount"],
+        "currency": link["currency"],
+        "description": link["description"],
+        "allowed_methods": link["allowed_methods"],
+        "status": link["status"],
+        "expires_at": link["expires_at"]
+    }
+
+@api_router.post("/payment-links/{link_id}/pay")
+async def pay_payment_link(
+    link_id: str,
+    payment: PaymentLinkPay,
+    background_tasks: BackgroundTasks,
+    current_user: dict = Depends(get_current_user)
+):
+    """Pay a payment link"""
+    link = await db.payment_links.find_one(
+        {"$or": [{"id": link_id}, {"short_code": link_id}]},
+        {"_id": 0}
+    )
+    
+    if not link:
+        raise HTTPException(status_code=404, detail="Payment link not found")
+    
+    if link["status"] != "active":
+        raise HTTPException(status_code=400, detail=f"Payment link is {link['status']}")
+    
+    if datetime.fromisoformat(link["expires_at"]) < datetime.now(timezone.utc):
+        await db.payment_links.update_one({"id": link["id"]}, {"$set": {"status": "expired"}})
+        raise HTTPException(status_code=400, detail="Payment link has expired")
+    
+    if payment.method not in link["allowed_methods"]:
+        raise HTTPException(status_code=400, detail="Payment method not allowed for this link")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    transaction_id = str(uuid.uuid4())
+    
+    # Process payment based on method
+    if payment.method == "wallet":
+        # Pay from wallet
+        currency = payment.wallet_currency or link["currency"]
+        wallet = await db.wallets.find_one(
+            {"user_id": current_user["id"], "currency": currency},
+            {"_id": 0}
+        )
+        
+        if not wallet or wallet["balance"] < link["amount"]:
+            raise HTTPException(status_code=400, detail="Insufficient wallet balance")
+        
+        # Deduct from payer
+        await db.wallets.update_one(
+            {"id": wallet["id"]},
+            {"$inc": {"balance": -link["amount"]}, "$set": {"updated_at": now}}
+        )
+        
+        # Credit to link creator
+        creator_wallet = await db.wallets.find_one(
+            {"user_id": link["created_by"], "currency": link["currency"]},
+            {"_id": 0}
+        )
+        if creator_wallet:
+            await db.wallets.update_one(
+                {"id": creator_wallet["id"]},
+                {"$inc": {"balance": link["amount"]}, "$set": {"updated_at": now}}
+            )
+        
+        # Create transaction
+        transaction = {
+            "id": transaction_id,
+            "user_id": current_user["id"],
+            "type": "payment_link",
+            "method": "wallet",
+            "amount": -link["amount"],
+            "fee": 0,
+            "currency": link["currency"],
+            "status": "completed",
+            "reference": link["short_code"],
+            "description": f"Payment: {link['description']}",
+            "payment_link_id": link["id"],
+            "recipient_id": link["created_by"],
+            "created_at": now
+        }
+        await db.transactions.insert_one(transaction)
+        
+        # Update link status
+        await db.payment_links.update_one(
+            {"id": link["id"]},
+            {"$set": {
+                "status": "paid",
+                "paid_at": now,
+                "paid_by": current_user["id"],
+                "transaction_id": transaction_id
+            }}
+        )
+        
+        # Send notifications
+        background_tasks.add_task(
+            send_push_notification,
+            link["created_by"],
+            "Payment Received",
+            f"You received {link['amount']} {link['currency']} from {current_user['email']}"
+        )
+        
+        return {
+            "message": "Payment successful",
+            "transaction_id": transaction_id,
+            "amount": link["amount"],
+            "currency": link["currency"]
+        }
+    
+    elif payment.method == "card":
+        # Redirect to Stripe checkout
+        return {
+            "redirect": "stripe_checkout",
+            "message": "Redirect to card payment",
+            "payment_link_id": link["id"]
+        }
+    
+    else:
+        raise HTTPException(status_code=400, detail="Payment method not implemented")
+
+@api_router.delete("/payment-links/{link_id}")
+async def cancel_payment_link(link_id: str, current_user: dict = Depends(get_current_user)):
+    """Cancel a payment link"""
+    link = await db.payment_links.find_one(
+        {"id": link_id, "created_by": current_user["id"]},
+        {"_id": 0}
+    )
+    
+    if not link:
+        raise HTTPException(status_code=404, detail="Payment link not found")
+    
+    if link["status"] != "active":
+        raise HTTPException(status_code=400, detail="Cannot cancel this payment link")
+    
+    await db.payment_links.update_one(
+        {"id": link_id},
+        {"$set": {"status": "cancelled", "cancelled_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Payment link cancelled"}
+
 # ==================== UTILITY ROUTES ====================
 
 @api_router.get("/currencies")
