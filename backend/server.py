@@ -3451,6 +3451,14 @@ app.include_router(virtual_cards_router)
 setup_notifications_zone_routes(db, get_admin_user, send_push_notification, send_sms_notification, send_email_notification)
 app.include_router(notifications_zone_router)
 
+# Setup and include Vault module routes
+setup_vault_routes(db, get_current_user, send_push_notification, send_sms_notification, send_email_notification)
+app.include_router(vault_router)
+
+# Setup and include Contact module routes
+setup_contact_routes(db, get_current_user, get_admin_user, send_push_notification, send_email_notification)
+app.include_router(contact_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
