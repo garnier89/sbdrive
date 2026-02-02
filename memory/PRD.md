@@ -15,7 +15,7 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 1. **Client Standard** - Utilisateurs souhaitant envoyer/recevoir de l'argent et payer des factures
 2. **Administrateur** - Gestionnaires de la plateforme avec accès complet aux outils de gestion
 
-## Database Schema (16 Collections)
+## Database Schema (18 Collections)
 1. **users** - User accounts with first_name, last_name, status, default_currency
 2. **wallets** - Multi-currency wallets per user
 3. **cards** - Saved payment cards (Stripe tokens)
@@ -32,165 +32,125 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 14. **admin_logs** - Admin action audit trail
 15. **exchange_rates** - Currency conversion rates
 16. **payment_transactions** - Stripe/PayPal payment tracking
+17. **payment_gateways** - Admin payment gateway configurations
+18. **payment_links** - Shareable payment links
+19. **app_settings** - Application settings (support, etc.)
 
-## Core Requirements
+## Implemented Features
 
-### Authentication & Security
+### ✅ User Profile (NEW)
+- Personal information management (first_name, last_name, phone, country)
+- Language and currency preferences
+- Security settings (password change, 2FA setup)
+- Linked payments overview (cards, bank accounts, mobile money)
+- KYC document management
+
+### ✅ Payment Gateways Admin (NEW)
+- Admin configuration for: Stripe, PayPal, Orange Money, MTN, Wave, Moov Money, Flutterwave
+- Enable/disable per gateway
+- API key management (encrypted)
+- Webhook URL configuration
+- Supported currencies per gateway
+
+### ✅ Payment Links (NEW)
+- Create shareable payment links
+- Set amount, currency, description, expiration
+- Pay via wallet or card
+- Track link status (active, paid, expired, cancelled)
+- API: POST/GET/DELETE /payment-links, POST /payment-links/{id}/pay
+
+### ✅ WhatsApp Support (NEW)
+- Floating WhatsApp button on all pages
+- Direct contact via WhatsApp Business
+- Configurable phone number and message
+
+### ✅ Chat Support (Ready for Tawk.to)
+- Tawk.to integration ready
+- Configurable via admin settings
+- Free live chat support
+
+### Core Features
 - [x] JWT-based authentication
-- [x] User registration with first_name/last_name
-- [x] Admin/User role separation
-- [x] User status management (active/suspended/deleted)
-- [x] 2FA setup flow (ready for Twilio integration)
-
-### Multi-Currency & Wallets
-- [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, XAF, GBP, MAD, NGN, GHS, KES, ZAR, CAD, CHF)
-- [x] Real-time balance display
-- [x] Exchange rate conversion API
-- [x] Currency conversion endpoint
-
-### Payment Methods
-- [x] Cards management (add, delete, set default)
-- [x] Bank accounts management
-- [x] Mobile money accounts (6 providers)
-- [x] Stripe deposits (REAL MODE with test key)
-- [x] PayPal deposits (DEMO MODE)
-- [x] Mobile Money deposits (DEMO MODE)
-
-### Transfers
-- [x] P2P wallet transfers
+- [x] Multi-currency wallets (12 currencies)
+- [x] P2P transfers
 - [x] Bank transfers
-- [x] Withdrawals
-
-### Admin Features
-- [x] Admin Dashboard with statistics
-- [x] User management (activate/deactivate/suspend)
-- [x] Transaction monitoring
+- [x] Stripe deposits (REAL with test key)
+- [x] PayPal deposits (DEMO)
+- [x] Mobile Money (DEMO)
+- [x] Transaction history
+- [x] 8 languages support
+- [x] Admin dashboard with stats
+- [x] User management
 - [x] KYC document management
 - [x] Geographic zone configuration
-- [x] Credit/Debit user accounts
-
-### Internationalization
-- [x] 8 languages (FR, EN, ES, PT, AR, DE, ZH, SW)
-- [x] 17 geographic zones
-- [x] Zone-specific payment methods & fees
-
-## What's Been Implemented
-
-### Phase 1 - MVP (December 2025) - COMPLETE
-- Basic authentication (JWT)
-- Multi-currency wallets (EUR, USD, XOF)
-- P2P transfers
-- Transaction history
-- User dashboard
-- Admin dashboard (basic)
-
-### Phase 2 - Extended Features (February 2026) - COMPLETE (DEMO MODE)
-- PayPal integration (simulated)
-- Mobile Money providers (Orange, MTN, Wave, Moov - simulated)
-- Bank account linking
-- KYC document system
-- Admin zones configuration
-- Multi-language framework (7 languages)
-- 2FA setup flow (simulated)
-- Admin credit/debit accounts
-- Enhanced admin dashboard with volume statistics
-
-## Current Status: MIXED MODE
-**REAL integrations:**
-- ✅ Stripe payments - REAL checkout with test key (sk_test_emergent)
-- ✅ Stripe webhooks - Implemented for payment confirmations
-
-**DEMO/Simulated integrations:**
-- PayPal - auto-capture simulation (needs API keys)
-- Mobile Money - auto-confirm simulation (needs Flutterwave/Paydunya)
-- Twilio SMS (2FA) - logs to database instead of sending
-- Exchange rates - static rates in code
-
-## Tech Architecture
-```
-Frontend (React) --> FastAPI Backend --> MongoDB
-    |                    |
-    |                    ├── Stripe (DEMO)
-    |                    ├── PayPal (DEMO)
-    |                    ├── Mobile Money (DEMO)
-    |                    └── Twilio SMS (DEMO)
-    |
-    └── Multi-language (i18n)
-```
 
 ## API Endpoints
 
-### Auth
-- `/api/auth/register` - User registration
-- `/api/auth/login` - User login
-- `/api/auth/me` - Get current user
-- `/api/auth/verify-2fa` - Verify 2FA code
+### User Profile
+- `GET/PUT /api/user/profile` - Profile management
+- `PUT /api/user/password` - Change password
+- `POST /api/user/avatar` - Upload avatar
+- `GET /api/documents/my` - Get user's documents
+- `POST /api/documents/upload` - Upload KYC document
 
-### Wallets & Transactions
-- `/api/wallets` - Get user wallets
-- `/api/transactions` - Get transaction history
-- `/api/transfers` - Create P2P transfer
-- `/api/bank-transfers` - Create bank transfer
+### Payment Links
+- `POST /api/payment-links` - Create payment link
+- `GET /api/payment-links` - List user's payment links
+- `GET /api/payment-links/{id}` - Get link details (public)
+- `POST /api/payment-links/{id}/pay` - Pay a link
+- `DELETE /api/payment-links/{id}` - Cancel a link
 
-### Deposits
-- `/api/deposit/stripe/checkout` - Create Stripe checkout
-- `/api/deposit/paypal` - Create PayPal deposit
-- `/api/deposit/mobile-money` - Create Mobile Money deposit
+### Admin - Payment Gateways
+- `GET /api/admin/payment-gateways` - List all gateways
+- `GET /api/admin/payment-gateways/{id}` - Get gateway config
+- `PUT /api/admin/payment-gateways/{id}` - Update gateway config
 
-### Bank Accounts
-- `/api/bank-accounts` - CRUD for linked bank accounts
-- `/api/banks` - Get available banks list
-
-### Admin
-- `/api/admin/stats` - Dashboard statistics
-- `/api/admin/users` - User management
-- `/api/admin/transactions` - All transactions
-- `/api/admin/documents` - KYC documents
-- `/api/admin/zones` - Geographic zones
-- `/api/admin/credit` - Credit user account
-- `/api/admin/debit` - Debit user account
+### Support Settings
+- `GET /api/support/settings` - Get public support settings
+- `PUT /api/admin/support/settings` - Update support settings (admin)
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
 - **User:** user@sbpay.com / userpassword
 
-## Prioritized Backlog
+## Current Status
 
-### P0 (Critical) - Requires User API Keys
-1. ~~**Activate Live Stripe Integration**~~ ✅ DONE - Using test key
-2. **Activate Live PayPal Integration** - User needs to provide PayPal API keys
-3. **Activate Live Mobile Money** - Recommend Flutterwave/Paydunya aggregator
-4. **Activate Live Twilio SMS** - User needs to provide Twilio credentials
-5. **Exchange Rate API** - Integrate live currency rates (ExchangeRate-API, Fixer)
+### ✅ Real Integrations
+- Stripe payments (test key active)
 
-### P1 (Important)
-- Push notifications for transaction confirmations
+### ⚠️ Demo/Simulated
+- PayPal
+- Mobile Money (Orange, MTN, Wave, Moov)
+- Twilio SMS (2FA)
+
+### 🔧 Ready for Configuration
+- WhatsApp Business (need actual business number)
+- Tawk.to Chat (need property/widget IDs)
+- Live exchange rates API
+
+## Backlog
+
+### P0 (Next)
+1. Integrate live PayPal API
+2. Integrate Flutterwave for Mobile Money
+3. Activate Twilio for SMS 2FA
+
+### P1
+- Push notifications
 - Email notifications (Resend/SendGrid)
 - PDF receipt generation
 
-### P2 (Nice to Have)
-- QR code payments
+### P2
+- QR Code payments
 - User rewards/loyalty system
-- Contact list for transfers
 - Recurring payments
 
-### Technical Debt
-- Refactor backend/server.py (~1900 lines) into modules:
-  - routes/auth.py
-  - routes/wallets.py
-  - routes/admin.py
-  - models/
-  - services/
-
 ## Files Reference
-- `/app/backend/server.py` - Main backend (monolithic)
-- `/app/frontend/src/App.js` - React router and contexts
-- `/app/frontend/src/pages/admin/*` - Admin pages
-- `/app/frontend/src/components/DashboardLayout.jsx` - Main layout
-- `/app/frontend/src/i18n/translations.js` - Language files
-- `/app/docs/DATABASE_SCHEMA.md` - Database documentation
-- `/app/docs/SCREENS_LIST.md` - UI screens documentation
-
-## Test Reports
-- `/app/test_reports/iteration_2.json` - Latest test results (100% pass rate)
-- `/app/backend/tests/test_sbpay_api.py` - API test suite
+- `/app/backend/server.py` - Main backend API
+- `/app/frontend/src/pages/ProfilePage.jsx` - User profile
+- `/app/frontend/src/pages/PaymentLinksPage.jsx` - Payment links
+- `/app/frontend/src/pages/PayPage.jsx` - Public payment page
+- `/app/frontend/src/pages/admin/AdminGateways.jsx` - Gateway config
+- `/app/frontend/src/components/ChatSupport.jsx` - WhatsApp + Tawk.to
+- `/app/backend/services/db_init.py` - Database seeding
+- `/app/docs/DATABASE_SCHEMA.md` - DB documentation
