@@ -89,6 +89,14 @@ export const DashboardLayout = ({ children }) => {
           <NavLink key={item.href} item={item} mobile={mobile} />
         ))}
         
+        {/* Africa Module Section */}
+        <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-6 mb-4 px-4 flex items-center gap-2">
+          <span className="text-orange-500">🌍</span> Afrique
+        </div>
+        {africaItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
         {isAdmin && (
           <>
             <div className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-8 mb-4 px-4">
