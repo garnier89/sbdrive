@@ -3107,7 +3107,7 @@ async def get_my_rewards(current_user: dict = Depends(get_current_user)):
         now = datetime.now(timezone.utc).isoformat()
         referral_code = current_user["id"][:8].upper()
         
-        rewards = {
+        rewards_doc = {
             "id": str(uuid.uuid4()),
             "user_id": current_user["id"],
             "points": 0,
@@ -3120,7 +3120,9 @@ async def get_my_rewards(current_user: dict = Depends(get_current_user)):
             "referred_by": None,
             "created_at": now
         }
-        await db.rewards.insert_one(rewards)
+        await db.rewards.insert_one(rewards_doc)
+        # Return clean dict without _id
+        rewards = {k: v for k, v in rewards_doc.items() if k != "_id"}
     
     return rewards
 
