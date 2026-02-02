@@ -4,7 +4,7 @@
 **Name:** SB Pay  
 **Type:** Online Payment System (PayPal-like Fintech Platform)  
 **Created:** December 2025  
-**Last Updated:** February 2026  
+**Last Updated:** December 2025  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://sbpay-fintech.preview.emergentagent.com
 
