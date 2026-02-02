@@ -300,6 +300,12 @@ function App() {
             <Route path="/payment-links" element={
               <ProtectedRoute><PaymentLinksPage /></ProtectedRoute>
             } />
+            <Route path="/qr-payment" element={
+              <ProtectedRoute><QRPaymentPage /></ProtectedRoute>
+            } />
+            <Route path="/rewards" element={
+              <ProtectedRoute><RewardsPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
