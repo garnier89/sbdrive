@@ -9,7 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
 import { 
   History, Search, Filter, TrendingUp, TrendingDown, 
-  ArrowDownCircle, ArrowUpCircle, Receipt, Clock, Download
+  ArrowDownCircle, ArrowUpCircle, Receipt, Clock, Download, FileText, Loader2
 } from 'lucide-react';
 import axios from 'axios';
 
