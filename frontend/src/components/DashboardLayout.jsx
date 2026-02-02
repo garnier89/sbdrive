@@ -4,7 +4,7 @@ import { useAuth } from '@/App';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -34,10 +34,13 @@ const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
   { href: '/admin/transactions', icon: History, label: 'Transactions' },
+  { href: '/admin/card-approvals', icon: CreditCard, label: 'Approbation Cartes' },
   { href: '/admin/documents', icon: Shield, label: 'Documents KYC' },
   { href: '/admin/zones', icon: Shield, label: 'Zones' },
   { href: '/admin/gateways', icon: Settings, label: 'Passerelles' },
   { href: '/admin/payment-rules', icon: Shield, label: 'Sécurité & Capture' },
+  { href: '/admin/cms', icon: FileText, label: 'CMS Contenu' },
+  { href: '/admin/admins', icon: Crown, label: 'Super Admin' },
 ];
 
 export const DashboardLayout = ({ children }) => {
