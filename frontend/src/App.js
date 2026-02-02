@@ -28,6 +28,7 @@ import AdminTransactions from "@/pages/admin/AdminTransactions";
 import AdminDocuments from "@/pages/admin/AdminDocuments";
 import AdminZones from "@/pages/admin/AdminZones";
 import AdminGateways from "@/pages/admin/AdminGateways";
+import AdminPaymentRules from "@/pages/admin/AdminPaymentRules";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
