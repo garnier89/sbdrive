@@ -1056,6 +1056,63 @@ async def check_deposit_status(session_id: str, background_tasks: BackgroundTask
         "currency": status.currency.upper()
     }
 
+# ==================== STRIPE WEBHOOK ====================
+
+@api_router.post("/webhook/stripe")
+async def stripe_webhook(request: Request, background_tasks: BackgroundTasks):
+    """Handle Stripe webhooks for payment confirmations"""
+    from emergentintegrations.payments.stripe.checkout import StripeCheckout
+    
+    try:
+        body = await request.body()
+        signature = request.headers.get("Stripe-Signature")
+        
+        stripe_checkout = StripeCheckout(api_key=STRIPE_API_KEY, webhook_url="")
+        webhook_response = await stripe_checkout.handle_webhook(body, signature)
+        
+        logger.info(f"[STRIPE WEBHOOK] Event: {webhook_response.event_type}, Session: {webhook_response.session_id}")
+        
+        if webhook_response.payment_status == "paid":
+            session_id = webhook_response.session_id
+            
+            payment_record = await db.payment_transactions.find_one(
+                {"session_id": session_id},
+                {"_id": 0}
+            )
+            
+            if payment_record and payment_record.get("payment_status") != "paid":
+                now = datetime.now(timezone.utc).isoformat()
+                
+                await db.payment_transactions.update_one(
+                    {"session_id": session_id},
+                    {"$set": {"payment_status": "paid", "updated_at": now}}
+                )
+                
+                await db.transactions.update_one(
+                    {"id": payment_record["transaction_id"]},
+                    {"$set": {"status": "completed", "updated_at": now}}
+                )
+                
+                await db.wallets.update_one(
+                    {"user_id": payment_record["user_id"], "currency": payment_record["currency"]},
+                    {"$inc": {"balance": payment_record["amount"]}, "$set": {"updated_at": now}}
+                )
+                
+                background_tasks.add_task(
+                    send_push_notification,
+                    payment_record["user_id"],
+                    "Deposit Confirmed",
+                    f"+{payment_record['amount']} {payment_record['currency']} added to your wallet"
+                )
+                
+                logger.info(f"[STRIPE WEBHOOK] Payment processed for user {payment_record['user_id']}")
+        
+        return {"status": "success"}
+        
+    except Exception as e:
+        logger.error(f"[STRIPE WEBHOOK ERROR] {str(e)}")
+        return {"status": "error", "message": str(e)}
+
 # ==================== PAYPAL ROUTES (DEMO) ====================
 
 @api_router.post("/deposits/paypal")
