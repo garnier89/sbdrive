@@ -1,0 +1,373 @@
+<analysis>**original_problem_statement:**
+The user requested to build a complete online payment system named SB Pay, similar to PayPal.
+
+**PRODUCT REQUIREMENTS:**
+- A full-stack web application with a corresponding website.
+- Separate access and dashboards for clients and administrators.
+- A matte orange color scheme with a provided SB logo.
+- Display badges for downloading the app from the Play Store and Apple Store.
+- **Core Features:** User/Admin authentication, multi-currency wallets, fund transfers, deposits, withdrawals, transaction history, bill payments.
+- **Payment Integrations:** Stripe, PayPal, and various mobile money providers (Orange, MTN, Wave, Moov).
+- **Internationalization:** Support for multiple languages (French, English, Arabic, German, Chinese, etc.) and multiple currencies (EUR, USD, XOF, etc.) with automatic exchange rate conversion.
+- **Security & Compliance:** Two-Factor Authentication (2FA) via SMS and a system for Know Your Customer (KYC) document management.
+- **Admin Capabilities:** Manage users, transactions, KYC documents, and configure system settings by geographic zones (payment methods, currencies, fees).
+- **Additional Features:** QR code payments and a user rewards system.
+
+**User's preferred language**: French
+
+**what currently exists?**
+A comprehensive full-stack application for the SB Pay payment system has been developed using React, FastAPI, and MongoDB. The application currently operates in a demo mode, where all external integrations (Stripe, PayPal, Mobile Money, Twilio for SMS) are simulated in the backend.
+
+The existing implementation includes:
+- User and Admin authentication (JWT-based).
+- Client dashboard with multi-currency wallets (EUR, USD, XOF), transaction history, and fund transfer capabilities.
+- Deposit page with simulated options for Credit Card (Stripe), PayPal, and various Mobile Money providers.
+- A settings page for users to select their language and set up a mock 2FA.
+- A system for linking bank accounts and managing KYC documents.
+- An extensive admin dashboard for managing users, viewing all transactions, managing KYC documents, and configuring system settings based on geographic zones.
+- A complete multi-language framework with translations for French, English, Spanish, Portuguese, Arabic, German, and Chinese.
+
+**Last working item**:
+    - Last item agent was working: The agent was performing a final visual verification of the newly enhanced Admin Dashboard using the screenshot tool. Its last thought indicates it identified an error (Correction des erreurs) and was about to begin debugging.
+    - Status: IN PROGRESS
+    - Agent Testing Done: Y
+    - Which testing method agent to use? both
+    - User Testing Done: N
+
+**All Pending/In progress Issue list**:
+  - Issue 1:  (P0) Unspecified error(s) on the Admin Dashboard.
+  
+  Issues Detail:
+  - Issue 1: 
+     - Attempted fixes: None yet. The agent was just about to start debugging.
+     - Next debug checklist: 
+        1.  Check backend logs for API errors: ==> /var/log/supervisor/backend.err.log <==
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [44] using WatchFiles
+INFO:     Started server process [70]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [70]
+INFO:     Stopping reloader process [44]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [196] using WatchFiles
+INFO:     Started server process [239]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [239]
+INFO:     Started server process [594]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [594]
+INFO:     Stopping reloader process [196]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [1241] using WatchFiles
+INFO:     Started server process [1243]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-01-29 11:23:30,182 - stripe - INFO - message='Request to Stripe api' method=post url=https://integrations.emergentagent.com/stripe/v1/checkout/sessions
+2026-01-29 11:23:30,642 - stripe - INFO - message='Stripe API response' path=https://integrations.emergentagent.com/stripe/v1/checkout/sessions response_code=200
+WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [1243]
+INFO:     Started server process [2818]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [2818]
+INFO:     Stopping reloader process [1241]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [3088] using WatchFiles
+INFO:     Started server process [3090]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [46] using WatchFiles
+INFO:     Started server process [83]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+WARNING:  WatchFiles detected changes in 'server.py'. Reloading...
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [83]
+INFO:     Started server process [175]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [175]
+INFO:     Stopping reloader process [46]
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [528] using WatchFiles
+INFO:     Started server process [530]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+2026-02-02 14:30:27,466 - server - INFO - [DEMO EMAIL] To: admin@sbpay.com, Subject: Nouvelle connexion détectée sur votre compte SB Pay
+2026-02-02 14:30:41,454 - server - INFO - [DEMO EMAIL] To: user@sbpay.com, Subject: Nouvelle connexion détectée sur votre compte SB Pay
+2026-02-02 14:30:56,051 - server - INFO - [DEMO EMAIL] To: user@sbpay.com, Subject: Nouvelle connexion détectée sur votre compte SB Pay
+2026-02-02 14:49:32,811 - server - INFO - [DEMO EMAIL] To: admin@sbpay.com, Subject: Nouvelle connexion détectée sur votre compte SB Pay
+INFO:     Will watch for changes in these directories: ['/app/backend']
+INFO:     Uvicorn running on http://0.0.0.0:8001 (Press CTRL+C to quit)
+INFO:     Started reloader process [48] using WatchFiles
+INFO:     Started server process [86]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+
+==> /var/log/supervisor/backend.out.log <==
+INFO:     10.64.135.173:39668 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     10.64.138.62:46028 - "POST /api/auth/register HTTP/1.1" 400 Bad Request
+INFO:     10.64.131.206:41142 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.131.7:54186 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.9:41152 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.202:35618 - "GET /api/wallets/EUR HTTP/1.1" 200 OK
+INFO:     10.64.129.13:49334 - "POST /api/auth/register HTTP/1.1" 200 OK
+INFO:     10.64.131.34:49560 - "POST /api/transfers HTTP/1.1" 400 Bad Request
+INFO:     10.64.135.173:39668 - "POST /api/deposits/checkout HTTP/1.1" 200 OK
+INFO:     10.64.131.202:35618 - "POST /api/withdrawals HTTP/1.1" 400 Bad Request
+INFO:     10.64.131.202:35618 - "POST /api/bills/pay HTTP/1.1" 400 Bad Request
+INFO:     10.64.129.13:49334 - "GET /api/transactions HTTP/1.1" 200 OK
+INFO:     10.64.131.205:46894 - "GET /api/currencies HTTP/1.1" 200 OK
+INFO:     10.64.129.10:56752 - "POST /api/auth/register HTTP/1.1" 400 Bad Request
+INFO:     10.64.131.206:41142 - "GET /api/admin/users HTTP/1.1" 403 Forbidden
+INFO:     10.64.131.204:52844 - "GET /api/admin/transactions HTTP/1.1" 403 Forbidden
+INFO:     10.64.138.62:46028 - "GET /api/admin/stats HTTP/1.1" 403 Forbidden
+INFO:     10.64.136.226:55564 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.136.245:38678 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.7:47000 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.10:49066 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.13:54388 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.10:46640 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.136.226:46482 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.135.173:53380 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.136.245:43518 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.7:48610 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.136.226:46482 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.136.245:43518 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.13:50426 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.9:46246 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.13:50426 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.135.173:51444 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.13:50426 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.135.173:51444 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.135.173:51444 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.136.226:35760 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.7:35306 - "GET /api/transactions?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     10.64.129.9:46246 - "GET /api/transactions?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     10.64.129.13:50426 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.10:34918 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.135.173:51444 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.136.245:39784 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.7:56958 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.129.9:55748 - "GET /api/admin/stats HTTP/1.1" 200 OK
+INFO:     10.64.135.173:56414 - "GET /api/admin/stats HTTP/1.1" 200 OK
+INFO:     10.64.129.13:42108 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.131.206:46846 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.135.173:44536 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.129.7:34930 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.136.226:42750 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.10:53694 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.136.226:42750 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.10:53694 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.9:54920 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.135.173:44544 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.203:45282 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.136.226:42750 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.7:37224 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.136.226:42750 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.10:53694 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.136.245:53900 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.7:37224 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.131.202:55976 - "GET /api/transactions?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     10.64.129.13:45570 - "GET /api/transactions?limit=20&offset=0 HTTP/1.1" 200 OK
+INFO:     10.64.136.226:58836 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     10.64.131.7:59412 - "GET /api/ HTTP/1.1" 200 OK
+INFO:     10.64.131.8:34526 - "GET /api/banks?country=FR HTTP/1.1" 200 OK
+INFO:     10.64.129.9:42322 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.129.7:59420 - "GET /api/admin/users?limit=100 HTTP/1.1" 200 OK
+INFO:     10.64.134.75:34190 - "GET /api/admin/stats HTTP/1.1" 200 OK
+INFO:     10.64.129.8:57572 - "GET /api/admin/users?limit=100 HTTP/1.1" 200 OK
+INFO:     10.64.129.8:57572 - "GET /api/admin/stats HTTP/1.1" 200 OK
+INFO:     10.64.131.10:55550 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.131.10:55550 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.131.9:45940 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.8:57654 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.7:57694 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.131.9:45940 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.131.10:55550 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.131.6:37360 - "GET /api/banks/countries HTTP/1.1" 200 OK
+INFO:     10.64.129.73:52216 - "GET /api/banks HTTP/1.1" 200 OK
+INFO:     10.64.131.9:45940 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.129.73:52200 - "GET /api/bank-accounts HTTP/1.1" 200 OK
+INFO:     10.64.131.6:37360 - "GET /api/banks/countries HTTP/1.1" 200 OK
+INFO:     10.64.131.9:45940 - "GET /api/banks HTTP/1.1" 200 OK
+INFO:     10.64.129.73:52200 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.10:55550 - "GET /api/bank-accounts HTTP/1.1" 200 OK
+INFO:     10.64.129.73:44688 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.131.8:59772 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.8:59760 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.131.6:36572 - "GET /api/wallets HTTP/1.1" 200 OK
+INFO:     10.64.131.9:52146 - "GET /api/transactions?limit=5 HTTP/1.1" 200 OK
+INFO:     10.64.131.6:36572 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.129.73:44688 - "GET /api/auth/me HTTP/1.1" 200 OK
+INFO:     10.64.130.72:46052 - "POST /api/auth/login HTTP/1.1" 200 OK
+INFO:     10.64.128.138:33254 - "GET /api/admin/users?limit=100 HTTP/1.1" 200 OK
+INFO:     10.64.130.72:46052 - "GET /api/admin/stats HTTP/1.1" 200 OK
+INFO:     10.64.128.138:33254 - "GET /api/admin/users?limit=100 HTTP/1.1" 200 OK
+INFO:     10.64.128.140:39066 - "GET /api/admin/stats HTTP/1.1" 200 OK.
+        2.  Use the frontend testing agent to load the admin dashboard and check the browser's console for JavaScript errors.
+        3.  Review the code for the most recently modified admin-related files: , , , and .
+        4.  Inspect  for breaking changes in the admin-related API endpoints.
+     - Why fix this issue and what will be achieved with the fix? The admin dashboard is a critical component for managing the entire application. It must be fully functional.
+     - Status:  IN PROGRESS
+     - Is recurring issue? N
+     - Should Test frontend/backend/both after fix? both
+     - Blocked on other issue: None
+
+**In progress Task List**:
+There are no tasks currently in progress, as the agent has shifted to debugging the issue with the Admin Dashboard.
+
+**Upcoming and Future Tasks**
+Upcoming Tasks:
+- P0: Deactivate Demo Mode and implement live integrations. This involves:
+  - Guiding the user on how to obtain and provide the necessary API keys for Stripe, PayPal, Twilio, and an exchange rate service.
+  - Implementing the aggregator strategy (e.g., using Flutterwave) for Mobile Money payments as discussed.
+  - Modifying the backend to use the live keys and SDKs instead of simulated responses.
+- P1: Implement push notifications for transaction confirmations.
+
+Future Tasks:
+- P0: Implement QR code payment functionality.
+- P1: Develop the user rewards/loyalty system.
+
+**Completed work in this session**
+- **Application Core**: A full-stack application (FastAPI, React, MongoDB) was built from scratch.
+- **MVP Features**: Implemented user/admin authentication, multi-currency wallets, transfers, and transaction history.
+- **Demo Mode Expansion**:
+  - Integrated simulated payment methods: Stripe, PayPal, and Mobile Money (Orange, MTN, Wave, Moov).
+  - Implemented a multi-language system with a language selector ().
+  - Added a 2FA setup flow (ready for Twilio integration).
+  - Built a system for linking bank accounts ().
+  - Created a comprehensive admin panel for managing users, transactions, KYC documents (), and geographic zones ().
+- **Documentation**:
+  - Created a project requirements document at .
+  - Created a database schema document at .
+  - Created a list of all application screens at .
+
+**Earlier issues found/mentioned but not fixed**
+None. The agent has addressed or planned all issues mentioned by the user so far.
+
+**Known issue recurrence from previous fork**
+None.
+
+**Code Architecture**
+
+
+**Key Technical Concepts**
+- **Backend**: FastAPI, MongoDB (with Pydantic models), JWT for authentication.
+- **Frontend**: React, React Router, Tailwind CSS, Axios for API calls.
+- **Architecture**: A monolithic backend API () serving a Single Page Application (SPA) built with React.
+- **Key Features**: Demo Mode for simulating external APIs, Internationalization (i18n) with a language context, multi-currency wallet management.
+
+**key DB schema**
+  - **users**: {email, full_name, hashed_password, role, language, main_currency, two_factor_enabled}
+  - **wallets**: {user_id, currency, balance}
+  - **transactions**: {user_id, type, amount, currency, status, details, created_at}
+  - **bank_accounts**: {user_id, bank_name, account_details, currency}
+  - **documents**: {user_id, document_type, file_path, status}
+  - **zones**: {name, countries, currencies, payment_methods}
+
+**changes in tech stack**
+  - None.
+
+**All files of reference**
+- : The single source of truth for all backend logic, models, and API endpoints. It has been overwritten multiple times to add new features.
+- : The main entry point for the frontend, containing the router and context providers for language.
+- : The shared layout for all authenticated user and admin pages, containing navigation.
+- : The main dashboard for administrators, which was recently updated and is the likely source of the current error.
+- : Contains all translation strings for the multi-language feature.
+- : Official documentation for the database structure.
+- : Official documentation for the application's UI screens.
+
+**Areas that need refactoring**:
+The  file has become a large monolith containing models, routes, business logic, and demo data. For better maintainability, it should be refactored into a more structured FastAPI project (e.g., separating routes into different files using , moving models to a  file, and business logic into a  directory).
+
+**key api endpoints**
+- : User authentication.
+- : Get current user data.
+- , : Core wallet functionalities.
+- : Simulated deposit endpoints.
+- : P2P and bank transfers.
+- : Manage linked bank accounts.
+- : Endpoints for all administrative functions.
+- : Update user settings like language and 2FA.
+
+**Critical Info for New Agent**
+- The entire application is currently in a **Demo Mode**. All external APIs are simulated within . The immediate major task is to transition to live APIs by getting keys from the user.
+- The agent was in the middle of debugging an unknown error on the **Admin Dashboard**. Start by investigating the logs and the frontend code for that specific page.
+- The user is French-speaking and has provided a very detailed set of requirements through a Cahier des charges. Refer to this and the generated documentation in  and  to ensure all requirements are met.
+- The backend is a single, large file (). Be careful when making changes and consider it the primary file for any backend-related debugging.
+
+**documents and test reports created in this job**
+  - 
+  - 
+  - 
+  - 
+
+**Last 10 User Messages and any pending HUMAN messages** 
+1.  **User (Msg 162-168):** Sends several large blocks of text, mostly repeating the detailed requirements for multi-language and multi-currency support, and asking for the database schema or screen mockups.
+2.  **Agent (Msg 163-167):** Acknowledges the request and creates the  and  documents.
+3.  **Agent (Msg 169):** Provides a summary of the already implemented features and the newly created documents.
+4.  **Agent (Msg 170):** Takes a final screenshot to verify the admin dashboard.
+5.  **Agent (Msg 171-172):** States that it found errors and will begin debugging by checking the logs.
+
+The user has been providing very detailed specifications and seems to be confirming requirements. The agent's last action was to begin debugging an error it discovered.
+
+**Project Health Check:**
+*   **Broken**: The Admin Dashboard is currently suspected to be broken, as the agent was about to start debugging it.
+*   **Mocked**: All third-party integrations are mocked. This includes Stripe, PayPal, Mobile Money providers, and Twilio.
+
+**3rd Party Integrations**
+- **Stripe (Payments)** — Planned and mocked. Requires User API Key.
+- **PayPal (Payments)** — Planned and mocked. Requires User API Key.
+- **Flutterwave/Paydunya (Mobile Money Aggregator)** — Recommended, planned, and mocked. Requires User API Key.
+- **Twilio (SMS for 2FA)** — Planned and mocked. Requires User API Key.
+- **Resend (Email Notifications)** — Planned. Requires User API Key.
+- **ExchangeRate-API/Fixer (Currency Rates)** — Planned. Requires User API Key.
+
+**Testing status**
+  - Testing agent used after significant changes: YES
+  - Troubleshoot agent used after agent stuck in loop: NO
+  - Test files created: []
+  - Known regressions: An unspecified error has appeared on the Admin Dashboard page.
+
+**Credentials to test flow:**
+- **Admin**:
+  - Email: 
+  - Password: 
+- **User**:
+  - Email: 
+  - Password: 
+
+**What agent forgot to execute**
+The agent has not forgotten any tasks. It has either implemented them in demo mode or added them to the future tasks list. The current focus is correctly on fixing the new bug.</analysis>
