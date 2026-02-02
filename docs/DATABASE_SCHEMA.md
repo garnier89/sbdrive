@@ -216,6 +216,259 @@ Complete database schema for SB Pay payment system with support for:
 | created_at | DateTime | Creation date |
 | updated_at | DateTime | Last update |
 
+
+### 🔄 17. mobile_money_transfers (NEW - Module Afrique)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| source_operator | String | wave, orange_money, mtn_momo, moov |
+| source_phone | String | Source phone number |
+| dest_operator | String | Destination operator |
+| dest_phone | String | Destination phone number |
+| dest_country | String | Destination country code |
+| amount | Decimal | Transfer amount |
+| currency | String | Currency code |
+| fee_fixed | Decimal | Fixed fee |
+| fee_percent | Decimal | Percentage fee |
+| total_fee | Decimal | Total fee charged |
+| amount_received | Decimal | Amount after fees |
+| exchange_rate | Decimal | If cross-currency |
+| status | Enum | pending, processing, completed, failed, refunded |
+| external_ref | String | Aggregator reference |
+| aggregator | String | mfs_africa, flutterwave, paydunya |
+| failure_reason | String | Reason if failed |
+| webhook_received | Boolean | Webhook confirmation |
+| created_at | DateTime | Creation date |
+| completed_at | DateTime | Completion date |
+
+### 📞 18. airtime_topups (NEW - Module Afrique)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| phone_number | String | Phone to credit |
+| operator | String | Telecom operator |
+| operator_name | String | Display name |
+| country | String | Country code |
+| amount | Decimal | Recharge amount |
+| currency | String | Currency |
+| fee | Decimal | Service fee |
+| total_charged | Decimal | Amount + fee |
+| payment_method | String | wallet, mobile_money |
+| status | Enum | pending, processing, completed, failed |
+| external_ref | String | Provider reference |
+| provider | String | reloadly, dt_one, mfs_africa |
+| created_at | DateTime | Creation date |
+| completed_at | DateTime | Completion date |
+
+### 📡 19. airtime_operators (NEW - Module Afrique)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| code | String | Operator code |
+| name | String | Display name |
+| country | String | Country code |
+| logo_url | String | Operator logo |
+| min_amount | Decimal | Minimum recharge |
+| max_amount | Decimal | Maximum recharge |
+| denomination_type | String | fixed, range |
+| denominations | Array | Fixed amounts available |
+| commission_rate | Decimal | SB Pay commission |
+| active | Boolean | Is available |
+| created_at | DateTime | Creation date |
+
+### 💰 20. fee_configurations (NEW - Module Afrique)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| service_type | String | mm_transfer, airtime, bill_payment, withdrawal |
+| source_operator | String | Source (if applicable) |
+| dest_operator | String | Destination (if applicable) |
+| country | String | Country code |
+| fee_fixed | Decimal | Fixed fee amount |
+| fee_percent | Decimal | Percentage fee |
+| min_fee | Decimal | Minimum fee |
+| max_fee | Decimal | Maximum fee |
+| currency | String | Fee currency |
+| active | Boolean | Is active |
+| created_at | DateTime | Creation date |
+| updated_at | DateTime | Last update |
+
+### 📊 21. transaction_limits (NEW - Module Afrique)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| kyc_level | Int | 0, 1, 2, 3 |
+| service_type | String | mm_transfer, airtime, withdrawal, etc. |
+| per_transaction | Decimal | Max per transaction |
+| per_day | Decimal | Max per day |
+| per_week | Decimal | Max per week |
+| per_month | Decimal | Max per month |
+| currency | String | Limit currency |
+| active | Boolean | Is active |
+| created_at | DateTime | Creation date |
+
+### 💼 22. subscription_plans (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| code | String | free, pro, business, enterprise |
+| name | String | Plan name |
+| price | Decimal | Monthly price |
+| currency | String | Price currency |
+| features | Array | List of features |
+| limits | Object | { transfers_per_day, monthly_volume } |
+| commission_discount | Decimal | Fee discount % |
+| priority_support | Boolean | Has priority support |
+| api_access | Boolean | Can use API |
+| active | Boolean | Is available |
+| created_at | DateTime | Creation date |
+
+### 📦 23. user_subscriptions (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| plan_id | UUID | FK → subscription_plans |
+| plan_code | String | Plan code |
+| status | Enum | active, cancelled, expired |
+| started_at | DateTime | Start date |
+| expires_at | DateTime | Expiry date |
+| auto_renew | Boolean | Auto renewal |
+| payment_method | String | How they pay |
+| created_at | DateTime | Creation date |
+
+### 👥 24. beneficiaries (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| nickname | String | Display name |
+| type | Enum | mobile_money, bank, wallet |
+| operator | String | If mobile money |
+| phone_number | String | If mobile money |
+| bank_name | String | If bank |
+| account_number | String | If bank |
+| iban | String | If bank |
+| wallet_email | String | If wallet |
+| country | String | Country code |
+| is_favorite | Boolean | Favorite flag |
+| last_used_at | DateTime | Last transaction |
+| created_at | DateTime | Creation date |
+
+### 📅 25. scheduled_transfers (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| beneficiary_id | UUID | FK → beneficiaries |
+| amount | Decimal | Transfer amount |
+| currency | String | Currency |
+| frequency | Enum | once, daily, weekly, monthly |
+| next_execution | DateTime | Next execution date |
+| last_execution | DateTime | Last execution |
+| status | Enum | active, paused, completed, cancelled |
+| executions_count | Int | Number of executions |
+| max_executions | Int | Max executions (null = infinite) |
+| created_at | DateTime | Creation date |
+
+### 🧾 26. bill_payments (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| bill_type | Enum | electricity, water, internet, tv, other |
+| provider | String | Bill provider |
+| provider_name | String | Display name |
+| customer_ref | String | Customer reference/meter number |
+| amount | Decimal | Bill amount |
+| fee | Decimal | Service fee |
+| currency | String | Currency |
+| status | Enum | pending, processing, completed, failed |
+| external_ref | String | Provider reference |
+| payment_method | String | wallet, mobile_money |
+| created_at | DateTime | Payment date |
+| completed_at | DateTime | Completion date |
+
+### 🏪 27. bill_providers (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| code | String | Provider code |
+| name | String | Display name |
+| type | Enum | electricity, water, internet, tv |
+| country | String | Country code |
+| logo_url | String | Provider logo |
+| commission_rate | Decimal | SB Pay commission |
+| active | Boolean | Is available |
+| created_at | DateTime | Creation date |
+
+### 💳 28. virtual_cards (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| card_number | String | Encrypted card number |
+| last4 | String | Last 4 digits |
+| expiry_month | Int | Expiry month |
+| expiry_year | Int | Expiry year |
+| cvv | String | Encrypted CVV |
+| brand | String | visa, mastercard |
+| status | Enum | active, frozen, cancelled |
+| balance | Decimal | Card balance |
+| currency | String | Card currency |
+| daily_limit | Decimal | Daily spending limit |
+| monthly_limit | Decimal | Monthly limit |
+| created_at | DateTime | Creation date |
+
+### 🎯 29. savings_goals (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| name | String | Goal name |
+| target_amount | Decimal | Target amount |
+| current_amount | Decimal | Amount saved |
+| currency | String | Currency |
+| deadline | DateTime | Target date |
+| auto_save_enabled | Boolean | Auto save |
+| auto_save_amount | Decimal | Auto save amount |
+| auto_save_frequency | Enum | daily, weekly, monthly |
+| status | Enum | active, completed, cancelled |
+| created_at | DateTime | Creation date |
+| completed_at | DateTime | When reached |
+
+### 🎁 30. referral_program (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| referrer_id | UUID | FK → users (who referred) |
+| referee_id | UUID | FK → users (who was referred) |
+| referrer_bonus | Decimal | Bonus for referrer |
+| referee_bonus | Decimal | Bonus for referee |
+| currency | String | Bonus currency |
+| status | Enum | pending, qualified, paid |
+| qualification_date | DateTime | When qualified |
+| paid_at | DateTime | When paid |
+| created_at | DateTime | Referral date |
+
+### 🚨 31. disputes (NEW)
+| Field | Type | Description |
+|-------|------|-------------|
+| id | UUID | Primary key |
+| user_id | UUID | FK → users |
+| transaction_id | UUID | FK → transactions |
+| type | Enum | not_received, wrong_amount, fraud, other |
+| description | String | Issue description |
+| status | Enum | open, investigating, resolved, closed |
+| resolution | String | Resolution details |
+| refund_amount | Decimal | If refunded |
+| assigned_to | UUID | Admin handling |
+| created_at | DateTime | Report date |
+| resolved_at | DateTime | Resolution date |
+
+
 ---
 
 ## Relationships
