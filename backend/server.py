@@ -554,15 +554,139 @@ async def get_me(current_user: dict = Depends(get_current_user)):
     return {
         "id": current_user["id"],
         "email": current_user["email"],
-        "full_name": current_user["full_name"],
+        "first_name": current_user.get("first_name", ""),
+        "last_name": current_user.get("last_name", ""),
+        "full_name": current_user.get("full_name", ""),
         "phone": current_user.get("phone"),
         "country": current_user.get("country"),
+        "default_currency": current_user.get("default_currency", "EUR"),
         "role": current_user.get("role", "user"),
+        "status": current_user.get("status", "active"),
         "two_factor_enabled": current_user.get("two_factor_enabled", False),
+        "two_factor_phone": current_user.get("two_factor_phone"),
         "preferred_language": current_user.get("preferred_language", "fr"),
         "kyc_status": current_user.get("kyc_status", "pending"),
+        "avatar_url": current_user.get("avatar_url"),
         "created_at": current_user["created_at"]
     }
+
+# ==================== USER PROFILE ROUTES ====================
+
+class UserProfileUpdate(BaseModel):
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone: Optional[str] = None
+    country: Optional[str] = None
+    preferred_language: Optional[str] = None
+    default_currency: Optional[str] = None
+
+class PasswordChange(BaseModel):
+    current_password: str
+    new_password: str
+
+@api_router.put("/user/profile")
+async def update_profile(profile: UserProfileUpdate, current_user: dict = Depends(get_current_user)):
+    """Update user profile information"""
+    update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+    
+    if profile.first_name is not None:
+        update_data["first_name"] = profile.first_name
+    if profile.last_name is not None:
+        update_data["last_name"] = profile.last_name
+    if profile.first_name or profile.last_name:
+        fn = profile.first_name or current_user.get("first_name", "")
+        ln = profile.last_name or current_user.get("last_name", "")
+        update_data["full_name"] = f"{fn} {ln}".strip()
+    if profile.phone is not None:
+        update_data["phone"] = profile.phone
+    if profile.country is not None:
+        update_data["country"] = profile.country.upper()
+    if profile.preferred_language is not None:
+        update_data["preferred_language"] = profile.preferred_language
+    if profile.default_currency is not None:
+        update_data["default_currency"] = profile.default_currency.upper()
+    
+    await db.users.update_one({"id": current_user["id"]}, {"$set": update_data})
+    return {"message": "Profile updated successfully"}
+
+@api_router.put("/user/password")
+async def change_password(password_data: PasswordChange, current_user: dict = Depends(get_current_user)):
+    """Change user password"""
+    user = await db.users.find_one({"id": current_user["id"]}, {"_id": 0})
+    
+    if not verify_password(password_data.current_password, user.get("password_hash", "")):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    if len(password_data.new_password) < 8:
+        raise HTTPException(status_code=400, detail="Password must be at least 8 characters")
+    
+    new_hash = hash_password(password_data.new_password)
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"password_hash": new_hash, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.post("/user/avatar")
+async def upload_avatar(avatar: UploadFile = File(...), current_user: dict = Depends(get_current_user)):
+    """Upload user avatar"""
+    if not avatar.content_type.startswith("image/"):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    # In demo mode, we'll store a placeholder or base64
+    # In production, upload to cloud storage
+    contents = await avatar.read()
+    base64_image = base64.b64encode(contents).decode('utf-8')
+    avatar_url = f"data:{avatar.content_type};base64,{base64_image[:100]}..."  # Truncated for demo
+    
+    # For demo, just acknowledge upload
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"avatar_url": None, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Avatar uploaded successfully"}
+
+@api_router.get("/documents/my")
+async def get_my_documents(current_user: dict = Depends(get_current_user)):
+    """Get current user's KYC documents"""
+    documents = await db.documents.find(
+        {"user_id": current_user["id"]},
+        {"_id": 0}
+    ).to_list(20)
+    return {"documents": documents}
+
+@api_router.post("/documents/upload")
+async def upload_document(
+    document_type: str,
+    file: UploadFile = File(...),
+    current_user: dict = Depends(get_current_user)
+):
+    """Upload a KYC document"""
+    valid_types = ["id_card", "passport", "proof_of_address", "bank_statement", "selfie"]
+    if document_type not in valid_types:
+        raise HTTPException(status_code=400, detail="Invalid document type")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    doc_id = str(uuid.uuid4())
+    
+    # In production, upload to cloud storage and get URL
+    # For demo, we store metadata only
+    doc = {
+        "id": doc_id,
+        "user_id": current_user["id"],
+        "type": document_type,
+        "file_name": file.filename,
+        "file_type": file.content_type,
+        "file_url": f"/documents/{doc_id}",  # Placeholder
+        "status": "pending",
+        "created_at": now
+    }
+    
+    await db.documents.insert_one(doc)
+    
+    return {"message": "Document uploaded successfully", "document_id": doc_id}
 
 # ==================== 2FA ROUTES ====================
 
