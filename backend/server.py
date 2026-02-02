@@ -60,6 +60,9 @@ from routes.wallet_transfers import setup_wallet_transfer_routes, wallet_transfe
 # Import Virtual Cards Module
 from routes.virtual_cards import setup_virtual_cards_routes, virtual_cards_router
 
+# Import Notifications Zone Module
+from routes.notifications_zone import setup_notifications_zone_routes, notifications_zone_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
