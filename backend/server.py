@@ -48,6 +48,9 @@ from routes.africa_module import setup_africa_routes, africa_router
 # Import Admin Advanced Module
 from routes.admin_advanced import setup_admin_advanced_routes, admin_advanced_router
 
+# Import Analytics Module
+from routes.analytics import setup_analytics_routes, analytics_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
