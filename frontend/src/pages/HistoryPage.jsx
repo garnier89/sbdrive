@@ -230,6 +230,21 @@ export default function HistoryPage() {
                           <p className="text-xs text-muted-foreground font-mono mt-1">
                             ID: {tx.id.slice(0, 8)}...
                           </p>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="mt-2 text-primary hover:text-primary/80"
+                            onClick={() => downloadReceipt(tx.id)}
+                            disabled={downloadingId === tx.id}
+                            data-testid={`download-receipt-${tx.id}`}
+                          >
+                            {downloadingId === tx.id ? (
+                              <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                            ) : (
+                              <FileText className="w-4 h-4 mr-1" />
+                            )}
+                            Reçu PDF
+                          </Button>
                         </div>
                       </div>
                     </div>
