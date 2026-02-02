@@ -7,10 +7,11 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { 
   Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   TrendingUp, TrendingDown, Clock, ArrowRight,
-  Wallet
+  Wallet, BarChart3
 } from 'lucide-react';
 import axios from 'axios';
 import { toast } from 'sonner';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const CURRENCY_SYMBOLS = {
   EUR: '€',
