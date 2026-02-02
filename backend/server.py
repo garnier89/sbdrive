@@ -69,6 +69,9 @@ from routes.vault import setup_vault_routes, vault_router
 # Import Contact Module
 from routes.contact import setup_contact_routes, contact_router
 
+# Import Quick Login Module
+from routes.quick_login import setup_quick_login_routes, quick_login_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
