@@ -228,12 +228,12 @@ export default function AdminTicketsPage() {
               </div>
               <div className="w-40">
                 <Label className="text-xs">Statut</Label>
-                <Select value={statusFilter} onValueChange={setStatusFilter}>
+                <Select value={statusFilter || "all"} onValueChange={(v) => setStatusFilter(v === "all" ? "" : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Tous" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Tous</SelectItem>
+                    <SelectItem value="all">Tous</SelectItem>
                     <SelectItem value="open">Ouvert</SelectItem>
                     <SelectItem value="in_progress">En cours</SelectItem>
                     <SelectItem value="resolved">Résolu</SelectItem>
@@ -243,12 +243,12 @@ export default function AdminTicketsPage() {
               </div>
               <div className="w-40">
                 <Label className="text-xs">Priorité</Label>
-                <Select value={priorityFilter} onValueChange={setPriorityFilter}>
+                <Select value={priorityFilter || "all"} onValueChange={(v) => setPriorityFilter(v === "all" ? "" : v)}>
                   <SelectTrigger>
                     <SelectValue placeholder="Toutes" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Toutes</SelectItem>
+                    <SelectItem value="all">Toutes</SelectItem>
                     <SelectItem value="urgent">Urgente</SelectItem>
                     <SelectItem value="high">Haute</SelectItem>
                     <SelectItem value="normal">Normale</SelectItem>
