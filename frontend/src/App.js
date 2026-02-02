@@ -14,6 +14,7 @@ import TransferPage from "@/pages/TransferPage";
 import DepositPage from "@/pages/DepositPage";
 import DepositSuccessPage from "@/pages/DepositSuccessPage";
 import WithdrawPage from "@/pages/WithdrawPage";
+import BankAccountsPage from "@/pages/BankAccountsPage";
 import BillsPage from "@/pages/BillsPage";
 import HistoryPage from "@/pages/HistoryPage";
 import ProfilePage from "@/pages/ProfilePage";
@@ -21,6 +22,8 @@ import SettingsPage from "@/pages/SettingsPage";
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
 import AdminTransactions from "@/pages/admin/AdminTransactions";
+import AdminDocuments from "@/pages/admin/AdminDocuments";
+import AdminZones from "@/pages/admin/AdminZones";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
