@@ -36,6 +36,10 @@ import AdminDocuments from "@/pages/admin/AdminDocuments";
 import AdminZones from "@/pages/admin/AdminZones";
 import AdminGateways from "@/pages/admin/AdminGateways";
 import AdminPaymentRules from "@/pages/admin/AdminPaymentRules";
+// Admin Advanced Pages
+import AdminCardApprovals from "@/pages/admin/AdminCardApprovals";
+import AdminCMSPage from "@/pages/admin/AdminCMSPage";
+import AdminManagementPage from "@/pages/admin/AdminManagementPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
