@@ -293,6 +293,12 @@ function App() {
             <Route path="/settings" element={
               <ProtectedRoute><SettingsPage /></ProtectedRoute>
             } />
+            <Route path="/payment-links" element={
+              <ProtectedRoute><PaymentLinksPage /></ProtectedRoute>
+            } />
+            
+            {/* Public Payment Page */}
+            <Route path="/pay/:linkId" element={<PayPage />} />
             
             {/* Admin Routes */}
             <Route path="/admin" element={
