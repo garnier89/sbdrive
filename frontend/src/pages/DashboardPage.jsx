@@ -106,6 +106,11 @@ export default function DashboardPage() {
       withdrawal: 'Retraits',
       bill_payment: 'Factures',
       card_payment: 'Cartes',
+      vault_deposit: 'Coffre-fort',
+      vault_withdrawal: 'Retrait coffre',
+      p2p_transfer_out: 'Transfert P2P',
+      mobile_money: 'Mobile Money',
+      airtime: 'Crédit téléphone',
       other: 'Autre'
     };
     
