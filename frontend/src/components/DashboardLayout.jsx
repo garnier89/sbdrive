@@ -15,6 +15,7 @@ const navItems = [
   { href: '/dashboard', icon: Home, label: 'Dashboard' },
   { href: '/transfer', icon: Send, label: 'Transfert' },
   { href: '/user-transfer', icon: Users, label: 'Entre Utilisateurs' },
+  { href: '/virtual-cards', icon: CreditCard, label: 'Cartes Virtuelles' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
   { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
