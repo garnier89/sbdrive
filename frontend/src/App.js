@@ -40,6 +40,8 @@ import VaultPage from "@/pages/VaultPage";
 import HelpCenterPage from "@/pages/HelpCenterPage";
 // Admin Tickets Page
 import AdminTicketsPage from "@/pages/admin/AdminTicketsPage";
+// Quick PIN Login Page
+import QuickPinLoginPage from "@/pages/QuickPinLoginPage";
 // Admin Pages
 import AdminDashboard from "@/pages/admin/AdminDashboard";
 import AdminUsers from "@/pages/admin/AdminUsers";
@@ -284,6 +286,7 @@ function App() {
             {/* Public Routes */}
             <Route path="/" element={<LandingPage />} />
             <Route path="/login" element={<LoginPage />} />
+            <Route path="/quick-login" element={<QuickPinLoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
             
             {/* Protected Routes */}
