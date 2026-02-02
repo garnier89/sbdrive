@@ -15,6 +15,7 @@ const navItems = [
   { href: '/transfer', icon: Send, label: 'Transfert' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
+  { href: '/bank-accounts', icon: Building2, label: 'Comptes Bancaires' },
   { href: '/bills', icon: Receipt, label: 'Factures' },
   { href: '/history', icon: History, label: 'Historique' },
   { href: '/settings', icon: Settings, label: 'Paramètres' },
