@@ -3413,6 +3413,10 @@ app.include_router(africa_router)
 setup_admin_advanced_routes(db, get_current_user, get_admin_user)
 app.include_router(admin_advanced_router)
 
+# Setup and include Analytics module routes
+setup_analytics_routes(db, get_admin_user)
+app.include_router(analytics_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
