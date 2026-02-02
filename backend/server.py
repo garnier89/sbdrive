@@ -54,6 +54,9 @@ from routes.analytics import setup_analytics_routes, analytics_router
 # Import Alerts Module
 from routes.alerts import setup_alerts_routes, alerts_router
 
+# Import Wallet Transfers Module
+from routes.wallet_transfers import setup_wallet_transfer_routes, wallet_transfers_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
