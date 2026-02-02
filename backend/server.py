@@ -613,17 +613,278 @@ async def update_language(request: LanguageUpdateRequest, current_user: dict = D
 
 @api_router.get("/languages")
 async def get_languages():
-    return {
-        "languages": [
-            {"code": "fr", "name": "Français", "native": "Français"},
-            {"code": "en", "name": "English", "native": "English"},
-            {"code": "es", "name": "Spanish", "native": "Español"},
-            {"code": "pt", "name": "Portuguese", "native": "Português"},
-            {"code": "ar", "name": "Arabic", "native": "العربية", "rtl": True},
-            {"code": "de", "name": "German", "native": "Deutsch"},
-            {"code": "zh", "name": "Chinese", "native": "中文"}
+    """Get all active languages from database"""
+    languages = await db.languages.find({"active": True}, {"_id": 0}).to_list(100)
+    if not languages:
+        # Fallback to default
+        return {
+            "languages": [
+                {"code": "fr", "name": "French", "native_name": "Français", "rtl": False},
+                {"code": "en", "name": "English", "native_name": "English", "rtl": False},
+            ]
+        }
+    return {"languages": languages}
+
+# ==================== CURRENCIES ROUTES ====================
+
+@api_router.get("/currencies")
+async def get_currencies():
+    """Get all active currencies from database"""
+    currencies = await db.currencies.find({"active": True}, {"_id": 0}).to_list(100)
+    if not currencies:
+        # Fallback to default
+        currencies = [
+            {"code": "EUR", "name": "Euro", "symbol": "€"},
+            {"code": "USD", "name": "US Dollar", "symbol": "$"},
+            {"code": "XOF", "name": "CFA Franc", "symbol": "CFA"},
         ]
+    return {"currencies": currencies}
+
+@api_router.put("/user/currency")
+async def update_default_currency(currency: str, current_user: dict = Depends(get_current_user)):
+    """Update user's default currency"""
+    valid_currency = await db.currencies.find_one({"code": currency.upper(), "active": True})
+    if not valid_currency:
+        raise HTTPException(status_code=400, detail="Invalid currency")
+    
+    await db.users.update_one(
+        {"id": current_user["id"]},
+        {"$set": {"default_currency": currency.upper()}}
+    )
+    return {"message": "Default currency updated", "currency": currency.upper()}
+
+# ==================== EXCHANGE RATES API ====================
+
+@api_router.get("/exchange-rates")
+async def get_exchange_rates(base: str = "EUR"):
+    """Get exchange rates for a base currency"""
+    rates = await db.exchange_rates.find(
+        {"base_currency": base.upper()},
+        {"_id": 0, "base_currency": 1, "target_currency": 1, "rate": 1, "updated_at": 1}
+    ).to_list(100)
+    return {"base_currency": base.upper(), "rates": rates}
+
+@api_router.get("/exchange-rates/convert")
+async def convert_currency(amount: float, from_currency: str, to_currency: str):
+    """Convert amount between currencies"""
+    if from_currency.upper() == to_currency.upper():
+        return {"amount": amount, "converted": amount, "rate": 1.0}
+    
+    rate_doc = await db.exchange_rates.find_one({
+        "base_currency": from_currency.upper(),
+        "target_currency": to_currency.upper()
+    })
+    
+    if rate_doc:
+        converted = amount * rate_doc["rate"]
+        return {
+            "amount": amount,
+            "from_currency": from_currency.upper(),
+            "to_currency": to_currency.upper(),
+            "rate": rate_doc["rate"],
+            "converted": round(converted, 2)
+        }
+    
+    # Try reverse conversion
+    reverse_rate = await db.exchange_rates.find_one({
+        "base_currency": to_currency.upper(),
+        "target_currency": from_currency.upper()
+    })
+    
+    if reverse_rate:
+        rate = 1 / reverse_rate["rate"]
+        converted = amount * rate
+        return {
+            "amount": amount,
+            "from_currency": from_currency.upper(),
+            "to_currency": to_currency.upper(),
+            "rate": round(rate, 6),
+            "converted": round(converted, 2)
+        }
+    
+    raise HTTPException(status_code=400, detail="Exchange rate not available")
+
+# ==================== CARDS ROUTES ====================
+
+class CardCreate(BaseModel):
+    token: str
+    brand: str
+    last4: str
+    expiry_month: int
+    expiry_year: int
+
+@api_router.get("/cards")
+async def get_user_cards(current_user: dict = Depends(get_current_user)):
+    """Get all cards for current user"""
+    cards = await db.cards.find(
+        {"user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0, "token": 0}  # Don't expose token
+    ).to_list(20)
+    return {"cards": cards}
+
+@api_router.post("/cards")
+async def add_card(card: CardCreate, current_user: dict = Depends(get_current_user)):
+    """Add a new card for current user"""
+    now = datetime.now(timezone.utc).isoformat()
+    card_id = str(uuid.uuid4())
+    
+    # Check if card already exists
+    existing = await db.cards.find_one({
+        "user_id": current_user["id"],
+        "last4": card.last4,
+        "brand": card.brand,
+        "deleted": {"$ne": True}
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Card already exists")
+    
+    # Set as default if first card
+    card_count = await db.cards.count_documents({"user_id": current_user["id"], "deleted": {"$ne": True}})
+    is_default = card_count == 0
+    
+    card_doc = {
+        "id": card_id,
+        "user_id": current_user["id"],
+        "token": card.token,
+        "brand": card.brand.lower(),
+        "last4": card.last4,
+        "expiry": f"{card.expiry_month:02d}/{card.expiry_year}",
+        "expiry_month": card.expiry_month,
+        "expiry_year": card.expiry_year,
+        "is_default": is_default,
+        "created_at": now,
+        "deleted": False
     }
+    await db.cards.insert_one(card_doc)
+    
+    return {"message": "Card added", "card_id": card_id, "is_default": is_default}
+
+@api_router.delete("/cards/{card_id}")
+async def delete_card(card_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a card"""
+    card = await db.cards.find_one({"id": card_id, "user_id": current_user["id"]})
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found")
+    
+    await db.cards.update_one(
+        {"id": card_id},
+        {"$set": {"deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": "Card deleted"}
+
+@api_router.post("/cards/{card_id}/set-default")
+async def set_default_card(card_id: str, current_user: dict = Depends(get_current_user)):
+    """Set a card as default"""
+    card = await db.cards.find_one({"id": card_id, "user_id": current_user["id"], "deleted": {"$ne": True}})
+    if not card:
+        raise HTTPException(status_code=404, detail="Card not found")
+    
+    await db.cards.update_many(
+        {"user_id": current_user["id"]},
+        {"$set": {"is_default": False}}
+    )
+    await db.cards.update_one(
+        {"id": card_id},
+        {"$set": {"is_default": True}}
+    )
+    return {"message": "Default card set"}
+
+# ==================== MOBILE MONEY ACCOUNTS ROUTES ====================
+
+class MobileMoneyAccountCreate(BaseModel):
+    provider: str
+    phone_number: str
+    account_name: Optional[str] = None
+
+@api_router.get("/mobile-money-accounts")
+async def get_mobile_money_accounts(current_user: dict = Depends(get_current_user)):
+    """Get all mobile money accounts for current user"""
+    accounts = await db.mobile_money_accounts.find(
+        {"user_id": current_user["id"], "deleted": {"$ne": True}},
+        {"_id": 0}
+    ).to_list(20)
+    return {"accounts": accounts}
+
+@api_router.post("/mobile-money-accounts")
+async def add_mobile_money_account(account: MobileMoneyAccountCreate, current_user: dict = Depends(get_current_user)):
+    """Add a new mobile money account"""
+    # Validate provider
+    provider = await db.mobile_money_providers.find_one({"code": account.provider})
+    if not provider:
+        raise HTTPException(status_code=400, detail="Invalid mobile money provider")
+    
+    # Check if account already exists
+    existing = await db.mobile_money_accounts.find_one({
+        "user_id": current_user["id"],
+        "provider": account.provider,
+        "phone_number": account.phone_number,
+        "deleted": {"$ne": True}
+    })
+    if existing:
+        raise HTTPException(status_code=400, detail="Mobile money account already exists")
+    
+    now = datetime.now(timezone.utc).isoformat()
+    account_id = str(uuid.uuid4())
+    
+    # Set as default if first account
+    account_count = await db.mobile_money_accounts.count_documents({
+        "user_id": current_user["id"], 
+        "deleted": {"$ne": True}
+    })
+    is_default = account_count == 0
+    
+    account_doc = {
+        "id": account_id,
+        "user_id": current_user["id"],
+        "provider": account.provider,
+        "provider_name": provider["name"],
+        "phone_number": account.phone_number,
+        "account_name": account.account_name or current_user.get("full_name", ""),
+        "is_verified": DEMO_MODE,  # Auto-verify in demo mode
+        "is_default": is_default,
+        "created_at": now,
+        "deleted": False
+    }
+    await db.mobile_money_accounts.insert_one(account_doc)
+    
+    return {"message": "Mobile money account added", "account_id": account_id}
+
+@api_router.delete("/mobile-money-accounts/{account_id}")
+async def delete_mobile_money_account(account_id: str, current_user: dict = Depends(get_current_user)):
+    """Delete a mobile money account"""
+    account = await db.mobile_money_accounts.find_one({
+        "id": account_id, 
+        "user_id": current_user["id"]
+    })
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    await db.mobile_money_accounts.update_one(
+        {"id": account_id},
+        {"$set": {"deleted": True, "deleted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    return {"message": "Mobile money account deleted"}
+
+@api_router.post("/mobile-money-accounts/{account_id}/set-default")
+async def set_default_mobile_money_account(account_id: str, current_user: dict = Depends(get_current_user)):
+    """Set a mobile money account as default"""
+    account = await db.mobile_money_accounts.find_one({
+        "id": account_id, 
+        "user_id": current_user["id"],
+        "deleted": {"$ne": True}
+    })
+    if not account:
+        raise HTTPException(status_code=404, detail="Account not found")
+    
+    await db.mobile_money_accounts.update_many(
+        {"user_id": current_user["id"]},
+        {"$set": {"is_default": False}}
+    )
+    await db.mobile_money_accounts.update_one(
+        {"id": account_id},
+        {"$set": {"is_default": True}}
+    )
+    return {"message": "Default mobile money account set"}
 
 # ==================== BANK ACCOUNTS ROUTES ====================
 
