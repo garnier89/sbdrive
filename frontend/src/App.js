@@ -308,6 +308,9 @@ function App() {
             <Route path="/admin/zones" element={
               <ProtectedRoute adminOnly><AdminZones /></ProtectedRoute>
             } />
+            <Route path="/admin/gateways" element={
+              <ProtectedRoute adminOnly><AdminGateways /></ProtectedRoute>
+            } />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
