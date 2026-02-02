@@ -4,7 +4,7 @@ import { useAuth } from '@/App';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -32,6 +32,7 @@ const africaItems = [
 
 const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
+  { href: '/admin/analytics', icon: BarChart3, label: 'Analytics & KPIs' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
   { href: '/admin/transactions', icon: History, label: 'Transactions' },
   { href: '/admin/card-approvals', icon: CreditCard, label: 'Approbation Cartes' },
