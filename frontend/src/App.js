@@ -352,6 +352,16 @@ function App() {
             <Route path="/admin/payment-rules" element={
               <ProtectedRoute adminOnly><AdminPaymentRules /></ProtectedRoute>
             } />
+            {/* Admin Advanced Routes */}
+            <Route path="/admin/card-approvals" element={
+              <ProtectedRoute adminOnly><AdminCardApprovals /></ProtectedRoute>
+            } />
+            <Route path="/admin/cms" element={
+              <ProtectedRoute adminOnly><AdminCMSPage /></ProtectedRoute>
+            } />
+            <Route path="/admin/admins" element={
+              <ProtectedRoute adminOnly><AdminManagementPage /></ProtectedRoute>
+            } />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
