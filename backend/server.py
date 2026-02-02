@@ -75,6 +75,9 @@ from routes.quick_login import setup_quick_login_routes, quick_login_router
 # Import Receipts Module
 from routes.receipts import setup_receipts_routes, receipts_router
 
+# Import Documents KYC Module
+from routes.documents import setup_documents_routes, documents_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
