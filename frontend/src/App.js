@@ -279,20 +279,21 @@ axios.interceptors.response.use(
 
 function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <Toaster position="top-right" richColors />
-          <Routes>
-            {/* Public Routes */}
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/quick-login" element={<QuickPinLoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-            
-            {/* Protected Routes */}
-            <Route path="/dashboard" element={
-              <ProtectedRoute><DashboardPage /></ProtectedRoute>
+    <ThemeProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Toaster position="top-right" richColors />
+            <Routes>
+              {/* Public Routes */}
+              <Route path="/" element={<LandingPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/quick-login" element={<QuickPinLoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              
+              {/* Protected Routes */}
+              <Route path="/dashboard" element={
+                <ProtectedRoute><DashboardPage /></ProtectedRoute>
             } />
             <Route path="/transfer" element={
               <ProtectedRoute><TransferPage /></ProtectedRoute>
