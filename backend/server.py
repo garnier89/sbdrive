@@ -3434,6 +3434,10 @@ app.include_router(alerts_router)
 setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, send_push_notification, send_email_notification)
 app.include_router(wallet_transfers_router)
 
+# Setup and include Virtual Cards module routes
+setup_virtual_cards_routes(db, get_current_user, send_push_notification, send_sms_notification, send_email_notification)
+app.include_router(virtual_cards_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
