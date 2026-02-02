@@ -840,30 +840,115 @@ export default function ProfilePage() {
 
                 {/* Document Types */}
                 <div className="space-y-4">
+                  {/* Hidden file input */}
+                  <input
+                    type="file"
+                    ref={documentInputRef}
+                    className="hidden"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={handleDocumentUpload}
+                  />
+                  
                   {[
-                    { type: 'id_card', label: "Pièce d'identité", desc: "Carte d'identité, passeport ou permis de conduire" },
-                    { type: 'proof_of_address', label: 'Justificatif de domicile', desc: "Facture de moins de 3 mois" },
-                    { type: 'selfie', label: 'Photo selfie', desc: "Photo de vous tenant votre pièce d'identité" }
+                    { type: 'id_card', label: "Pièce d'identité", desc: "Carte d'identité nationale", icon: '🪪' },
+                    { type: 'passport', label: "Passeport", desc: "Passeport valide", icon: '📕' },
+                    { type: 'driving_license', label: "Permis de conduire", desc: "Permis de conduire valide", icon: '🚗' },
+                    { type: 'proof_of_address', label: 'Justificatif de domicile', desc: "Facture de moins de 3 mois", icon: '🏠' },
+                    { type: 'selfie', label: 'Photo selfie', desc: "Photo de vous tenant votre pièce d'identité", icon: '🤳' }
                   ].map(docType => {
                     const uploadedDoc = documents.find(d => d.type === docType.type);
+                    const isUploading = uploadingDoc === docType.type;
+                    
                     return (
-                      <div key={docType.type} className="flex items-center justify-between p-4 border rounded-lg">
-                        <div>
-                          <p className="font-medium">{docType.label}</p>
-                          <p className="text-sm text-muted-foreground">{docType.desc}</p>
-                          {uploadedDoc && (
-                            <div className="mt-2">
-                              {getKYCStatusBadge(uploadedDoc.status)}
-                            </div>
+                      <div key={docType.type} className="flex items-center justify-between p-4 border rounded-lg hover:bg-muted/30 transition-colors">
+                        <div className="flex items-start gap-3">
+                          <span className="text-2xl">{docType.icon}</span>
+                          <div>
+                            <p className="font-medium">{docType.label}</p>
+                            <p className="text-sm text-muted-foreground">{docType.desc}</p>
+                            {uploadedDoc && (
+                              <div className="mt-2 flex items-center gap-2">
+                                {getKYCStatusBadge(uploadedDoc.status)}
+                                {uploadedDoc.status === 'rejected' && uploadedDoc.rejection_reason && (
+                                  <span className="text-xs text-red-600">
+                                    ({uploadedDoc.rejection_reason})
+                                  </span>
+                                )}
+                                {uploadedDoc.status === 'pending' && (
+                                  <span className="text-xs text-muted-foreground">
+                                    Envoyé le {new Date(uploadedDoc.uploaded_at).toLocaleDateString('fr-FR')}
+                                  </span>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {uploadedDoc?.status === 'pending' && (
+                            <Button 
+                              variant="ghost" 
+                              size="sm"
+                              onClick={() => handleDeleteDocument(uploadedDoc.id)}
+                              className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </Button>
+                          )}
+                          {uploadedDoc?.status !== 'approved' && (
+                            <Button 
+                              variant={uploadedDoc ? "outline" : "default"}
+                              disabled={isUploading}
+                              onClick={() => {
+                                setSelectedDocType(docType.type);
+                                documentInputRef.current?.click();
+                              }}
+                              data-testid={`upload-${docType.type}-btn`}
+                            >
+                              {isUploading ? (
+                                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                              ) : (
+                                <Upload className="w-4 h-4 mr-2" />
+                              )}
+                              {uploadedDoc ? 'Remplacer' : 'Télécharger'}
+                            </Button>
+                          )}
+                          {uploadedDoc?.status === 'approved' && (
+                            <Badge className="bg-green-100 text-green-700">
+                              <CheckCircle className="w-3 h-3 mr-1" />
+                              Validé
+                            </Badge>
                           )}
                         </div>
-                        <Button variant={uploadedDoc ? "outline" : "default"}>
-                          <Upload className="w-4 h-4 mr-2" />
-                          {uploadedDoc ? 'Remplacer' : 'Télécharger'}
-                        </Button>
                       </div>
                     );
                   })}
+                </div>
+
+                {/* Limits Info */}
+                <div className="p-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg">
+                  <h4 className="font-medium text-blue-800 dark:text-blue-200 mb-2 flex items-center gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    Vos plafonds actuels
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4 text-sm">
+                    <div>
+                      <p className="text-blue-600 dark:text-blue-400">Limite par transaction</p>
+                      <p className="font-semibold text-blue-800 dark:text-blue-200">
+                        {(user?.transaction_limit || 500).toLocaleString('fr-FR')} €
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-blue-600 dark:text-blue-400">Limite journalière</p>
+                      <p className="font-semibold text-blue-800 dark:text-blue-200">
+                        {(user?.daily_limit || 1000).toLocaleString('fr-FR')} €
+                      </p>
+                    </div>
+                  </div>
+                  {user?.kyc_status !== 'verified' && (
+                    <p className="text-xs text-blue-600 dark:text-blue-400 mt-3">
+                      ✨ Vérifiez votre identité pour augmenter vos plafonds jusqu'à 5 000€/transaction et 10 000€/jour
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
