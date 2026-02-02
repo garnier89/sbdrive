@@ -236,6 +236,86 @@ export default function DashboardPage() {
           </div>
         </div>
 
+        {/* Charts Section */}
+        <div className="grid lg:grid-cols-2 gap-6">
+          {/* Monthly Activity Chart */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-['Manrope'] flex items-center gap-2">
+                <BarChart3 className="w-5 h-5 text-primary" />
+                Activité Mensuelle
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {monthlyData.length > 0 ? (
+                <ResponsiveContainer width="100%" height={200}>
+                  <AreaChart data={monthlyData}>
+                    <CartesianGrid strokeDasharray="3 3" className="opacity-30" />
+                    <XAxis dataKey="month" tick={{ fontSize: 12 }} />
+                    <YAxis tick={{ fontSize: 12 }} />
+                    <Tooltip 
+                      formatter={(value) => [`${value.toLocaleString('fr-FR')} €`, '']}
+                      contentStyle={{ borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                    />
+                    <Area type="monotone" dataKey="deposits" stackId="1" stroke="#22c55e" fill="#22c55e" fillOpacity={0.6} name="Dépôts" />
+                    <Area type="monotone" dataKey="withdrawals" stackId="2" stroke="#ef4444" fill="#ef4444" fillOpacity={0.6} name="Dépenses" />
+                  </AreaChart>
+                </ResponsiveContainer>
+              ) : (
+                <div className="h-[200px] flex items-center justify-center text-muted-foreground">
+                  Pas assez de données
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Spending by Category */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="font-['Manrope']">Répartition des Dépenses</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {getSpendingByType().length > 0 ? (
+                <div className="flex items-center gap-4">
+                  <ResponsiveContainer width="50%" height={180}>
+                    <PieChart>
+                      <Pie
+                        data={getSpendingByType()}
+                        cx="50%"
+                        cy="50%"
+                        innerRadius={40}
+                        outerRadius={70}
+                        paddingAngle={2}
+                        dataKey="value"
+                      >
+                        {getSpendingByType().map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={entry.color} />
+                        ))}
+                      </Pie>
+                      <Tooltip formatter={(value) => [`${value.toLocaleString('fr-FR')} €`, '']} />
+                    </PieChart>
+                  </ResponsiveContainer>
+                  <div className="flex-1 space-y-2">
+                    {getSpendingByType().map((item, idx) => (
+                      <div key={idx} className="flex items-center justify-between text-sm">
+                        <div className="flex items-center gap-2">
+                          <div className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }} />
+                          <span>{item.name}</span>
+                        </div>
+                        <span className="font-medium">{item.value.toLocaleString('fr-FR')} €</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="h-[180px] flex items-center justify-center text-muted-foreground">
+                  Aucune dépense enregistrée
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Recent Transactions */}
         <div>
           <div className="flex items-center justify-between mb-4">
@@ -258,7 +338,7 @@ export default function DashboardPage() {
                 </div>
               ) : (
                 <div className="divide-y divide-border">
-                  {transactions.map((tx) => (
+                  {transactions.slice(0, 5).map((tx) => (
                     <div 
                       key={tx.id} 
                       className="flex items-center justify-between p-4 hover:bg-muted/50 transition-colors"
