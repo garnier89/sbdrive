@@ -68,11 +68,14 @@ Générer un système de paiement en ligne tel que PayPal tout le système compl
 - Admin credit/debit accounts
 - Enhanced admin dashboard with volume statistics
 
-## Current Status: DEMO MODE
-All third-party integrations are currently SIMULATED:
-- Stripe payments - checkout URLs generated but not real charges
-- PayPal - auto-capture simulation
-- Mobile Money - auto-confirm simulation
+## Current Status: MIXED MODE
+**REAL integrations:**
+- ✅ Stripe payments - REAL checkout with test key (sk_test_emergent)
+- ✅ Stripe webhooks - Implemented for payment confirmations
+
+**DEMO/Simulated integrations:**
+- PayPal - auto-capture simulation (needs API keys)
+- Mobile Money - auto-confirm simulation (needs Flutterwave/Paydunya)
 - Twilio SMS (2FA) - logs to database instead of sending
 - Exchange rates - static rates in code
 
