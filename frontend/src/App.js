@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-route
 import axios from "axios";
 import { Toaster } from "@/components/ui/sonner";
 import { translations, isRTL } from "@/i18n/translations";
+import { ThemeProvider } from "@/components/ThemeProvider";
 // WhatsAppButton removed - now in footer contact section
 
 // Pages
