@@ -21,6 +21,29 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
+#### 🌍 Module Afrique (NEW)
+- [x] **Transferts Mobile Money Inter-opérateurs**
+  - Wave ↔ Orange Money ↔ MTN MoMo ↔ Moov Money
+  - Calcul des frais en temps réel
+  - Support multi-pays (SN, CI, ML, BF, BJ, TG, CM)
+- [x] **Recharge Crédit Téléphonique**
+  - Orange, Free, MTN, Moov, Expresso
+  - Montants rapides et personnalisés
+  - Préfixes téléphoniques par pays
+- [x] **Paiement de Factures**
+  - Électricité (SENELEC, CIE)
+  - Eau (SDE, SODECI)
+  - Internet/TV (Canal+, Orange Fibre)
+- [x] **Gestion des Bénéficiaires**
+  - Contacts favoris
+  - Historique par bénéficiaire
+- [x] **Transferts Programmés**
+  - Récurrents (quotidien, hebdomadaire, mensuel)
+  - Planification future
+- [x] **Gestion des Litiges**
+  - Signalement de transactions
+  - Suivi des réclamations
+
 #### QR Code Payments
 - [x] Generate QR codes for receiving payments
 - [x] Scan QR codes to pay
@@ -65,15 +88,28 @@
 - [x] 17 geographic zones
 - [x] Zone-specific payment methods
 
-### Database Collections (20+)
-users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings
+### Database Collections (30+)
+users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
 - **User:** user@sbpay.com / userpassword
 
-## API Endpoints (50+)
+## API Endpoints (70+)
 See /app/docs/API_REFERENCE.md for complete list
+
+### New Africa Module APIs
+- `GET /api/africa/mobile-money/operators` - Get MM operators by country
+- `GET /api/africa/mobile-money/fees` - Calculate transfer fees
+- `POST /api/africa/mobile-money/transfer` - Cross-network transfer
+- `GET /api/africa/airtime/operators` - Get telecom operators
+- `POST /api/africa/airtime/topup` - Buy airtime
+- `GET /api/africa/bills/providers` - Get bill providers
+- `POST /api/africa/bills/pay` - Pay a bill
+- `POST /api/africa/beneficiaries` - Add beneficiary
+- `POST /api/africa/scheduled-transfers` - Create scheduled transfer
+- `POST /api/africa/disputes` - Report a dispute
+- `GET /api/africa/limits` - Get user limits
 
 ## Configuration Needed
 
