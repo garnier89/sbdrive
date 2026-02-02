@@ -272,17 +272,25 @@
 - [x] Zone-specific payment methods
 
 ### Database Collections (40+)
-users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**, **vaults**, **vault_transactions**, **vault_activity_logs**, **support_tickets**, **admin_notifications**
+users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**, **vaults**, **vault_transactions**, **vault_activity_logs**, **support_tickets**, **admin_notifications**, **quick_logins**, **security_logs**
 
 ## Test Credentials
 - **Admin:** admin@sbpay.com / adminpassword
-- **User:** user@sbpay.com / userpassword (vault PIN: 123456)
+- **User:** user@sbpay.com / userpassword (vault PIN: 123456, Quick PIN: 1234)
 - **User 2:** test@sbpay.com / testpassword (phone: +221771234567)
 
-## API Endpoints (110+)
+## API Endpoints (120+)
 See /app/docs/API_REFERENCE.md for complete list
 
-### Vault APIs (NEW)
+### Quick PIN Login APIs (NEW - Feb 2026)
+- `GET /api/auth/quick-pin/status` - Statut du PIN (activé, expiration, dernière utilisation)
+- `POST /api/auth/quick-pin/setup` - Configurer PIN (nécessite auth + password)
+- `POST /api/auth/quick-pin/login` - Connexion avec device_token + PIN
+- `POST /api/auth/quick-pin/check-device` - Vérifier validité du device token
+- `POST /api/auth/quick-pin/change` - Modifier PIN (avec PIN actuel)
+- `POST /api/auth/quick-pin/disable` - Désactiver PIN
+
+### Vault APIs
 - `GET /api/vault/balance` - Solde et limites du coffre-fort
 - `POST /api/vault/set-pin` - Définir/modifier PIN
 - `POST /api/vault/verify-pin` - Vérifier PIN
