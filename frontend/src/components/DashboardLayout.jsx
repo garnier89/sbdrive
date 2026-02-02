@@ -1,10 +1,11 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/App';
+import { useTheme } from '@/components/ThemeProvider';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
