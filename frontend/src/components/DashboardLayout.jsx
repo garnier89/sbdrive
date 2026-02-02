@@ -3,7 +3,8 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/App';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
-  History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2
+  History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
+  QrCode, Gift
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -15,9 +16,9 @@ const navItems = [
   { href: '/transfer', icon: Send, label: 'Transfert' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
-  { href: '/payment-links', icon: Link2, label: 'Liens de Paiement' },
-  { href: '/bank-accounts', icon: Building2, label: 'Comptes Bancaires' },
-  { href: '/bills', icon: Receipt, label: 'Factures' },
+  { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
+  { href: '/payment-links', icon: Link2, label: 'Liens Paiement' },
+  { href: '/rewards', icon: Gift, label: 'Récompenses' },
   { href: '/history', icon: History, label: 'Historique' },
   { href: '/settings', icon: Settings, label: 'Paramètres' },
 ];
