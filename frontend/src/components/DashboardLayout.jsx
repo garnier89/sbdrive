@@ -4,7 +4,7 @@ import { useAuth } from '@/App';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift
+  QrCode, Gift, Smartphone, Phone, Zap
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,6 +21,13 @@ const navItems = [
   { href: '/rewards', icon: Gift, label: 'Récompenses' },
   { href: '/history', icon: History, label: 'Historique' },
   { href: '/settings', icon: Settings, label: 'Paramètres' },
+];
+
+// Africa Module items
+const africaItems = [
+  { href: '/mobile-money-transfer', icon: Smartphone, label: 'Mobile Money' },
+  { href: '/airtime', icon: Phone, label: 'Crédit Téléphone' },
+  { href: '/bill-payment', icon: Zap, label: 'Factures' },
 ];
 
 const adminItems = [
