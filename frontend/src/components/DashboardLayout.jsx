@@ -54,6 +54,7 @@ const adminItems = [
 
 export const DashboardLayout = ({ children }) => {
   const { user, logout, isAdmin } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const navigate = useNavigate();
   const location = useLocation();
   const [mobileOpen, setMobileOpen] = React.useState(false);
