@@ -26,6 +26,7 @@ class VirtualCardUpdate(BaseModel):
     daily_limit: Optional[float] = None
     transaction_limit: Optional[float] = None
     card_name: Optional[str] = None
+    card_color: Optional[str] = None  # Card color theme
 
 class VirtualCardBlock(BaseModel):
     card_id: str
