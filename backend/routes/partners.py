@@ -40,6 +40,16 @@ class WithdrawalConfirm(BaseModel):
     withdrawal_id: str
     otp_code: str
 
+class MobileMoneyRechargeRequest(BaseModel):
+    provider: str  # orange, wave, mtn, free
+    phone_number: str
+    amount: float
+    currency: str = "XOF"
+
+class MobileMoneyRechargeConfirm(BaseModel):
+    recharge_id: str
+    otp_code: str
+
 def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_password, create_access_token, send_push_notification):
     """Setup partners routes with database access"""
 
