@@ -102,6 +102,9 @@ from routes.zones_config import router as zones_config_router, get_zones_config_
 # Import Staff Management Module
 from routes.staff_management import router as staff_router, get_staff_router
 
+# Import Commission Engine Module
+from routes.commission_engine import router as commission_router, get_commission_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
