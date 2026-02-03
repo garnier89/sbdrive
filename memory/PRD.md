@@ -137,6 +137,32 @@
   - GET /api/withdrawals/config - Configuration par pays
 - [x] **Page**: /withdraw (refonte complète)
 
+#### 📥 Dépôt Multi-Méthodes (NEW - Feb 2026)
+- [x] **Dépôt par Carte**
+  - Stripe checkout sécurisé
+  - Visa, Mastercard, American Express
+  - Montants rapides (10€ à 500€)
+- [x] **Dépôt Mobile Money**
+  - 10 pays africains supportés
+  - Opérateurs: Wave, Orange Money, MTN, M-Pesa, etc.
+  - Crédit instantané (mode démo)
+  - Frais: 0-0.5%
+- [x] **Dépôt par Virement Bancaire**
+  - Coordonnées bancaires SBPAYGO
+  - Référence unique par utilisateur
+  - Instructions détaillées avec copie en 1 clic
+  - Délai: 1-2 jours ouvrés, pas de frais
+- [x] **Historique des Dépôts**
+  - Filtres par statut et méthode
+  - Affichage des soldes en temps réel
+- [x] **Backend API**
+  - POST /api/deposits-v2/mobile-money - Dépôt Mobile Money
+  - POST /api/deposits-v2/bank-transfer - Dépôt virement
+  - GET /api/deposits-v2/config - Configuration par pays
+  - GET /api/deposits-v2/providers/{country} - Opérateurs par pays
+  - GET /api/deposits-v2/history - Historique
+- [x] **Page**: /deposit (refonte complète)
+
 #### 📱 Boutons Téléchargement Mobile (NEW - Feb 2026)
 - [x] **Landing Page**
   - Boutons stylisés Google Play et App Store
