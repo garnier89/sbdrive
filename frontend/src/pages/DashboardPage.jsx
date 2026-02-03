@@ -160,7 +160,7 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>
         </div>
       </DashboardLayout>
     );
@@ -171,16 +171,16 @@ export default function DashboardPage() {
       <div className="p-6 lg:p-8 space-y-8" data-testid="dashboard-page">
         {/* Welcome Section */}
         <div>
-          <h1 className="text-2xl lg:text-3xl font-bold font-['Manrope'] text-foreground">
+          <h1 className="text-2xl lg:text-3xl font-bold font-['Manrope'] text-slate-800">
             Bonjour, {user?.full_name?.split(' ')[0]} 👋
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-slate-500 mt-1">
             Voici un aperçu de vos finances
           </p>
         </div>
 
         {/* Total Balance Card */}
-        <Card className="bg-gradient-to-br from-primary to-orange-600 text-white border-0">
+        <Card className="bg-gradient-to-br from-sky-500 via-sky-600 to-orange-500 text-white border-0 shadow-xl shadow-sky-500/25">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
