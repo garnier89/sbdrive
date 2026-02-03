@@ -21,6 +21,7 @@ const navItems = [
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
   { href: '/cash-withdrawal', icon: Banknote, label: 'Retrait Cash Agent' },
+  { href: '/find-agent', icon: MapPin, label: 'Localiser Agent' },
   { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
   { href: '/payment-links', icon: Link2, label: 'Liens Paiement' },
   { href: '/rewards', icon: Gift, label: 'Récompenses' },
