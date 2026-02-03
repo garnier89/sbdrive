@@ -3483,6 +3483,10 @@ app.include_router(receipts_router)
 setup_documents_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
 app.include_router(documents_router)
 
+# Setup and include Partners/Agents module routes
+setup_partners_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, hash_password, verify_password, create_access_token, send_push_notification)
+app.include_router(partners_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
