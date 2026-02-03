@@ -47,6 +47,7 @@ const adminItems = [
   { href: '/admin/mobile-money-config', icon: Smartphone, label: '🌍 Mobile Money Config' },
   { href: '/admin/rewards', icon: Gift, label: '🎁 Récompenses' },
   { href: '/admin/zones-config', icon: Globe, label: '🗺️ Zones & Services' },
+  { href: '/admin/staff', icon: Users, label: '👥 Personnel Admin' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
   { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
