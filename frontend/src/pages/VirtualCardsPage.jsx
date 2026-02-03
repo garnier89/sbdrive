@@ -434,7 +434,7 @@ export default function VirtualCardsPage() {
                 Nouvelle carte
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-lg">
+            <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Créer une carte virtuelle</DialogTitle>
                 <DialogDescription>
@@ -445,12 +445,45 @@ export default function VirtualCardsPage() {
                 <div className="space-y-2">
                   <Label>Nom de la carte</Label>
                   <Input
-                    placeholder="Ex: Shopping en ligne"
+                    placeholder="Ex: Shopping en ligne, Netflix, Personnel..."
                     value={newCard.card_name}
                     onChange={(e) => setNewCard({...newCard, card_name: e.target.value})}
                     data-testid="card-name-input"
                   />
                 </div>
+                
+                {/* Color Selection */}
+                <div className="space-y-3">
+                  <Label className="flex items-center gap-2">
+                    <span className="text-lg">🎨</span> Couleur de la carte
+                  </Label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {Object.entries(CARD_COLORS).map(([code, config]) => (
+                      <button
+                        key={code}
+                        type="button"
+                        onClick={() => setNewCard({...newCard, card_color: code})}
+                        className={`relative h-12 rounded-lg ${config.preview} transition-all duration-200 ${
+                          newCard.card_color === code 
+                            ? 'ring-2 ring-offset-2 ring-primary scale-105' 
+                            : 'opacity-70 hover:opacity-100 hover:scale-102'
+                        }`}
+                        data-testid={`card-color-${code}`}
+                        title={config.name}
+                      >
+                        {newCard.card_color === code && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <CheckCircle className="w-5 h-5 text-white drop-shadow-lg" />
+                          </div>
+                        )}
+                        <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[10px] text-white/80 font-medium">
+                          {config.name}
+                        </span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+                
                 <div className="space-y-2">
                   <Label>Devise</Label>
                   <Select 
