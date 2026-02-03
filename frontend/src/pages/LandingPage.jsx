@@ -309,65 +309,65 @@ export default function LandingPage() {
       </section>
 
       {/* Transfers Section */}
-      <section id="transfers" className="py-20 px-4">
+      <section id="transfers" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 mb-6">
-                <Send className="w-4 h-4 text-blue-400" />
-                <span className="text-blue-400 text-sm font-medium">Transferts d'argent</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 border border-sky-200 mb-6">
+                <Send className="w-4 h-4 text-sky-600" />
+                <span className="text-sky-600 text-sm font-medium">Transferts d'argent</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
                 Envoyez de l'argent en{' '}
-                <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-sky-500 to-sky-600 bg-clip-text text-transparent">
                   quelques secondes
                 </span>
               </h2>
-              <p className="text-gray-400 mb-8">
+              <p className="text-slate-600 mb-8">
                 Avec SBPAYGO, vous pouvez envoyer de l'argent de multiples façons, 
                 avec vérification du destinataire et possibilité de remboursement en cas d'erreur.
               </p>
               
               <div className="grid grid-cols-2 gap-4 mb-8">
                 {transferTypes.map((type, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-white/5 border border-white/10">
-                    <type.icon className="w-5 h-5 text-blue-400" />
-                    <span className="text-sm text-gray-300">{type.label}</span>
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-sky-50 border border-sky-100">
+                    <type.icon className="w-5 h-5 text-sky-600" />
+                    <span className="text-sm text-slate-700">{type.label}</span>
                   </div>
                 ))}
               </div>
 
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/20">
-                <RefreshCw className="w-6 h-6 text-emerald-400" />
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-orange-50 border border-orange-200">
+                <RefreshCw className="w-6 h-6 text-orange-500" />
                 <div>
-                  <p className="font-medium text-white">Remboursement garanti</p>
-                  <p className="text-sm text-gray-400">Récupérez vos fonds en cas d'erreur (délai 48h)</p>
+                  <p className="font-medium text-slate-800">Remboursement garanti</p>
+                  <p className="text-sm text-slate-600">Récupérez vos fonds en cas d'erreur (délai 48h)</p>
                 </div>
               </div>
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-500/20 to-cyan-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-orange-400/20 rounded-3xl blur-3xl" />
+              <div className="relative bg-white rounded-3xl p-8 border border-sky-100 shadow-xl shadow-sky-100/50">
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400">Envoyer à</span>
-                    <span className="text-white font-medium">+221 77 123 4567</span>
+                    <span className="text-slate-500">Envoyer à</span>
+                    <span className="text-slate-800 font-medium">+221 77 123 4567</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400">Montant</span>
-                    <span className="text-3xl font-bold text-white">50 000 CFA</span>
+                    <span className="text-slate-500">Montant</span>
+                    <span className="text-3xl font-bold text-slate-800">50 000 CFA</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-gray-400">Frais</span>
-                    <span className="text-emerald-400">250 CFA</span>
+                    <span className="text-slate-500">Frais</span>
+                    <span className="text-emerald-600">250 CFA</span>
                   </div>
-                  <div className="h-px bg-white/10" />
+                  <div className="h-px bg-sky-100" />
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400">Total</span>
-                    <span className="text-xl font-bold text-orange-400">50 250 CFA</span>
+                    <span className="text-slate-500">Total</span>
+                    <span className="text-xl font-bold text-orange-500">50 250 CFA</span>
                   </div>
-                  <Button className="w-full bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-6 rounded-xl">
+                  <Button className="w-full bg-gradient-to-r from-sky-500 to-sky-600 hover:from-sky-600 hover:to-sky-700 text-white py-6 rounded-xl">
                     <Send className="w-5 h-5 mr-2" />
                     Envoyer maintenant
                   </Button>
