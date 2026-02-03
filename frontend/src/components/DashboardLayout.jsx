@@ -38,6 +38,7 @@ const africaItems = [
 
 const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
+  { href: '/admin/super', icon: Crown, label: '🛡️ Super Admin' },
   { href: '/admin/analytics', icon: BarChart3, label: 'Analytics & KPIs' },
   { href: '/admin/alerts', icon: AlertTriangle, label: 'Alertes & Seuils' },
   { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
@@ -52,7 +53,7 @@ const adminItems = [
   { href: '/admin/gateways', icon: Settings, label: 'Passerelles' },
   { href: '/admin/payment-rules', icon: Shield, label: 'Sécurité & Capture' },
   { href: '/admin/cms', icon: FileText, label: 'CMS Contenu' },
-  { href: '/admin/admins', icon: Crown, label: 'Super Admin' },
+  { href: '/admin/admins', icon: Crown, label: 'Gestion Admins' },
 ];
 
 export const DashboardLayout = ({ children }) => {
