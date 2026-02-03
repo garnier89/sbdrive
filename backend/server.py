@@ -3680,6 +3680,10 @@ app.include_router(zones_config_configured, prefix="/api")
 staff_configured = get_staff_router(db, get_admin_user)
 app.include_router(staff_configured, prefix="/api")
 
+# Setup and include Commission Engine module routes
+commission_configured = get_commission_router(db, get_admin_user)
+app.include_router(commission_configured, prefix="/api")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
