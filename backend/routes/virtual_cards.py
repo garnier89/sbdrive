@@ -38,6 +38,18 @@ class VirtualCardPayment(BaseModel):
     merchant_category: Optional[str] = None
     payment_type: str = "online"  # online, contactless, pos
 
+class VirtualCardReveal(BaseModel):
+    pin: str  # 4 digit PIN
+
+class VirtualCardLimitsUpdate(BaseModel):
+    daily_limit: Optional[float] = None
+    monthly_limit: Optional[float] = None
+    transaction_limit: Optional[float] = None
+
+class VirtualCardBoost(BaseModel):
+    amount: float  # Amount to add to daily limit
+    duration: str = "24h"  # Duration: 1h, 6h, 24h, 48h, 7d
+
 # ==================== CONFIGURATION ====================
 
 # Card limits configuration
