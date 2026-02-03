@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Global Rebrand to SBPAYGO)  
+**Last Updated:** February 2026 (Global rebrand to SBPAYGO)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://fintech-africa-8.preview.emergentagent.com
 
