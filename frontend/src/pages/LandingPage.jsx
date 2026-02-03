@@ -383,6 +383,11 @@ export default function LandingPage() {
                 <li><a href="#" className="hover:text-foreground transition-colors">Portefeuille</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Factures</a></li>
                 <li><a href="#" className="hover:text-foreground transition-colors">Entreprises</a></li>
+                <li>
+                  <Link to="/partner/register" className="hover:text-foreground transition-colors text-green-500 font-medium" data-testid="become-partner-link">
+                    Devenir Partenaire
+                  </Link>
+                </li>
               </ul>
             </div>
             
