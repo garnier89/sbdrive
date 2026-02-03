@@ -602,7 +602,12 @@ export default function VirtualCardsPage() {
           </Card>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
-            {cards.map((card) => (
+            {cards.map((card) => {
+              const isRevealed = !!revealedCards[card.id];
+              const revealedData = revealedCards[card.id]?.details;
+              const countdown = revealCountdown[card.id];
+              
+              return (
               <Card key={card.id} className="overflow-hidden" data-testid={`card-${card.id}`}>
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
@@ -610,12 +615,20 @@ export default function VirtualCardsPage() {
                       <CardTitle className="text-lg">{card.card_name}</CardTitle>
                       <CardDescription>•••• {card.last_four}</CardDescription>
                     </div>
-                    {getStatusBadge(card.status)}
+                    <div className="flex items-center gap-2">
+                      {isRevealed && (
+                        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 animate-pulse">
+                          <Clock className="w-3 h-3 mr-1" />
+                          {countdown}s
+                        </Badge>
+                      )}
+                      {getStatusBadge(card.status)}
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
-                  {/* Mini card visual */}
-                  <div className={`rounded-xl p-4 text-white ${
+                  {/* Mini card visual with reveal/hide */}
+                  <div className={`rounded-xl p-4 text-white relative ${
                     card.card_brand === 'visa' 
                       ? 'bg-gradient-to-r from-blue-600 to-blue-800'
                       : 'bg-gradient-to-r from-orange-500 to-red-700'
@@ -624,11 +637,60 @@ export default function VirtualCardsPage() {
                       <Wifi className="w-5 h-5 rotate-90 opacity-70" />
                       <span className="font-bold">{card.card_brand === 'visa' ? 'VISA' : 'MC'}</span>
                     </div>
-                    <p className="font-mono text-lg tracking-wider mb-2">{card.card_number_masked}</p>
+                    <p className="font-mono text-lg tracking-wider mb-2">
+                      {isRevealed ? revealedData?.card_number || card.card_number_masked : card.card_number_masked}
+                    </p>
                     <div className="flex justify-between text-sm">
                       <span>EXP: {card.expiry}</span>
+                      {isRevealed && (
+                        <span className="font-bold">CVV: {revealedData?.cvv || '***'}</span>
+                      )}
                       <span>{card.currency}</span>
                     </div>
+                  </div>
+                  
+                  {/* Reveal/Hide Button */}
+                  <div className="flex gap-2">
+                    {isRevealed ? (
+                      <>
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={() => copyToClipboard(revealedData?.card_number?.replace(/\s/g, '') || '', 'Numéro')}
+                        >
+                          <Copy className="w-4 h-4 mr-1" />
+                          Copier numéro
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => copyToClipboard(revealedData?.cvv || '', 'CVV')}
+                        >
+                          <Copy className="w-4 h-4 mr-1" />
+                          CVV
+                        </Button>
+                        <Button 
+                          variant="destructive" 
+                          size="sm"
+                          onClick={() => handleHideCard(card.id)}
+                        >
+                          <EyeOff className="w-4 h-4" />
+                        </Button>
+                      </>
+                    ) : (
+                      <Button 
+                        variant="default" 
+                        size="sm" 
+                        className="w-full bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600"
+                        onClick={() => openRevealDialog(card.id)}
+                        disabled={card.status !== 'active'}
+                        data-testid={`reveal-card-${card.id}`}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Afficher les informations
+                      </Button>
+                    )}
                   </div>
                   
                   {/* Card Info */}
