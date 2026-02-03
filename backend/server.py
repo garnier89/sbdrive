@@ -3666,6 +3666,10 @@ app.include_router(mobile_money_config_router, prefix="/api")
 rewards_admin_configured = get_rewards_admin_router(db, get_admin_user)
 app.include_router(rewards_admin_configured, prefix="/api")
 
+# Setup and include Zones Config module routes
+zones_config_configured = get_zones_config_router(db, get_admin_user)
+app.include_router(zones_config_configured, prefix="/api")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
