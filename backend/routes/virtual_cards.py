@@ -79,6 +79,18 @@ OTP_THRESHOLD = 50000  # XOF
 # Card types
 CARD_TYPES = ["visa", "mastercard"]
 
+# Available card colors with gradient classes
+CARD_COLORS = {
+    "blue": {"name": "Bleu", "gradient": "from-blue-600 via-blue-700 to-blue-900"},
+    "red": {"name": "Rouge", "gradient": "from-red-500 via-red-600 to-red-800"},
+    "green": {"name": "Vert", "gradient": "from-emerald-500 via-emerald-600 to-emerald-800"},
+    "purple": {"name": "Violet", "gradient": "from-purple-500 via-purple-600 to-purple-900"},
+    "orange": {"name": "Orange", "gradient": "from-orange-500 via-orange-600 to-orange-800"},
+    "black": {"name": "Noir", "gradient": "from-gray-700 via-gray-800 to-gray-900"},
+    "gold": {"name": "Or", "gradient": "from-yellow-500 via-amber-500 to-amber-700"},
+    "teal": {"name": "Turquoise", "gradient": "from-teal-500 via-teal-600 to-teal-800"}
+}
+
 # ==================== HELPER FUNCTIONS ====================
 
 def generate_card_number() -> str:
