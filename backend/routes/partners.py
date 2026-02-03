@@ -167,8 +167,7 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         
         # Create token with partner flag
         token = create_access_token(
-            data={"sub": partner["id"], "is_partner": True},
-            expires_delta=None
+            data={"sub": partner["id"], "is_partner": True}
         )
         
         return {
