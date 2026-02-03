@@ -44,6 +44,7 @@ const adminItems = [
   { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
   { href: '/admin/tickets', icon: Headphones, label: 'Tickets Support' },
   { href: '/admin/partners', icon: Store, label: 'Partenaires/Agents' },
+  { href: '/admin/mobile-money-config', icon: Smartphone, label: '🌍 Mobile Money Config' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
   { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
