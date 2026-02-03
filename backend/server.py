@@ -2138,6 +2138,155 @@ async def admin_debit_account(request: AdminCreditDebit, background_tasks: Backg
     
     return {"message": "Account debited", "transaction_id": transaction_id}
 
+# Unified wallet operation for both users and partners
+class AdminWalletOperation(BaseModel):
+    target_id: str
+    target_type: str = "user"  # user or partner
+    amount: float
+    currency: str = "XOF"
+    reason: Optional[str] = None
+
+@api_router.post("/admin/wallet/credit")
+async def admin_wallet_credit(request: AdminWalletOperation, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    """Credit wallet for user or partner"""
+    if request.target_type == "partner":
+        target = await db.partners.find_one({"id": request.target_id}, {"_id": 0})
+        if not target:
+            raise HTTPException(status_code=404, detail="Partenaire non trouvé")
+    else:
+        target = await db.users.find_one({"id": request.target_id}, {"_id": 0})
+        if not target:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    # Find or create wallet
+    wallet = await db.wallets.find_one(
+        {"user_id": request.target_id, "currency": request.currency},
+        {"_id": 0}
+    )
+    
+    if not wallet:
+        # Create wallet
+        wallet_id = str(uuid.uuid4())
+        wallet = {
+            "id": wallet_id,
+            "user_id": request.target_id,
+            "currency": request.currency,
+            "balance": 0,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+        await db.wallets.insert_one(wallet)
+    
+    # Credit the wallet
+    await db.wallets.update_one(
+        {"user_id": request.target_id, "currency": request.currency},
+        {"$inc": {"balance": request.amount}}
+    )
+    
+    # Create transaction record
+    transaction_id = str(uuid.uuid4())
+    await db.transactions.insert_one({
+        "id": transaction_id,
+        "user_id": request.target_id,
+        "type": "admin_credit",
+        "amount": request.amount,
+        "currency": request.currency,
+        "status": "completed",
+        "description": request.reason or "Crédit administrateur",
+        "admin_id": admin["id"],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"message": "Compte crédité avec succès", "transaction_id": transaction_id, "new_balance": wallet.get("balance", 0) + request.amount}
+
+@api_router.post("/admin/wallet/debit")
+async def admin_wallet_debit(request: AdminWalletOperation, background_tasks: BackgroundTasks, admin: dict = Depends(get_admin_user)):
+    """Debit wallet for user or partner"""
+    if request.target_type == "partner":
+        target = await db.partners.find_one({"id": request.target_id}, {"_id": 0})
+        if not target:
+            raise HTTPException(status_code=404, detail="Partenaire non trouvé")
+    else:
+        target = await db.users.find_one({"id": request.target_id}, {"_id": 0})
+        if not target:
+            raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    wallet = await db.wallets.find_one(
+        {"user_id": request.target_id, "currency": request.currency},
+        {"_id": 0}
+    )
+    
+    if not wallet:
+        raise HTTPException(status_code=404, detail="Wallet non trouvé")
+    
+    if wallet["balance"] < request.amount:
+        raise HTTPException(status_code=400, detail=f"Solde insuffisant. Disponible: {wallet['balance']} {request.currency}")
+    
+    # Debit the wallet
+    await db.wallets.update_one(
+        {"user_id": request.target_id, "currency": request.currency},
+        {"$inc": {"balance": -request.amount}}
+    )
+    
+    # Create transaction record
+    transaction_id = str(uuid.uuid4())
+    await db.transactions.insert_one({
+        "id": transaction_id,
+        "user_id": request.target_id,
+        "type": "admin_debit",
+        "amount": -request.amount,
+        "currency": request.currency,
+        "status": "completed",
+        "description": request.reason or "Débit administrateur",
+        "admin_id": admin["id"],
+        "created_at": datetime.now(timezone.utc).isoformat()
+    })
+    
+    return {"message": "Compte débité avec succès", "transaction_id": transaction_id, "new_balance": wallet["balance"] - request.amount}
+
+@api_router.get("/admin/users/{user_id}/activity")
+async def get_user_activity(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Get user activity history"""
+    activities = await db.activity_logs.find(
+        {"user_id": user_id},
+        {"_id": 0}
+    ).sort("created_at", -1).limit(50).to_list(50)
+    
+    return {"activities": activities}
+
+@api_router.put("/admin/users/{user_id}/status")
+async def update_user_status(user_id: str, status: dict, admin: dict = Depends(get_admin_user)):
+    """Activate or suspend a user account"""
+    new_status = status.get("status", "active")
+    
+    result = await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"status": new_status, "updated_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    return {"message": f"Statut mis à jour: {new_status}"}
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, admin: dict = Depends(get_admin_user)):
+    """Delete a user account"""
+    # Don't allow deleting admins
+    user = await db.users.find_one({"id": user_id}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=404, detail="Utilisateur non trouvé")
+    
+    if user.get("role") == "admin":
+        raise HTTPException(status_code=403, detail="Impossible de supprimer un administrateur")
+    
+    # Soft delete or hard delete
+    await db.users.update_one(
+        {"id": user_id},
+        {"$set": {"status": "deleted", "deleted_at": datetime.now(timezone.utc).isoformat()}}
+    )
+    
+    return {"message": "Utilisateur supprimé"}
+
 # ==================== ADMIN DOCUMENTS ====================
 
 @api_router.get("/admin/documents")
