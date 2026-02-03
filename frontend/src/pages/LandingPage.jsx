@@ -581,20 +581,20 @@ export default function LandingPage() {
       </section>
 
       {/* Security Section */}
-      <section id="security" className="py-20 px-4">
+      <section id="security" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-6">
-              <Shield className="w-4 h-4 text-emerald-400" />
-              <span className="text-emerald-400 text-sm font-medium">Sécurité</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-100 border border-emerald-200 mb-6">
+              <Shield className="w-4 h-4 text-emerald-600" />
+              <span className="text-emerald-600 text-sm font-medium">Sécurité</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
               Plateforme{' '}
-              <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-500 to-sky-500 bg-clip-text text-transparent">
                 hautement sécurisée
               </span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="text-slate-600 max-w-2xl mx-auto">
               Vos fonds et données personnelles sont protégés par les technologies 
               de sécurité les plus avancées.
             </p>
@@ -602,11 +602,11 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {securityFeatures.map((feature, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center hover:bg-white/10 transition-all">
-                <div className="w-14 h-14 rounded-2xl bg-emerald-500/20 mx-auto mb-4 flex items-center justify-center">
-                  <feature.icon className="w-7 h-7 text-emerald-400" />
+              <div key={i} className="p-6 rounded-2xl bg-gradient-to-b from-sky-50 to-white border border-sky-100 text-center hover:shadow-lg hover:shadow-sky-100/50 transition-all">
+                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-sky-500 to-emerald-500 mx-auto mb-4 flex items-center justify-center">
+                  <feature.icon className="w-7 h-7 text-white" />
                 </div>
-                <p className="font-medium text-white">{feature.label}</p>
+                <p className="font-medium text-slate-800">{feature.label}</p>
               </div>
             ))}
           </div>
@@ -614,22 +614,18 @@ export default function LandingPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gradient-to-r from-orange-500/10 via-orange-600/10 to-orange-500/10">
+      <section className="py-20 px-4 bg-gradient-to-r from-sky-500 via-sky-600 to-orange-500">
         <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-3xl sm:text-4xl font-bold mb-6">
-            Prêt à rejoindre{' '}
-            <span className="bg-gradient-to-r from-orange-400 to-orange-600 bg-clip-text text-transparent">
-              SBPAYGO
-            </span>
-            ?
+          <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-white">
+            Prêt à rejoindre SBPAYGO ?
           </h2>
-          <p className="text-gray-400 mb-8 text-lg">
+          <p className="text-sky-100 mb-8 text-lg">
             Créez votre compte gratuitement et commencez à envoyer de l'argent 
             partout dans le monde en quelques minutes.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <Link to="/register">
-              <Button size="lg" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-orange-500/25">
+              <Button size="lg" className="bg-white text-sky-600 hover:bg-sky-50 px-8 py-6 text-lg rounded-xl shadow-lg">
                 Créer un compte gratuit
                 <ArrowRight className="ml-2 w-5 h-5" />
               </Button>
@@ -637,7 +633,7 @@ export default function LandingPage() {
             <Button 
               size="lg" 
               variant="outline" 
-              className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
+              className="border-white/50 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
               onClick={() => setShowContactDialog(true)}
             >
               <Headphones className="mr-2 w-5 h-5" />
