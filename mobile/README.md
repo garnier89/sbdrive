@@ -69,7 +69,7 @@ yarn ios
 
 L'URL de l'API est configurée dans `src/config.js`:
 ```javascript
-API_URL: 'https://vibrant-gauss.preview.emergentagent.com/api'
+API_URL: 'https://sbpaygo-africa.preview.emergentagent.com/api'
 ```
 
 ## 📋 Fonctionnalités

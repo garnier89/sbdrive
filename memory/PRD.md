@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Mobile Money Config System + Orange Theme Mobile Screens)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://vibrant-gauss.preview.emergentagent.com
+**Preview URL:** https://sbpaygo-africa.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO
