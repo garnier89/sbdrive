@@ -205,6 +205,27 @@
   - Transferts envoyés/reçus
   - Direction (sent/received)
 
+#### 🔁 Système de Remboursements (NEW)
+- [x] **Récupération automatique des fonds**
+  - Remboursement automatique si < 50,000 XOF et raison éligible
+  - Raisons auto-éligibles: erreur destinataire, montant incorrect, doublon
+- [x] **Demande de remboursement**
+  - Délai de réclamation: 48h (configurable)
+  - 6 raisons prédéfinies
+  - Validation admin pour gros montants
+- [x] **Interface utilisateur**
+  - Vérification éligibilité avant demande
+  - Temps restant affiché
+  - Historique des demandes
+  - Annulation possible si en attente
+- [x] **Administration**
+  - Liste toutes les demandes
+  - Stats (pending, approved, rejected)
+  - Approuver/Rejeter avec note
+- [x] **Notifications**
+  - Alertes à chaque étape
+  - Notification admin pour nouvelles demandes
+
 #### 🌍 Module Afrique
 - [x] **Transferts Mobile Money Inter-opérateurs**
   - Wave ↔ Orange Money ↔ MTN MoMo ↔ Moov Money
