@@ -106,6 +106,37 @@
   - POST /api/agents/admin/seed - Données démo
 - [x] **Page**: /find-agent
 
+#### 💸 Retrait Multi-Méthodes (NEW - Feb 2026)
+- [x] **Retrait Bancaire**
+  - IBAN et nom de banque
+  - Comptes bancaires enregistrés
+  - Délai: 1-3 jours, Frais: 1%
+- [x] **Retrait Mobile Money**
+  - 10 pays africains supportés (SN, CI, ML, BF, BJ, TG, CM, GH, NG, KE)
+  - Opérateurs: Wave, Orange Money, MTN, Moov, Free Money, M-Pesa, etc.
+  - Transfert instantané, Frais: 1-1.5%
+- [x] **Retrait vers Carte**
+  - Visa/Mastercard
+  - Délai: 3-5 jours, Frais: 1.5%
+- [x] **Retraits Programmés/Récurrents**
+  - Fréquences: Une fois, Hebdomadaire, Bi-mensuel, Mensuel
+  - Date de début et fin
+  - Annulation possible
+- [x] **Montants Rapides**
+  - Boutons prédéfinis (10€, 25€, 50€, 100€, 250€, 500€)
+  - Montants adaptés par devise
+- [x] **Historique des Retraits**
+  - Filtres par statut et méthode
+  - Onglet retraits classiques et programmés
+- [x] **Backend API**
+  - POST /api/withdrawals/bank - Retrait bancaire
+  - POST /api/withdrawals/mobile-money - Retrait Mobile Money
+  - POST /api/withdrawals/card - Retrait carte
+  - POST /api/withdrawals/scheduled - Retrait programmé
+  - GET /api/withdrawals/history - Historique
+  - GET /api/withdrawals/config - Configuration par pays
+- [x] **Page**: /withdraw (refonte complète)
+
 #### 📱 Boutons Téléchargement Mobile (NEW - Feb 2026)
 - [x] **Landing Page**
   - Boutons stylisés Google Play et App Store
