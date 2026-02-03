@@ -224,8 +224,8 @@ export default function AirtimePage() {
     }
   };
 
-  // Use favorite
-  const useFavorite = (fav) => {
+  // Select favorite for use
+  const selectFavorite = (fav) => {
     setForm({
       ...form,
       phone_number: fav.phone_number,
