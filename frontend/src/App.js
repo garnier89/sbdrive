@@ -58,6 +58,7 @@ import AdminManagementPage from "@/pages/admin/AdminManagementPage";
 import AdminAnalyticsPage from "@/pages/admin/AdminAnalyticsPage";
 import AdminAlertsPage from "@/pages/admin/AdminAlertsPage";
 import AdminKYCPage from "@/pages/admin/AdminKYCPage";
+import AdminContactSettingsPage from "@/pages/admin/AdminContactSettingsPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
