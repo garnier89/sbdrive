@@ -49,6 +49,7 @@ const adminItems = [
   { href: '/admin/zones-config', icon: Globe, label: '🗺️ Zones & Services' },
   { href: '/admin/staff', icon: Users, label: '👥 Personnel Admin' },
   { href: '/admin/commissions', icon: Percent, label: '💰 Commissions' },
+  { href: '/admin/limits', icon: Shield, label: '🛡️ Limites & Anti-Fraude' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
   { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
