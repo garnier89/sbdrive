@@ -62,6 +62,7 @@ import AdminContactSettingsPage from "@/pages/admin/AdminContactSettingsPage";
 import AdminPartnersPage from "@/pages/admin/AdminPartnersPage";
 import SuperAdminPage from "@/pages/admin/SuperAdminPage";
 import AdminMobileMoneyConfigPage from "@/pages/admin/AdminMobileMoneyConfigPage";
+import AdminRewardsPage from "@/pages/admin/AdminRewardsPage";
 // Partner Pages
 import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
