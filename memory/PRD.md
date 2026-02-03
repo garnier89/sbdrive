@@ -2,11 +2,23 @@
 
 ## Project Overview
 **Name:** SBPAYGO  
-**Type:** Online Payment System (PayPal-like Fintech Platform)  
+**Official Website:** sbpaygo.com  
+**Type:** Online Payment System (Fintech Super App for Africa)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Super Admin Panel completed)  
+**Last Updated:** February 2026 (Global Rebrand to SBPAYGO)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://fintech-africa-8.preview.emergentagent.com
+
+## SBPAYGO Ecosystem
+| Component | Name |
+|-----------|------|
+| Application | SBPAYGO |
+| Wallet | SBPAYGO Wallet |
+| Cartes virtuelles | SBPAYGO Cards |
+| Partenaires/Agents | SBPAYGO Partners |
+| Administration | SBPAYGO Admin Panel |
+| Super Admin | SBPAYGO Super Administrator |
+| Coffre-fort | SBPAYGO Coffre-fort |
 
 ## Features Summary
 
