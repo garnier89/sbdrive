@@ -280,12 +280,12 @@ export default function DepositPage() {
                 )}
 
                 {/* Security Info */}
-                <div className="flex items-start gap-3 p-4 bg-accent/50 rounded-lg">
-                  <Shield className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                <div className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                  <Shield className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
                   <div className="text-sm">
-                    <p className="font-medium text-foreground">{t('securePayment')}</p>
-                    <p className="text-muted-foreground">
-                      Vos informations de paiement sont protégées par le cryptage SSL de Stripe.
+                    <p className="font-medium text-green-700 dark:text-green-300">{t('securePayment')}</p>
+                    <p className="text-green-600 dark:text-green-400">
+                      Vos informations de paiement sont protégées par un cryptage SSL 256 bits.
                     </p>
                   </div>
                 </div>
