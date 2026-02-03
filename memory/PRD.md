@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Global rebrand to SBPAYGO)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://fintech-africa-8.preview.emergentagent.com
+**Preview URL:** https://vibrant-gauss.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO

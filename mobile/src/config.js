@@ -1,7 +1,7 @@
 // Configuration API SB Money Mobile
 const CONFIG = {
   // URL de l'API Backend
-  API_URL: 'https://fintech-africa-8.preview.emergentagent.com/api',
+  API_URL: 'https://vibrant-gauss.preview.emergentagent.com/api',
   
   // Version de l'application
   APP_VERSION: '1.0.0',
