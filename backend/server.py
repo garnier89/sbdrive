@@ -3718,6 +3718,14 @@ app.include_router(withdrawals_router)
 setup_deposits_v2_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
 app.include_router(deposits_router)
 
+# Setup and include Airtime module routes
+setup_airtime_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification)
+app.include_router(airtime_router)
+
+# Setup and include Transfers V2 module routes
+setup_transfers_v2_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification)
+app.include_router(transfers_v2_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
