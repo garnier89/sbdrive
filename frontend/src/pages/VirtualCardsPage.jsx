@@ -158,6 +158,60 @@ export default function VirtualCardsPage() {
     }
   };
 
+  // Reveal card details with PIN validation
+  const handleRevealCard = async () => {
+    if (revealPin.length !== 4) {
+      toast.error('PIN invalide (4 chiffres requis)');
+      return;
+    }
+    
+    setProcessing(true);
+    try {
+      const res = await axios.post(`${API}/virtual-card/reveal/${revealCardId}`, {
+        pin: revealPin
+      });
+      
+      // Store revealed details with expiration
+      const expiresAt = Date.now() + (CARD_VISIBILITY_TIMEOUT * 1000);
+      setRevealedCards(prev => ({
+        ...prev,
+        [revealCardId]: {
+          details: res.data,
+          expiresAt
+        }
+      }));
+      
+      toast.success(`Informations visibles pendant ${CARD_VISIBILITY_TIMEOUT} secondes`);
+      setShowRevealDialog(false);
+      setRevealPin('');
+      setRevealCardId(null);
+      
+      // Log access for audit
+      console.log(`[AUDIT] Card ${revealCardId} revealed at ${new Date().toISOString()}`);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'PIN incorrect');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  // Manually hide card details
+  const handleHideCard = (cardId) => {
+    setRevealedCards(prev => {
+      const newState = { ...prev };
+      delete newState[cardId];
+      return newState;
+    });
+    toast.info('Informations masquées');
+  };
+
+  // Open reveal dialog
+  const openRevealDialog = (cardId) => {
+    setRevealCardId(cardId);
+    setRevealPin('');
+    setShowRevealDialog(true);
+  };
+
   const handleToggleFeature = async (cardId, feature, enabled) => {
     try {
       await axios.post(`${API}/virtual-card/toggle-feature/${cardId}?feature=${feature}&enabled=${enabled}`);
