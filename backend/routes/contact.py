@@ -333,7 +333,7 @@ def setup_contact_routes(db, get_current_user, get_admin_user, send_push_notific
             "id": str(uuid.uuid4()),
             "sender_type": "admin",
             "sender_id": current_admin["id"],
-            "sender_name": f"{current_admin.get('first_name', '')} {current_admin.get('last_name', '')}".strip() or "Support SB Money",
+            "sender_name": f"{current_admin.get('first_name', '')} {current_admin.get('last_name', '')}".strip() or "Support SBPAYGO",
             "message": request.message,
             "created_at": now.isoformat()
         }

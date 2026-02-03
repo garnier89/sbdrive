@@ -11,7 +11,7 @@ import { toast } from 'sonner';
 import { Fingerprint, Loader2, Eye, EyeOff, Shield, Clock, Trash2, AlertTriangle, CheckCircle } from 'lucide-react';
 import axios from 'axios';
 
-const DEVICE_TOKEN_KEY = 'sbmoney_device_token';
+const DEVICE_TOKEN_KEY = 'sbpaygo_device_token';
 
 export default function QuickPinSettings() {
   const [loading, setLoading] = useState(true);

@@ -127,7 +127,7 @@ export default function QRPaymentPage() {
       // Parse QR data
       const qrData = JSON.parse(decodedText);
       
-      if (qrData.type === 'sbmoney_payment') {
+      if (qrData.type === 'sbpaygo_payment') {
         // Fetch QR details from backend
         const res = await axios.get(`${API}/qr/${qrData.code}`);
         setScannedData(res.data);
@@ -184,7 +184,7 @@ export default function QRPaymentPage() {
       ctx.drawImage(img, 0, 0);
       
       const link = document.createElement('a');
-      link.download = `sbmoney-qr-${generatedQR?.code || 'code'}.png`;
+      link.download = `sbpaygo-qr-${generatedQR?.code || 'code'}.png`;
       link.href = canvas.toDataURL('image/png');
       link.click();
     };
@@ -196,8 +196,8 @@ export default function QRPaymentPage() {
     if (!generatedQR) return;
     
     const shareData = {
-      title: 'Paiement SB Money',
-      text: `Payez ${receiveData.amount} ${receiveData.currency} via SB Money`,
+      title: 'Paiement SBPAYGO',
+      text: `Payez ${receiveData.amount} ${receiveData.currency} via SBPAYGO`,
       url: `${window.location.origin}/pay/qr/${generatedQR.code}`
     };
     
@@ -316,7 +316,7 @@ export default function QRPaymentPage() {
                         <QRCodeSVG
                           id="qr-code-svg"
                           value={JSON.stringify({
-                            type: 'sbmoney_payment',
+                            type: 'sbpaygo_payment',
                             code: generatedQR.code,
                             amount: parseFloat(receiveData.amount),
                             currency: receiveData.currency

@@ -1,5 +1,5 @@
 # Test file for Vault (Coffre-Fort) and Contact/Support modules
-# SB Money - Iteration 5
+# SBPAYGO - Iteration 5
 
 import pytest
 import requests
@@ -9,8 +9,8 @@ import uuid
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', 'https://fintech-africa-8.preview.emergentagent.com')
 
 # Test credentials
-USER_CREDS = {"email": "user@sbmoney.com", "password": "userpassword"}
-ADMIN_CREDS = {"email": "admin@sbmoney.com", "password": "adminpassword"}
+USER_CREDS = {"email": "user@sbpaygo.com", "password": "userpassword"}
+ADMIN_CREDS = {"email": "admin@sbpaygo.com", "password": "adminpassword"}
 VAULT_PIN = "123456"
 
 # ==================== FIXTURES ====================

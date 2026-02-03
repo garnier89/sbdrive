@@ -61,8 +61,8 @@ export default function PartnerDashboardPage() {
   const [rechargeHistory, setRechargeHistory] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('sbmoney_partner_token');
-    const partnerData = localStorage.getItem('sbmoney_partner');
+    const token = localStorage.getItem('sbpaygo_partner_token');
+    const partnerData = localStorage.getItem('sbpaygo_partner');
     
     if (!token || !partnerData) {
       navigate('/partner/login');
@@ -92,8 +92,8 @@ export default function PartnerDashboardPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('sbmoney_partner_token');
-    localStorage.removeItem('sbmoney_partner');
+    localStorage.removeItem('sbpaygo_partner_token');
+    localStorage.removeItem('sbpaygo_partner');
     navigate('/partner/login');
   };
 
@@ -111,7 +111,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingWithdrawal(true);
     try {
-      const token = localStorage.getItem('sbmoney_partner_token');
+      const token = localStorage.getItem('sbpaygo_partner_token');
       const response = await axios.post(`${API}/partners/withdrawal/initiate`, {
         client_identifier: searchInput,
         amount: amount,
@@ -138,7 +138,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingWithdrawal(true);
     try {
-      const token = localStorage.getItem('sbmoney_partner_token');
+      const token = localStorage.getItem('sbpaygo_partner_token');
       const response = await axios.post(`${API}/partners/withdrawal/confirm`, {
         withdrawal_id: withdrawalData.withdrawal_id,
         otp_code: otpCode
@@ -161,7 +161,7 @@ export default function PartnerDashboardPage() {
     if (!withdrawalData?.withdrawal_id) return;
     
     try {
-      const token = localStorage.getItem('sbmoney_partner_token');
+      const token = localStorage.getItem('sbpaygo_partner_token');
       await axios.post(`${API}/partners/withdrawal/cancel/${withdrawalData.withdrawal_id}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -197,7 +197,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingRecharge(true);
     try {
-      const token = localStorage.getItem('sbmoney_partner_token');
+      const token = localStorage.getItem('sbpaygo_partner_token');
       const response = await axios.post(`${API}/partners/mobile-money/recharge/initiate`, {
         provider: rechargeProvider,
         phone_number: rechargePhone,
@@ -225,7 +225,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingRecharge(true);
     try {
-      const token = localStorage.getItem('sbmoney_partner_token');
+      const token = localStorage.getItem('sbpaygo_partner_token');
       const response = await axios.post(`${API}/partners/mobile-money/recharge/confirm`, {
         recharge_id: rechargeData.recharge_id,
         otp_code: rechargeOtp

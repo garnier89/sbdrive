@@ -83,18 +83,18 @@ export const useLanguage = () => {
 
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguageState] = useState(() => {
-    return localStorage.getItem('sbmoney_language') || 'fr';
+    return localStorage.getItem('sbpaygo_language') || 'fr';
   });
 
   const setLanguage = async (lang) => {
-    localStorage.setItem('sbmoney_language', lang);
+    localStorage.setItem('sbpaygo_language', lang);
     setLanguageState(lang);
     
     // Update document direction for RTL languages
     document.documentElement.dir = isRTL(lang) ? 'rtl' : 'ltr';
     
     // Update user preference on server if logged in
-    const token = localStorage.getItem('sbmoney_token');
+    const token = localStorage.getItem('sbpaygo_token');
     if (token) {
       try {
         await axios.put(`${API}/user/language`, { language: lang });
@@ -133,14 +133,14 @@ export const useAuth = () => {
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(localStorage.getItem('sbmoney_token'));
+  const [token, setToken] = useState(localStorage.getItem('sbpaygo_token'));
   const [loading, setLoading] = useState(true);
   const [requires2FA, setRequires2FA] = useState(false);
   const [pending2FAUserId, setPending2FAUserId] = useState(null);
 
   useEffect(() => {
     const initAuth = async () => {
-      const savedToken = localStorage.getItem('sbmoney_token');
+      const savedToken = localStorage.getItem('sbpaygo_token');
       if (savedToken) {
         try {
           const response = await axios.get(`${API}/auth/me`, {
@@ -151,10 +151,10 @@ export const AuthProvider = ({ children }) => {
           
           // Sync language from server
           if (response.data.preferred_language) {
-            localStorage.setItem('sbmoney_language', response.data.preferred_language);
+            localStorage.setItem('sbpaygo_language', response.data.preferred_language);
           }
         } catch (error) {
-          localStorage.removeItem('sbmoney_token');
+          localStorage.removeItem('sbpaygo_token');
           setToken(null);
           setUser(null);
         }
@@ -174,12 +174,12 @@ export const AuthProvider = ({ children }) => {
     }
     
     const { access_token, user: userData } = response.data;
-    localStorage.setItem('sbmoney_token', access_token);
+    localStorage.setItem('sbpaygo_token', access_token);
     setToken(access_token);
     setUser(userData);
     
     if (userData.preferred_language) {
-      localStorage.setItem('sbmoney_language', userData.preferred_language);
+      localStorage.setItem('sbpaygo_language', userData.preferred_language);
     }
     
     return userData;
@@ -188,7 +188,7 @@ export const AuthProvider = ({ children }) => {
   const verify2FA = async (code) => {
     const response = await axios.post(`${API}/auth/verify-2fa?user_id=${pending2FAUserId}&code=${code}`);
     const { access_token, user: userData } = response.data;
-    localStorage.setItem('sbmoney_token', access_token);
+    localStorage.setItem('sbpaygo_token', access_token);
     setToken(access_token);
     setUser(userData);
     setRequires2FA(false);
@@ -201,15 +201,15 @@ export const AuthProvider = ({ children }) => {
       email, password, full_name, phone, preferred_language 
     });
     const { access_token, user: userData } = response.data;
-    localStorage.setItem('sbmoney_token', access_token);
-    localStorage.setItem('sbmoney_language', preferred_language);
+    localStorage.setItem('sbpaygo_token', access_token);
+    localStorage.setItem('sbpaygo_language', preferred_language);
     setToken(access_token);
     setUser(userData);
     return userData;
   };
 
   const logout = () => {
-    localStorage.removeItem('sbmoney_token');
+    localStorage.removeItem('sbpaygo_token');
     setToken(null);
     setUser(null);
     setRequires2FA(false);
@@ -268,7 +268,7 @@ const ProtectedRoute = ({ children, adminOnly = false }) => {
 
 // Axios interceptor
 axios.interceptors.request.use((config) => {
-  const token = localStorage.getItem('sbmoney_token');
+  const token = localStorage.getItem('sbpaygo_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -279,7 +279,7 @@ axios.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('sbmoney_token');
+      localStorage.removeItem('sbpaygo_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);

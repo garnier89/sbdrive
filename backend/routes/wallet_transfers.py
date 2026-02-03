@@ -1,4 +1,4 @@
-# Module Transferts entre Utilisateurs SB Money
+# Module Transferts entre Utilisateurs SBPAYGO
 # Routes pour les transferts P2P via numéro de téléphone
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
@@ -31,7 +31,7 @@ class PhoneLookupRequest(BaseModel):
 # ==================== FEE CONFIGURATION ====================
 
 # Frais de transfert P2P (gratuit pour encourager l'adoption)
-P2P_TRANSFER_FEE_PERCENT = 0.0  # 0% pour les transferts entre utilisateurs SB Money
+P2P_TRANSFER_FEE_PERCENT = 0.0  # 0% pour les transferts entre utilisateurs SBPAYGO
 P2P_TRANSFER_FEE_FIXED = 0  # Pas de frais fixes
 
 # Limites de transfert par jour (en XOF)
@@ -84,7 +84,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
         current_user: dict = Depends(get_current_user)
     ):
         """
-        Look up a SB Money user by their phone number.
+        Look up a SBPAYGO user by their phone number.
         Returns basic info if user exists, without revealing sensitive data.
         """
         normalized_phone = normalize_phone(phone)
@@ -106,7 +106,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
         if not user:
             raise HTTPException(
                 status_code=404, 
-                detail="Aucun utilisateur SB Money trouvé avec ce numéro"
+                detail="Aucun utilisateur SBPAYGO trouvé avec ce numéro"
             )
         
         if not user.get("is_active", True):
@@ -143,7 +143,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
         current_user: dict = Depends(get_current_user)
     ):
         """
-        Initiate a transfer to another SB Money user via phone number.
+        Initiate a transfer to another SBPAYGO user via phone number.
         """
         user_id = current_user["id"]
         normalized_phone = normalize_phone(request.recipient_phone)
@@ -165,7 +165,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
         if not recipient:
             raise HTTPException(
                 status_code=404,
-                detail="Aucun utilisateur SB Money trouvé avec ce numéro"
+                detail="Aucun utilisateur SBPAYGO trouvé avec ce numéro"
             )
         
         if recipient["id"] == user_id:
@@ -284,7 +284,7 @@ def setup_wallet_transfer_routes(db, get_current_user, send_sms_notification, se
                 background_tasks.add_task(
                     send_sms_notification,
                     sender_phone,
-                    f"SB Money: Votre code de confirmation pour le transfert de {request.amount:,} {request.currency} est: {otp}. Valide 5 min."
+                    f"SBPAYGO: Votre code de confirmation pour le transfert de {request.amount:,} {request.currency} est: {otp}. Valide 5 min."
                 )
             
             return {
@@ -586,7 +586,7 @@ async def execute_transfer(
             send_email_notification,
             recipient_email,
             f"Vous avez reçu {amount:,.0f} {currency}",
-            f"{sender_name} vous a envoyé {amount:,.0f} {currency} via SB Money.",
+            f"{sender_name} vous a envoyé {amount:,.0f} {currency} via SBPAYGO.",
             recipient.get("preferred_language", "fr")
         )
     

@@ -366,7 +366,7 @@ export default function SuperAdminPage() {
             </div>
             <div>
               <h1 className="text-2xl font-bold text-foreground">🛡️ Super Administrateur</h1>
-              <p className="text-muted-foreground">Gestion complète du système SB Money</p>
+              <p className="text-muted-foreground">Gestion complète du système SBPAYGO</p>
             </div>
           </div>
           <Button onClick={() => { fetchUsers(); fetchPartners(); }} variant="outline">

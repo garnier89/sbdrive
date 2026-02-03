@@ -8,7 +8,7 @@ import { Fingerprint, Loader2, Eye, EyeOff, ArrowLeft, User } from 'lucide-react
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
-const DEVICE_TOKEN_KEY = 'sbmoney_device_token';
+const DEVICE_TOKEN_KEY = 'sbpaygo_device_token';
 
 export default function QuickPinLoginPage() {
   const navigate = useNavigate();

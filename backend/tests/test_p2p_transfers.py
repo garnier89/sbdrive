@@ -1,5 +1,5 @@
 """
-SB Money P2P Transfer Module Tests
+SBPAYGO P2P Transfer Module Tests
 Tests: Phone lookup, P2P transfers, transfer history, recent contacts, validations
 """
 import pytest
@@ -9,9 +9,9 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-USER1_EMAIL = "user@sbmoney.com"
+USER1_EMAIL = "user@sbpaygo.com"
 USER1_PASSWORD = "userpassword"
-USER2_EMAIL = "test@sbmoney.com"
+USER2_EMAIL = "test@sbpaygo.com"
 USER2_PASSWORD = "testpassword"
 USER2_PHONE = "+221771234567"
 

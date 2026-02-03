@@ -1,5 +1,5 @@
 """
-SB Money - Database Models & Pydantic Schemas
+SBPAYGO - Database Models & Pydantic Schemas
 Complete schema for Wallet + Bank + Mobile Money system
 """
 

@@ -13,7 +13,7 @@ export default function CashWithdrawalPage() {
   const [copied, setCopied] = useState(false);
 
   const qrData = JSON.stringify({
-    type: 'sbmoney_withdrawal',
+    type: 'sbpaygo_withdrawal',
     user_id: user?.id,
     name: user?.full_name,
     timestamp: new Date().toISOString()
@@ -42,7 +42,7 @@ export default function CashWithdrawalPage() {
           </div>
           <h1 className="text-2xl font-bold text-foreground">Retrait Cash</h1>
           <p className="text-muted-foreground mt-2">
-            Retirez de l'argent chez un agent partenaire SB Money
+            Retirez de l'argent chez un agent partenaire SBPAYGO
           </p>
         </div>
 
@@ -61,7 +61,7 @@ export default function CashWithdrawalPage() {
                 <div>
                   <p className="font-medium text-foreground">Trouvez un agent partenaire</p>
                   <p className="text-sm text-muted-foreground">
-                    Rendez-vous chez un point de retrait SB Money près de chez vous
+                    Rendez-vous chez un point de retrait SBPAYGO près de chez vous
                   </p>
                 </div>
               </li>
@@ -174,8 +174,8 @@ export default function CashWithdrawalPage() {
               <div>
                 <p className="font-medium text-foreground">Trouver un agent</p>
                 <p className="text-sm text-muted-foreground mt-1">
-                  Les agents partenaires SB Money sont disponibles dans les boutiques, 
-                  tabacs et points de vente affichant le logo SB Money.
+                  Les agents partenaires SBPAYGO sont disponibles dans les boutiques, 
+                  tabacs et points de vente affichant le logo SBPAYGO.
                 </p>
               </div>
             </div>

@@ -8,9 +8,9 @@ import os
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-USER_EMAIL = "user@sbmoney.com"
+USER_EMAIL = "user@sbpaygo.com"
 USER_PASSWORD = "userpassword"
-ADMIN_EMAIL = "admin@sbmoney.com"
+ADMIN_EMAIL = "admin@sbpaygo.com"
 ADMIN_PASSWORD = "adminpassword"
 TEST_PIN = "1234"
 NEW_PIN = "5678"

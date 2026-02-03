@@ -146,7 +146,7 @@ export default function PartnerRegisterPage() {
             <div className="mx-auto w-14 h-14 bg-green-500/20 rounded-full flex items-center justify-center mb-4">
               <Store className="w-7 h-7 text-green-500" />
             </div>
-            <CardTitle className="text-2xl text-white">Devenir Partenaire SB Money</CardTitle>
+            <CardTitle className="text-2xl text-white">Devenir Partenaire SBPAYGO</CardTitle>
             <CardDescription className="text-slate-400">
               Rejoignez notre réseau d'agents et proposez des retraits cash à vos clients
             </CardDescription>

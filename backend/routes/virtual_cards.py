@@ -1,4 +1,4 @@
-# Module Cartes Virtuelles SB Money
+# Module Cartes Virtuelles SBPAYGO
 # Routes pour la création et gestion des cartes virtuelles
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks

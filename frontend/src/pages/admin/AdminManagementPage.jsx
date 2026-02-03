@@ -385,7 +385,7 @@ export default function AdminManagementPage() {
                   <Label>Email *</Label>
                   <Input
                     type="email"
-                    placeholder="admin@sbmoney.com"
+                    placeholder="admin@sbpaygo.com"
                     value={newAdmin.email}
                     onChange={(e) => setNewAdmin(prev => ({ ...prev, email: e.target.value }))}
                   />

@@ -10,7 +10,7 @@ import { Eye, EyeOff, Loader2, Fingerprint } from 'lucide-react';
 import axios from 'axios';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_ce75e416-36f1-4b25-8491-7de5dd466427/artifacts/jsqaea98_1024x1024%20%281030%20x%201024%20px%29_20251125_175229_0000.png";
-const DEVICE_TOKEN_KEY = 'sbmoney_device_token';
+const DEVICE_TOKEN_KEY = 'sbpaygo_device_token';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -69,8 +69,8 @@ export default function LoginPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-8" data-testid="login-logo">
-            <img src={LOGO_URL} alt="SB Money" className="w-12 h-12 object-contain" />
-            <span className="text-2xl font-bold font-['Manrope']">SB Money</span>
+            <img src={LOGO_URL} alt="SBPAYGO" className="w-12 h-12 object-contain" />
+            <span className="text-2xl font-bold font-['Manrope']">SBPAYGO</span>
           </Link>
 
           <Card className="border-border shadow-lg">

@@ -27,8 +27,8 @@ export default function PartnerLoginPage() {
       const response = await axios.post(`${API}/partners/login`, formData);
       
       // Store partner token
-      localStorage.setItem('sbmoney_partner_token', response.data.access_token);
-      localStorage.setItem('sbmoney_partner', JSON.stringify(response.data.partner));
+      localStorage.setItem('sbpaygo_partner_token', response.data.access_token);
+      localStorage.setItem('sbpaygo_partner', JSON.stringify(response.data.partner));
       
       toast.success(`Bienvenue ${response.data.partner.business_name}!`);
       navigate('/partner/dashboard');
@@ -57,7 +57,7 @@ export default function PartnerLoginPage() {
             </div>
             <CardTitle className="text-2xl text-white">Espace Partenaire</CardTitle>
             <CardDescription className="text-slate-400">
-              Connectez-vous à votre compte agent SB Money
+              Connectez-vous à votre compte agent SBPAYGO
             </CardDescription>
           </CardHeader>
           <CardContent>

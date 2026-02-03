@@ -49,7 +49,7 @@ def setup_receipts_routes(db, jwt_secret, jwt_algorithm):
             pdf_buffer,
             media_type="application/pdf",
             headers={
-                "Content-Disposition": f"attachment; filename=recu_sbmoney_{transaction_id[:8]}.pdf"
+                "Content-Disposition": f"attachment; filename=recu_sbpaygo_{transaction_id[:8]}.pdf"
             }
         )
 
@@ -81,7 +81,7 @@ def generate_pdf_receipt(transaction: dict, user: dict) -> BytesIO:
     # Logo/Title
     c.setFillColor(HexColor("#ffffff"))
     c.setFont("Helvetica-Bold", 28)
-    c.drawString(25*mm, height - 25*mm, "SB Money")
+    c.drawString(25*mm, height - 25*mm, "SBPAYGO")
     
     c.setFont("Helvetica", 12)
     c.drawString(25*mm, height - 35*mm, "Reçu de Transaction")
@@ -225,8 +225,8 @@ def generate_pdf_receipt(transaction: dict, user: dict) -> BytesIO:
     
     c.setFillColor(gray_color)
     c.setFont("Helvetica", 8)
-    c.drawCentredString(width/2, 15*mm, "Ce document est un reçu officiel généré automatiquement par SB Money.")
-    c.drawCentredString(width/2, 10*mm, f"Généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')} • www.sbmoney.com")
+    c.drawCentredString(width/2, 15*mm, "Ce document est un reçu officiel généré automatiquement par SBPAYGO.")
+    c.drawCentredString(width/2, 10*mm, f"Généré le {datetime.now().strftime('%d/%m/%Y à %H:%M')} • www.sbpaygo.com")
     
     # QR Code placeholder (simple text for now)
     c.setFillColor(gray_color)

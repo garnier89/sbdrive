@@ -1,4 +1,4 @@
-# Module Remboursements SB Money
+# Module Remboursements SBPAYGO
 # Routes pour les demandes et traitements de remboursements
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks

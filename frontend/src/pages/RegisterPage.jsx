@@ -63,7 +63,7 @@ export default function RegisterPage() {
       <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-primary to-orange-600 items-center justify-center p-12">
         <div className="text-white max-w-md text-center">
           <h2 className="text-3xl font-bold font-['Manrope'] mb-4">
-            Rejoignez SB Money aujourd'hui
+            Rejoignez SBPAYGO aujourd'hui
           </h2>
           <p className="text-lg opacity-90">
             Créez votre compte en quelques minutes et commencez à profiter 
@@ -76,8 +76,8 @@ export default function RegisterPage() {
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-8" data-testid="register-logo">
-            <img src={LOGO_URL} alt="SB Money" className="w-12 h-12 object-contain" />
-            <span className="text-2xl font-bold font-['Manrope']">SB Money</span>
+            <img src={LOGO_URL} alt="SBPAYGO" className="w-12 h-12 object-contain" />
+            <span className="text-2xl font-bold font-['Manrope']">SBPAYGO</span>
           </Link>
 
           <Card className="border-border shadow-lg">

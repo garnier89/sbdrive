@@ -527,7 +527,7 @@ export default function TransferPage() {
                         <div>
                           <p className="font-medium">Via espace partenaire</p>
                           <p className="text-sm text-muted-foreground">
-                            Envoyez via un agent partenaire SB Money
+                            Envoyez via un agent partenaire SBPAYGO
                           </p>
                         </div>
                       </div>

@@ -1,4 +1,4 @@
-// Translations for SB Money
+// Translations for SBPAYGO
 export const translations = {
   fr: {
     // Navigation

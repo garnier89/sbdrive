@@ -13,7 +13,7 @@ export const useTheme = () => {
 export const ThemeProvider = ({ children }) => {
   const [theme, setThemeState] = useState(() => {
     if (typeof window !== 'undefined') {
-      return localStorage.getItem('sbmoney_theme') || 'light';
+      return localStorage.getItem('sbpaygo_theme') || 'light';
     }
     return 'light';
   });
@@ -22,7 +22,7 @@ export const ThemeProvider = ({ children }) => {
     const root = window.document.documentElement;
     root.classList.remove('light', 'dark');
     root.classList.add(theme);
-    localStorage.setItem('sbmoney_theme', theme);
+    localStorage.setItem('sbpaygo_theme', theme);
   }, [theme]);
 
   const setTheme = (newTheme) => {

@@ -1,5 +1,5 @@
 # Module Analytics - Dashboard des revenus et KPIs
-# Statistiques avancées pour la plateforme SB Money
+# Statistiques avancées pour la plateforme SBPAYGO
 
 from fastapi import APIRouter, HTTPException, Depends
 from typing import Optional, Dict, Any
