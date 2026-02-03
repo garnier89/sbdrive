@@ -90,16 +90,16 @@ export const DashboardLayout = ({ children }) => {
   const SidebarContent = ({ mobile = false }) => (
     <div className="flex flex-col h-full bg-white">
       {/* Logo */}
-      <div className="p-6 border-b border-sky-100">
+      <div className="p-6 border-b border-orange-100">
         <Link to="/dashboard" className="flex items-center gap-3" data-testid="sidebar-logo">
           <img src={LOGO_URL} alt="SBPAYGO" className="w-10 h-10 object-contain" />
-          <span className="text-xl font-bold font-['Manrope'] bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">SBPAYGO</span>
+          <span className="text-xl font-bold font-['Manrope'] bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">SBPAYGO</span>
         </Link>
       </div>
 
       {/* Navigation */}
       <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        <div className="text-xs font-semibold text-sky-600 uppercase tracking-wider mb-4 px-4">
+        <div className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-4 px-4">
           Menu Principal
         </div>
         {navItems.map((item) => (
@@ -116,7 +116,7 @@ export const DashboardLayout = ({ children }) => {
         
         {isAdmin && (
           <>
-            <div className="text-xs font-semibold text-sky-600 uppercase tracking-wider mt-8 mb-4 px-4">
+            <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mt-8 mb-4 px-4">
               Administration
             </div>
             {adminItems.map((item) => (
@@ -127,11 +127,11 @@ export const DashboardLayout = ({ children }) => {
       </nav>
 
       {/* User Section */}
-      <div className="p-4 border-t border-sky-100 bg-sky-50/50">
+      <div className="p-4 border-t border-orange-100 bg-orange-50/50">
         {/* Theme Toggle */}
         <Button 
           variant="ghost" 
-          className="w-full justify-start text-slate-600 hover:bg-sky-100 hover:text-sky-700 mb-2"
+          className="w-full justify-start text-slate-600 hover:bg-orange-100 hover:text-orange-700 mb-2"
           onClick={toggleTheme}
           data-testid="theme-toggle-btn"
         >
@@ -149,7 +149,7 @@ export const DashboardLayout = ({ children }) => {
         </Button>
         
         <div className="flex items-center gap-3 px-4 py-3 mb-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-sky-400 to-orange-400 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20">
             <User className="w-5 h-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
