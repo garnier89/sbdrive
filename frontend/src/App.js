@@ -299,6 +299,11 @@ function App() {
               <Route path="/quick-login" element={<QuickPinLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               
+              {/* Partner Public Routes */}
+              <Route path="/partner/register" element={<PartnerRegisterPage />} />
+              <Route path="/partner/login" element={<PartnerLoginPage />} />
+              <Route path="/partner/dashboard" element={<PartnerDashboardPage />} />
+              
               {/* Protected Routes */}
               <Route path="/dashboard" element={
                 <ProtectedRoute><DashboardPage /></ProtectedRoute>
