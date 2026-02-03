@@ -81,6 +81,9 @@ from routes.documents import setup_documents_routes, documents_router
 # Import Partners/Agents Module
 from routes.partners import setup_partners_routes, partners_router
 
+# Import Refunds Module
+from routes.refunds import setup_refunds_routes, refunds_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
