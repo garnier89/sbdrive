@@ -699,39 +699,39 @@ export default function LandingPage() {
 
       {/* Contact Dialog */}
       <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
-        <DialogContent className="bg-slate-900 border-white/10 text-white">
+        <DialogContent className="bg-white border-sky-100 text-slate-800">
           <DialogHeader>
-            <DialogTitle className="text-white">Contactez-nous</DialogTitle>
-            <DialogDescription className="text-gray-400">
+            <DialogTitle className="text-slate-800">Contactez-nous</DialogTitle>
+            <DialogDescription className="text-slate-500">
               Notre équipe vous répondra dans les plus brefs délais.
             </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleContactSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-white">Nom</Label>
+              <Label className="text-slate-700">Nom</Label>
               <Input
                 required
                 value={contactForm.name}
                 onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                className="bg-white/5 border-white/10 text-white"
+                className="border-sky-200 focus:border-sky-400"
                 placeholder="Votre nom"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Email</Label>
+              <Label className="text-slate-700">Email</Label>
               <Input
                 type="email"
                 required
                 value={contactForm.email}
                 onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                className="bg-white/5 border-white/10 text-white"
+                className="border-sky-200 focus:border-sky-400"
                 placeholder="votre@email.com"
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Sujet</Label>
+              <Label className="text-slate-700">Sujet</Label>
               <Select value={contactForm.subject} onValueChange={(v) => setContactForm({...contactForm, subject: v})}>
-                <SelectTrigger className="bg-white/5 border-white/10 text-white">
+                <SelectTrigger className="border-sky-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -743,12 +743,12 @@ export default function LandingPage() {
               </Select>
             </div>
             <div className="space-y-2">
-              <Label className="text-white">Message</Label>
+              <Label className="text-slate-700">Message</Label>
               <Textarea
                 required
                 value={contactForm.message}
                 onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                className="bg-white/5 border-white/10 text-white"
+                className="border-sky-200 focus:border-sky-400"
                 placeholder="Votre message..."
                 rows={4}
               />
@@ -756,7 +756,7 @@ export default function LandingPage() {
             <Button 
               type="submit" 
               disabled={submitting}
-              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
+              className="w-full bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               Envoyer
