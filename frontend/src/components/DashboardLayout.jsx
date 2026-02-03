@@ -76,12 +76,12 @@ export const DashboardLayout = ({ children }) => {
         onClick={() => mobile && setMobileOpen(false)}
         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
           ${isActive 
-            ? 'bg-primary text-primary-foreground shadow-md' 
-            : 'text-muted-foreground hover:bg-accent hover:text-accent-foreground'
+            ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white shadow-md shadow-sky-500/25' 
+            : 'text-slate-600 hover:bg-sky-50 hover:text-sky-700'
           }`}
         data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
       >
-        <item.icon className="w-5 h-5" />
+        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
         <span className="font-medium">{item.label}</span>
       </Link>
     );
