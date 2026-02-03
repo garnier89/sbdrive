@@ -178,6 +178,9 @@ def setup_virtual_cards_routes(db, get_current_user, send_push_notification, sen
         expiry_month, expiry_year = generate_expiry()
         card_brand = get_card_brand(card_number)
         
+        # Validate card color
+        card_color = request.card_color if request.card_color in CARD_COLORS else "blue"
+        
         now = datetime.now(timezone.utc)
         card_id = str(uuid.uuid4())
         
@@ -186,6 +189,7 @@ def setup_virtual_cards_routes(db, get_current_user, send_push_notification, sen
             "id": card_id,
             "user_id": user_id,
             "card_name": request.card_name or f"Carte {card_brand.title()} {request.currency}",
+            "card_color": card_color,
             "card_number_masked": mask_card_number(card_number),
             "card_number_hash": hash_sensitive_data(card_number),
             "last_four": card_number.replace(" ", "")[-4:],
