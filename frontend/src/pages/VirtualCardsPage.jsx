@@ -23,6 +23,9 @@ import axios from 'axios';
 const CURRENCIES = ['XOF', 'EUR', 'USD', 'GBP', 'MAD'];
 const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', XOF: 'CFA', GBP: '£', MAD: 'DH' };
 
+// Visibility timeout in seconds
+const CARD_VISIBILITY_TIMEOUT = 60;
+
 export default function VirtualCardsPage() {
   const { user } = useAuth();
   const [cards, setCards] = useState([]);
@@ -39,6 +42,13 @@ export default function VirtualCardsPage() {
   const [showPinDialog, setShowPinDialog] = useState(false);
   const [showLimitsDialog, setShowLimitsDialog] = useState(false);
   const [showBoostDialog, setShowBoostDialog] = useState(false);
+  
+  // Card reveal state (Afficher/Masquer)
+  const [showRevealDialog, setShowRevealDialog] = useState(false);
+  const [revealCardId, setRevealCardId] = useState(null);
+  const [revealedCards, setRevealedCards] = useState({}); // {cardId: {details, expiresAt}}
+  const [revealPin, setRevealPin] = useState('');
+  const [revealCountdown, setRevealCountdown] = useState({});
   
   // PIN management
   const [currentPin, setCurrentPin] = useState('');
@@ -73,6 +83,28 @@ export default function VirtualCardsPage() {
   useEffect(() => {
     fetchCards();
   }, []);
+
+  // Countdown timer for revealed cards
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const now = Date.now();
+      const newCountdowns = {};
+      const stillRevealed = {};
+      
+      Object.entries(revealedCards).forEach(([cardId, data]) => {
+        const remaining = Math.max(0, Math.floor((data.expiresAt - now) / 1000));
+        if (remaining > 0) {
+          stillRevealed[cardId] = data;
+          newCountdowns[cardId] = remaining;
+        }
+      });
+      
+      setRevealedCards(stillRevealed);
+      setRevealCountdown(newCountdowns);
+    }, 1000);
+    
+    return () => clearInterval(interval);
+  }, [revealedCards]);
 
   const fetchCards = async () => {
     try {
