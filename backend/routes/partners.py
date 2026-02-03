@@ -261,6 +261,10 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
             client = await db.users.find_one({"id": client_identifier}, {"_id": 0})
         
         if not client:
+            # Try by email
+            client = await db.users.find_one({"email": client_identifier.lower()}, {"_id": 0})
+        
+        if not client:
             raise HTTPException(status_code=404, detail="Client non trouvé. Vérifiez le numéro ou le code QR.")
         
         # Check client wallet balance
