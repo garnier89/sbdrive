@@ -3708,6 +3708,10 @@ app.include_router(agent_locator_router)
 setup_withdrawals_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
 app.include_router(withdrawals_router)
 
+# Setup and include Deposits V2 module routes
+setup_deposits_v2_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
+app.include_router(deposits_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
