@@ -5,7 +5,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun, Store, Banknote
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -20,6 +20,7 @@ const navItems = [
   { href: '/vault', icon: Lock, label: 'Coffre-Fort' },
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
+  { href: '/cash-withdrawal', icon: Banknote, label: 'Retrait Cash Agent' },
   { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
   { href: '/payment-links', icon: Link2, label: 'Liens Paiement' },
   { href: '/rewards', icon: Gift, label: 'Récompenses' },
@@ -41,6 +42,7 @@ const adminItems = [
   { href: '/admin/alerts', icon: AlertTriangle, label: 'Alertes & Seuils' },
   { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
   { href: '/admin/tickets', icon: Headphones, label: 'Tickets Support' },
+  { href: '/admin/partners', icon: Store, label: 'Partenaires/Agents' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
   { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
