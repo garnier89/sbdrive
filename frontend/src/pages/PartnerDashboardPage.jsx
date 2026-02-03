@@ -29,6 +29,7 @@ const MOBILE_MONEY_PROVIDERS = [
   { id: 'orange', name: 'Orange Money', color: 'bg-orange-500' },
   { id: 'wave', name: 'Wave', color: 'bg-blue-500' },
   { id: 'mtn', name: 'MTN Mobile Money', color: 'bg-yellow-500' },
+  { id: 'moov', name: 'Moov Money', color: 'bg-cyan-500' },
   { id: 'free', name: 'Free Money', color: 'bg-green-500' },
 ];
 

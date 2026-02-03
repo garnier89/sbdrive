@@ -498,7 +498,7 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
             raise HTTPException(status_code=403, detail="Compte partenaire non actif")
         
         # Validate provider
-        valid_providers = ["orange", "wave", "mtn", "free"]
+        valid_providers = ["orange", "wave", "mtn", "moov", "free"]
         if request.provider not in valid_providers:
             raise HTTPException(status_code=400, detail="Opérateur non supporté")
         
