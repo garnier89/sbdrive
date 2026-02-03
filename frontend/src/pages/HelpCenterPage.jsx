@@ -348,7 +348,7 @@ export default function HelpCenterPage() {
           <CardContent>
             <div className="space-y-4">
               {[
-                { q: "Comment effectuer un dépôt ?", a: "Allez dans 'Dépôt', choisissez votre méthode de paiement (Stripe, Mobile Money), et suivez les instructions." },
+                { q: "Comment effectuer un dépôt ?", a: "Allez dans 'Dépôt', choisissez votre méthode de paiement (Carte bancaire, Mobile Money), et suivez les instructions." },
                 { q: "Comment transférer de l'argent ?", a: "Utilisez 'Transfert' pour envoyer à un email ou 'Entre Utilisateurs' pour un numéro de téléphone." },
                 { q: "Comment sécuriser mon compte ?", a: "Activez l'authentification 2FA dans les paramètres et définissez un PIN pour votre coffre-fort." },
                 { q: "Comment contacter le support ?", a: "Créez un ticket via cette page ou utilisez le chat WhatsApp en bas de page." }
