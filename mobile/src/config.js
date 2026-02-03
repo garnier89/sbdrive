@@ -1,7 +1,18 @@
 // Configuration API SBPAYGO Mobile
+// Note: In production, set REACT_NATIVE_API_URL or API_URL environment variable
+const getApiUrl = () => {
+  // Check environment variables first
+  if (typeof process !== 'undefined' && process.env) {
+    if (process.env.REACT_NATIVE_API_URL) return process.env.REACT_NATIVE_API_URL;
+    if (process.env.API_URL) return process.env.API_URL;
+  }
+  // Default to production URL (will be replaced during build)
+  return '__API_URL__';
+};
+
 const CONFIG = {
-  // URL de l'API Backend - Use environment variable or default
-  API_URL: process.env.REACT_NATIVE_API_URL || process.env.API_URL || 'https://sbpaygo.app.emergent.host/api',
+  // URL de l'API Backend
+  API_URL: getApiUrl(),
   
   // Version de l'application
   APP_VERSION: '1.0.0',
