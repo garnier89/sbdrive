@@ -210,24 +210,24 @@ export default function AdminMobileMoneyConfigPage() {
 
   return (
     <DashboardLayout>
-      <div className="p-6 lg:p-8 space-y-6" data-testid="admin-mobile-money-config">
-        {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6" data-testid="admin-mobile-money-config">
+        {/* Header - Responsive */}
+        <div className="flex flex-col gap-4">
           <div>
-            <h1 className="text-2xl lg:text-3xl font-bold text-slate-800 flex items-center gap-3">
-              <Globe className="w-8 h-8 text-orange-500" />
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-800 flex items-center gap-2 sm:gap-3">
+              <Globe className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" />
               Mobile Money Afrique
             </h1>
-            <p className="text-slate-500 mt-1">
-              Gestion des pays, opérateurs et services Mobile Money
+            <p className="text-sm sm:text-base text-slate-500 mt-1">
+              Gestion des pays, opérateurs et services
             </p>
           </div>
-          <div className="flex gap-2">
-            <Button variant="outline" onClick={fetchData}>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-3">
+            <Button variant="outline" onClick={fetchData} className="flex-1 sm:flex-none min-h-[44px]">
               <RefreshCw className="w-4 h-4 mr-2" />
               Actualiser
             </Button>
-            <Button onClick={() => setShowAddCountry(true)} className="bg-orange-500 hover:bg-orange-600">
+            <Button onClick={() => setShowAddCountry(true)} className="bg-orange-500 hover:bg-orange-600 flex-1 sm:flex-none min-h-[44px]">
               <Plus className="w-4 h-4 mr-2" />
               Ajouter un pays
             </Button>
