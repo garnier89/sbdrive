@@ -3673,6 +3673,10 @@ app.include_router(rewards_admin_configured, prefix="/api")
 zones_config_configured = get_zones_config_router(db, get_admin_user)
 app.include_router(zones_config_configured, prefix="/api")
 
+# Setup and include Staff Management module routes
+staff_configured = get_staff_router(db, get_admin_user)
+app.include_router(staff_configured, prefix="/api")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
