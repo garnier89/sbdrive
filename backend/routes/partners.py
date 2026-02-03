@@ -484,6 +484,164 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         
         return {"message": "Retrait annulé"}
 
+    # ==================== MOBILE MONEY RECHARGE ====================
+
+    @partners_router.post("/mobile-money/recharge/initiate")
+    async def initiate_mobile_money_recharge(
+        request: MobileMoneyRechargeRequest,
+        authorization: str = Header(None)
+    ):
+        """Initiate a Mobile Money recharge for a client"""
+        partner = await get_current_partner(authorization)
+        
+        if partner["status"] != "active":
+            raise HTTPException(status_code=403, detail="Compte partenaire non actif")
+        
+        # Validate provider
+        valid_providers = ["orange", "wave", "mtn", "free"]
+        if request.provider not in valid_providers:
+            raise HTTPException(status_code=400, detail="Opérateur non supporté")
+        
+        # Validate amount
+        if request.amount < 100:
+            raise HTTPException(status_code=400, detail="Montant minimum: 100 XOF")
+        
+        if request.amount > 500000:
+            raise HTTPException(status_code=400, detail="Montant maximum: 500,000 XOF")
+        
+        # Check partner wallet balance
+        partner_wallet = await db.wallets.find_one(
+            {"user_id": partner["id"], "currency": "XOF"},
+            {"_id": 0}
+        )
+        
+        partner_balance = partner_wallet.get("balance", 0) if partner_wallet else 0
+        
+        if partner_balance < request.amount:
+            raise HTTPException(status_code=400, detail=f"Solde insuffisant. Disponible: {partner_balance} XOF")
+        
+        # Generate OTP for confirmation
+        demo_otp = f"{secrets.randbelow(900000) + 100000}"  # 6 digit OTP
+        
+        # Create recharge record
+        recharge_id = str(uuid.uuid4())
+        now = datetime.now(timezone.utc)
+        
+        recharge = {
+            "id": recharge_id,
+            "partner_id": partner["id"],
+            "provider": request.provider,
+            "phone_number": request.phone_number,
+            "amount": request.amount,
+            "currency": request.currency,
+            "otp_hash": hashlib.sha256(demo_otp.encode()).hexdigest(),
+            "status": "pending_otp",
+            "created_at": now.isoformat(),
+            "expires_at": (now.replace(minute=now.minute + 10)).isoformat()
+        }
+        
+        await db.mobile_money_recharges.insert_one(recharge)
+        
+        # In production, send OTP via SMS to client
+        # For demo, return the OTP
+        
+        return {
+            "recharge_id": recharge_id,
+            "provider": request.provider,
+            "phone_masked": request.phone_number[:6] + "****" + request.phone_number[-2:],
+            "amount": request.amount,
+            "currency": request.currency,
+            "demo_otp": demo_otp,  # In production, remove this
+            "message": "Code OTP envoyé au client"
+        }
+
+    @partners_router.post("/mobile-money/recharge/confirm")
+    async def confirm_mobile_money_recharge(
+        request: MobileMoneyRechargeConfirm,
+        authorization: str = Header(None)
+    ):
+        """Confirm Mobile Money recharge with OTP"""
+        partner = await get_current_partner(authorization)
+        
+        # Find pending recharge
+        recharge = await db.mobile_money_recharges.find_one(
+            {
+                "id": request.recharge_id,
+                "partner_id": partner["id"],
+                "status": "pending_otp"
+            },
+            {"_id": 0}
+        )
+        
+        if not recharge:
+            raise HTTPException(status_code=404, detail="Recharge non trouvée ou expirée")
+        
+        # Verify OTP
+        otp_hash = hashlib.sha256(request.otp_code.encode()).hexdigest()
+        if otp_hash != recharge["otp_hash"]:
+            raise HTTPException(status_code=401, detail="Code OTP incorrect")
+        
+        amount = recharge["amount"]
+        currency = recharge["currency"]
+        
+        # Debit partner wallet
+        await db.wallets.update_one(
+            {"user_id": partner["id"], "currency": currency},
+            {"$inc": {"balance": -amount}}
+        )
+        
+        # Update recharge status
+        await db.mobile_money_recharges.update_one(
+            {"id": request.recharge_id},
+            {
+                "$set": {
+                    "status": "completed",
+                    "completed_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Create transaction record
+        tx_id = str(uuid.uuid4())
+        await db.transactions.insert_one({
+            "id": tx_id,
+            "user_id": partner["id"],
+            "type": "mobile_money_recharge",
+            "amount": -amount,
+            "currency": currency,
+            "status": "completed",
+            "description": f"Recharge {recharge['provider'].upper()} - {recharge['phone_number']}",
+            "reference": f"MM-{recharge_id[:8].upper()}",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # In production: Call Mobile Money API to credit client
+        # For demo, we just mark as completed
+        
+        return {
+            "message": "Recharge effectuée avec succès",
+            "recharge_id": request.recharge_id,
+            "provider": recharge["provider"],
+            "phone_number": recharge["phone_number"],
+            "amount": amount,
+            "currency": currency,
+            "status": "completed"
+        }
+
+    @partners_router.get("/mobile-money/recharges")
+    async def get_recharge_history(
+        authorization: str = Header(None)
+    ):
+        """Get partner's Mobile Money recharge history"""
+        partner = await get_current_partner(authorization)
+        
+        recharges = await db.mobile_money_recharges.find(
+            {"partner_id": partner["id"]},
+            {"_id": 0, "otp_hash": 0}
+        ).sort("created_at", -1).limit(50).to_list(50)
+        
+        return {"recharges": recharges}
+
     # ==================== PARTNER DOCUMENTS ====================
 
     @partners_router.post("/documents/upload")
