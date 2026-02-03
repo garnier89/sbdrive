@@ -9,6 +9,15 @@
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://fintech-africa-8.preview.emergentagent.com
 
+## Branding
+- **Application:** SBPAYGO
+- **Wallet:** SBPAYGO Wallet
+- **Cards:** SBPAYGO Cards
+- **Partners:** SBPAYGO Partners
+- **Admin:** SBPAYGO Admin Panel
+- **Super Admin:** SBPAYGO Super Administrator
+- **Coffre-fort:** SBPAYGO Coffre-fort
+
 ## SBPAYGO Ecosystem
 | Component | Name |
 |-----------|------|
