@@ -181,6 +181,61 @@
   - Limite d'âge minimum (18 ans)
   - Sauvegarde du profil
 
+#### 📲 Recharge Mobile (NEW - Feb 2026)
+- [x] **Crédit téléphone**
+  - 25 pays africains + France supportés
+  - Tous les opérateurs par pays (Orange, MTN, Wave, Airtel, etc.)
+  - Montants rapides adaptés par devise
+  - Recharge instantanée sans frais
+- [x] **Forfaits Data**
+  - 8 forfaits par opérateur (100MB à Illimité)
+  - Affichage des prix et validité
+  - Activation instantanée
+- [x] **Gestion des favoris**
+  - Ajout/suppression de numéros favoris
+  - Recharge rapide depuis les favoris
+- [x] **Backend API**
+  - GET /api/airtime/countries - 25 pays supportés
+  - GET /api/airtime/operators/{country} - Opérateurs par pays
+  - GET /api/airtime/data-packages/{country}/{operator}
+  - POST /api/airtime/topup - Recharge crédit
+  - POST /api/airtime/data-topup - Recharge data
+  - GET/POST/DELETE /api/airtime/favorites
+- [x] **Page**: /airtime (refonte complète)
+
+#### 🔄 Transfert Multi-Méthodes (NEW - Feb 2026)
+- [x] **Transfert P2P (Entre utilisateurs)**
+  - Par email, téléphone ou ID SBPAYGO
+  - Gratuit entre utilisateurs
+  - Note/message optionnel
+- [x] **Transfert Mobile Money**
+  - 24 pays africains avec Mobile Money
+  - Tous opérateurs (Wave, Orange, MTN, M-Pesa, etc.)
+  - Frais: 1.5% du montant
+  - Transfert instantané
+- [x] **Transfert International**
+  - Conversion de devises en temps réel
+  - Taux de change affichés
+  - Frais: 2.5% + 1€
+  - Délai: 1-3 jours
+- [x] **Backend API**
+  - GET /api/transfers-v2/config
+  - GET /api/transfers-v2/providers/{country}
+  - GET /api/transfers-v2/exchange-rate
+  - POST /api/transfers-v2/p2p
+  - POST /api/transfers-v2/mobile-money
+  - POST /api/transfers-v2/international
+  - GET /api/transfers-v2/history
+- [x] **Page**: /transfer (refonte complète)
+
+#### 🌍 Configuration 21+ Pays Africains (NEW - Feb 2026)
+- [x] **Fichier de configuration centralisé**
+  - `/app/backend/config/countries_config.py`
+  - 25 pays avec Mobile Money
+  - Opérateurs téléphoniques par pays
+  - Devises et taux de change
+  - Montants rapides par devise
+
 #### 📄 Reçus PDF & Améliorations UX (Feb 2026)
 - [x] **Reçus PDF téléchargeables**
   - Génération PDF professionnelle via ReportLab
