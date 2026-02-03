@@ -50,6 +50,58 @@ const stats = [
 export default function LandingPage() {
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  
+  // Contact form state
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
+  const [contactForm, setContactForm] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    subject: '',
+    message: ''
+  });
+  const [submittingContact, setSubmittingContact] = useState(false);
+  const [contactSettings, setContactSettings] = useState({
+    whatsapp_number: '+33612345678',
+    show_whatsapp: true
+  });
+
+  // Fetch contact settings from admin config
+  useEffect(() => {
+    fetchContactSettings();
+  }, []);
+
+  const fetchContactSettings = async () => {
+    try {
+      const res = await axios.get(`${API}/settings/contact`);
+      if (res.data) {
+        setContactSettings(res.data);
+      }
+    } catch (error) {
+      // Use defaults if not configured
+    }
+  };
+
+  const handleContactSubmit = async (e) => {
+    e.preventDefault();
+    
+    if (!contactForm.name || !contactForm.message || (!contactForm.email && !contactForm.phone)) {
+      toast.error('Veuillez remplir les champs obligatoires');
+      return;
+    }
+    
+    setSubmittingContact(true);
+    try {
+      await axios.post(`${API}/contact/public-submit`, contactForm);
+      toast.success('Message envoyé! Nous vous répondrons rapidement.');
+      setContactDialogOpen(false);
+      setContactForm({ name: '', email: '', phone: '', subject: '', message: '' });
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de l\'envoi');
+    } finally {
+      setSubmittingContact(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
