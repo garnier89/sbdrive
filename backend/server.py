@@ -105,6 +105,9 @@ from routes.staff_management import router as staff_router, get_staff_router
 # Import Commission Engine Module
 from routes.commission_engine import router as commission_router, get_commission_router
 
+# Import Limits Engine Module
+from routes.limits_engine import router as limits_router, get_limits_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
