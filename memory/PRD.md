@@ -22,6 +22,41 @@
 - [x] Transaction history with PDF receipts
 - [x] Exchange rate conversion
 
+#### 🏪 Réseau Partenaires/Agents (NEW - Feb 2026)
+- [x] **Inscription Partenaire**
+  - Formulaire complet: business name, owner name, email, phone, address
+  - Génération de code partenaire unique (AG-XXXXXXXX)
+  - Statut initial: "pending" (en attente de validation)
+  - Page: /partner/register
+- [x] **Connexion Partenaire**
+  - Authentification séparée des utilisateurs standard
+  - Token JWT avec flag "is_partner"
+  - Page: /partner/login
+- [x] **Dashboard Partenaire**
+  - Solde agent, retraits du jour, montant du jour
+  - Limite journalière avec reste disponible
+  - Liste des retraits récents
+  - Page: /partner/dashboard
+- [x] **Flux de Retrait Cash**
+  - Recherche client par téléphone, email ou ID utilisateur
+  - Envoi OTP au client (DEMO: code retourné dans la réponse)
+  - Confirmation avec code OTP à 6 chiffres
+  - Débit automatique du wallet client
+  - Crédit automatique du wallet partenaire
+  - Historique des transactions
+- [x] **Administration des Partenaires**
+  - Liste avec statistiques (pending, active, suspended)
+  - Filtres par statut
+  - Recherche par nom, email, code partenaire
+  - Activation/Suspension/Rejet des partenaires
+  - Modification des limites journalières
+  - Page: /admin/partners
+- [x] **Page Retrait Cash Utilisateur**
+  - Génération de QR code pour retrait
+  - Affichage du téléphone/email pour identification
+  - Instructions étape par étape
+  - Page: /cash-withdrawal
+
 #### 📱 Boutons Téléchargement Mobile (NEW - Feb 2026)
 - [x] **Landing Page**
   - Boutons stylisés Google Play et App Store
