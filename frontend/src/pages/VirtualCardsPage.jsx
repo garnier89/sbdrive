@@ -10,16 +10,18 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
 import { 
   CreditCard, Plus, Lock, Unlock, Trash2, Settings, 
   Eye, EyeOff, Copy, Wifi, Globe, ShieldCheck, 
-  Loader2, AlertTriangle, CheckCircle, History, Wallet
+  Loader2, AlertTriangle, CheckCircle, History, Wallet,
+  KeyRound, TrendingUp, Clock, RefreshCw, Zap
 } from 'lucide-react';
 import axios from 'axios';
 
-const CURRENCIES = ['XOF', 'EUR', 'USD'];
-const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', XOF: 'CFA' };
+const CURRENCIES = ['XOF', 'EUR', 'USD', 'GBP', 'MAD'];
+const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', XOF: 'CFA', GBP: '£', MAD: 'DH' };
 
 export default function VirtualCardsPage() {
   const { user } = useAuth();
@@ -32,16 +34,41 @@ export default function VirtualCardsPage() {
   const [cardTransactions, setCardTransactions] = useState([]);
   const [loadingTransactions, setLoadingTransactions] = useState(false);
   
+  // Settings dialogs
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showPinDialog, setShowPinDialog] = useState(false);
+  const [showLimitsDialog, setShowLimitsDialog] = useState(false);
+  const [showBoostDialog, setShowBoostDialog] = useState(false);
+  
+  // PIN management
+  const [currentPin, setCurrentPin] = useState('');
+  const [newPin, setNewPin] = useState('');
+  const [confirmPin, setConfirmPin] = useState('');
+  const [showPin, setShowPin] = useState(false);
+  
+  // Limits management
+  const [tempLimits, setTempLimits] = useState({
+    daily_limit: 100000,
+    monthly_limit: 500000,
+    transaction_limit: 50000
+  });
+  
+  // Boost (temporary increase)
+  const [boostAmount, setBoostAmount] = useState(50000);
+  const [boostDuration, setBoostDuration] = useState('24h');
+  
   // New card form
   const [newCard, setNewCard] = useState({
     currency: 'XOF',
     daily_limit: 100000,
+    monthly_limit: 500000,
     transaction_limit: 50000,
     card_name: ''
   });
   
-  // Created card details (shown only once)
+  // Created card details
   const [createdCardDetails, setCreatedCardDetails] = useState(null);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     fetchCards();
@@ -88,7 +115,7 @@ export default function VirtualCardsPage() {
   };
 
   const handleDeleteCard = async (cardId) => {
-    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette carte ?')) return;
+    if (!window.confirm('Êtes-vous sûr de vouloir supprimer cette carte ? Cette action est irréversible.')) return;
     
     try {
       await axios.delete(`${API}/virtual-card/${cardId}`);
@@ -106,6 +133,63 @@ export default function VirtualCardsPage() {
       fetchCards();
     } catch (error) {
       toast.error(error.response?.data?.detail || 'Erreur');
+    }
+  };
+
+  const handleUpdatePin = async () => {
+    if (newPin.length !== 4 || !newPin.match(/^\d{4}$/)) {
+      toast.error('Le PIN doit contenir exactement 4 chiffres');
+      return;
+    }
+    if (newPin !== confirmPin) {
+      toast.error('Les PIN ne correspondent pas');
+      return;
+    }
+    
+    setProcessing(true);
+    try {
+      await axios.post(`${API}/virtual-card/update-pin/${selectedCard.id}`, {
+        current_pin: currentPin,
+        new_pin: newPin
+      });
+      toast.success('PIN mis à jour avec succès');
+      setShowPinDialog(false);
+      resetPinForm();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la mise à jour du PIN');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleUpdateLimits = async () => {
+    setProcessing(true);
+    try {
+      await axios.put(`${API}/virtual-card/limits/${selectedCard.id}`, tempLimits);
+      toast.success('Limites mises à jour');
+      setShowLimitsDialog(false);
+      fetchCards();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur');
+    } finally {
+      setProcessing(false);
+    }
+  };
+
+  const handleBoostLimit = async () => {
+    setProcessing(true);
+    try {
+      await axios.post(`${API}/virtual-card/boost/${selectedCard.id}`, {
+        amount: boostAmount,
+        duration: boostDuration
+      });
+      toast.success(`Plafond augmenté de ${formatAmount(boostAmount, selectedCard.currency)} pour ${boostDuration}`);
+      setShowBoostDialog(false);
+      fetchCards();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur');
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -130,6 +214,22 @@ export default function VirtualCardsPage() {
     return `${parseFloat(amount).toLocaleString('fr-FR')} ${CURRENCY_SYMBOLS[currency] || currency}`;
   };
 
+  const resetPinForm = () => {
+    setCurrentPin('');
+    setNewPin('');
+    setConfirmPin('');
+  };
+
+  const openCardSettings = (card) => {
+    setSelectedCard(card);
+    setTempLimits({
+      daily_limit: card.daily_limit,
+      monthly_limit: card.monthly_limit || 500000,
+      transaction_limit: card.transaction_limit
+    });
+    setShowSettingsDialog(true);
+  };
+
   const getStatusBadge = (status) => {
     const styles = {
       active: 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200',
@@ -140,6 +240,26 @@ export default function VirtualCardsPage() {
     return <Badge className={styles[status]}>{labels[status] || status}</Badge>;
   };
 
+  const PinInput = ({ value, onChange, maxLength = 4 }) => (
+    <div className="relative">
+      <Input
+        type={showPin ? "text" : "password"}
+        maxLength={maxLength}
+        placeholder={showPin ? "0000" : "••••"}
+        value={value}
+        onChange={(e) => onChange(e.target.value.replace(/\D/g, ''))}
+        className="text-center text-2xl tracking-[0.5em] font-mono pr-10"
+      />
+      <button
+        type="button"
+        onClick={() => setShowPin(!showPin)}
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+      >
+        {showPin ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+      </button>
+    </div>
+  );
+
   const CardVisual = ({ card, showFull = false }) => {
     const isVisa = card.card_brand === 'visa';
     const gradientClass = isVisa 
@@ -148,22 +268,15 @@ export default function VirtualCardsPage() {
     
     return (
       <div className={`relative w-full max-w-sm h-48 rounded-2xl p-6 text-white shadow-xl ${gradientClass}`}>
-        {/* Card chip */}
         <div className="absolute top-6 left-6 w-12 h-9 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-md" />
-        
-        {/* Contactless icon */}
         <div className="absolute top-6 right-6">
           <Wifi className="w-6 h-6 rotate-90 opacity-80" />
         </div>
-        
-        {/* Card number */}
         <div className="absolute bottom-20 left-6 right-6">
           <p className="text-lg font-mono tracking-widest">
             {showFull ? card.card_number : card.card_number_masked}
           </p>
         </div>
-        
-        {/* Card details */}
         <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
           <div>
             <p className="text-xs opacity-70">TITULAIRE</p>
@@ -173,17 +286,13 @@ export default function VirtualCardsPage() {
             <p className="text-xs opacity-70">EXPIRE</p>
             <p className="font-medium">{card.expiry}</p>
           </div>
-          <div className="text-right">
-            {showFull && (
-              <>
-                <p className="text-xs opacity-70">CVV</p>
-                <p className="font-medium">{card.cvv}</p>
-              </>
-            )}
-          </div>
+          {showFull && (
+            <div className="text-right">
+              <p className="text-xs opacity-70">CVV</p>
+              <p className="font-medium">{card.cvv}</p>
+            </div>
+          )}
         </div>
-        
-        {/* Brand logo */}
         <div className="absolute bottom-4 right-4">
           <span className="text-2xl font-bold opacity-90">
             {isVisa ? 'VISA' : 'MC'}
@@ -201,7 +310,7 @@ export default function VirtualCardsPage() {
           <div>
             <h1 className="text-2xl lg:text-3xl font-bold font-['Manrope'] text-foreground flex items-center gap-3">
               <CreditCard className="w-8 h-8 text-primary" />
-              Cartes Virtuelles
+              💳 Cartes Virtuelles
             </h1>
             <p className="text-muted-foreground mt-1">
               Créez et gérez vos cartes virtuelles pour les paiements en ligne et sans contact
@@ -215,16 +324,16 @@ export default function VirtualCardsPage() {
                 Nouvelle carte
               </Button>
             </DialogTrigger>
-            <DialogContent>
+            <DialogContent className="max-w-lg">
               <DialogHeader>
                 <DialogTitle>Créer une carte virtuelle</DialogTitle>
                 <DialogDescription>
-                  Configurez votre nouvelle carte virtuelle
+                  Configurez votre nouvelle carte virtuelle avec vos limites personnalisées
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 py-4">
                 <div className="space-y-2">
-                  <Label>Nom de la carte (optionnel)</Label>
+                  <Label>Nom de la carte</Label>
                   <Input
                     placeholder="Ex: Shopping en ligne"
                     value={newCard.card_name}
@@ -248,23 +357,56 @@ export default function VirtualCardsPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                
+                {/* Limits Configuration */}
+                <div className="space-y-4 p-4 bg-muted rounded-lg">
+                  <h4 className="font-medium flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4" />
+                    Configuration des limites
+                  </h4>
+                  
                   <div className="space-y-2">
-                    <Label>Limite journalière</Label>
-                    <Input
-                      type="number"
-                      value={newCard.daily_limit}
-                      onChange={(e) => setNewCard({...newCard, daily_limit: parseInt(e.target.value)})}
-                      data-testid="daily-limit-input"
+                    <div className="flex justify-between text-sm">
+                      <Label>Limite par transaction</Label>
+                      <span className="font-mono">{formatAmount(newCard.transaction_limit, newCard.currency)}</span>
+                    </div>
+                    <Slider
+                      value={[newCard.transaction_limit]}
+                      onValueChange={([v]) => setNewCard({...newCard, transaction_limit: v})}
+                      max={200000}
+                      min={5000}
+                      step={5000}
+                      className="py-2"
                     />
                   </div>
+                  
                   <div className="space-y-2">
-                    <Label>Limite par transaction</Label>
-                    <Input
-                      type="number"
-                      value={newCard.transaction_limit}
-                      onChange={(e) => setNewCard({...newCard, transaction_limit: parseInt(e.target.value)})}
-                      data-testid="transaction-limit-input"
+                    <div className="flex justify-between text-sm">
+                      <Label>Limite journalière</Label>
+                      <span className="font-mono">{formatAmount(newCard.daily_limit, newCard.currency)}</span>
+                    </div>
+                    <Slider
+                      value={[newCard.daily_limit]}
+                      onValueChange={([v]) => setNewCard({...newCard, daily_limit: v})}
+                      max={500000}
+                      min={10000}
+                      step={10000}
+                      className="py-2"
+                    />
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <Label>Limite mensuelle</Label>
+                      <span className="font-mono">{formatAmount(newCard.monthly_limit, newCard.currency)}</span>
+                    </div>
+                    <Slider
+                      value={[newCard.monthly_limit]}
+                      onValueChange={([v]) => setNewCard({...newCard, monthly_limit: v})}
+                      max={2000000}
+                      min={50000}
+                      step={50000}
+                      className="py-2"
                     />
                   </div>
                 </div>
@@ -282,7 +424,7 @@ export default function VirtualCardsPage() {
           </Dialog>
         </div>
 
-        {/* Created Card Details Modal (shown only once) */}
+        {/* Created Card Details Modal */}
         {createdCardDetails && (
           <Dialog open={!!createdCardDetails} onOpenChange={() => setCreatedCardDetails(null)}>
             <DialogContent className="max-w-md">
@@ -331,12 +473,16 @@ export default function VirtualCardsPage() {
                     <span className="text-sm text-muted-foreground">Expiration</span>
                     <span className="font-mono">{createdCardDetails.expiry}</span>
                   </div>
+                  <div className="flex justify-between items-center p-3 bg-muted rounded-lg">
+                    <span className="text-sm text-muted-foreground">PIN par défaut</span>
+                    <span className="font-mono font-bold text-primary">0000</span>
+                  </div>
                 </div>
                 
                 <div className="mt-4 p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg flex items-start gap-2">
                   <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
                   <p className="text-sm text-amber-700 dark:text-amber-300">
-                    Ces informations ne seront plus affichées. Notez-les maintenant!
+                    PIN par défaut: 0000. Changez-le immédiatement dans les paramètres de la carte!
                   </p>
                 </div>
               </div>
@@ -355,7 +501,6 @@ export default function VirtualCardsPage() {
             <Loader2 className="w-8 h-8 animate-spin text-primary" />
           </div>
         ) : cards.length === 0 ? (
-          /* Empty State */
           <Card className="text-center py-12">
             <CardContent>
               <CreditCard className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
@@ -370,7 +515,6 @@ export default function VirtualCardsPage() {
             </CardContent>
           </Card>
         ) : (
-          /* Cards Grid */
           <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
             {cards.map((card) => (
               <Card key={card.id} className="overflow-hidden" data-testid={`card-${card.id}`}>
@@ -401,7 +545,7 @@ export default function VirtualCardsPage() {
                     </div>
                   </div>
                   
-                  {/* Stats */}
+                  {/* Card Info */}
                   <div className="grid grid-cols-2 gap-3 text-sm">
                     <div className="p-3 bg-muted rounded-lg">
                       <p className="text-muted-foreground">Solde wallet</p>
@@ -413,17 +557,31 @@ export default function VirtualCardsPage() {
                     </div>
                   </div>
                   
-                  {/* Limits */}
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span className="text-muted-foreground">Limite journalière</span>
-                      <span>{formatAmount(card.daily_limit, card.currency)}</span>
+                  {/* Limits Progress */}
+                  <div className="space-y-3">
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Limite journalière</span>
+                        <span>{formatAmount(card.daily_spent || 0, card.currency)} / {formatAmount(card.daily_limit, card.currency)}</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-primary h-2 rounded-full transition-all"
+                          style={{ width: `${Math.min(((card.daily_spent || 0) / card.daily_limit) * 100, 100)}%` }}
+                        />
+                      </div>
                     </div>
-                    <div className="w-full bg-muted rounded-full h-2">
-                      <div 
-                        className="bg-primary h-2 rounded-full transition-all"
-                        style={{ width: `${Math.min(((card.daily_spent || 0) / card.daily_limit) * 100, 100)}%` }}
-                      />
+                    <div className="space-y-1">
+                      <div className="flex justify-between text-xs">
+                        <span className="text-muted-foreground">Limite mensuelle</span>
+                        <span>{formatAmount(card.monthly_spent || 0, card.currency)} / {formatAmount(card.monthly_limit || 500000, card.currency)}</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div 
+                          className="bg-blue-500 h-2 rounded-full transition-all"
+                          style={{ width: `${Math.min(((card.monthly_spent || 0) / (card.monthly_limit || 500000)) * 100, 100)}%` }}
+                        />
+                      </div>
                     </div>
                   </div>
                   
@@ -450,12 +608,11 @@ export default function VirtualCardsPage() {
                   </div>
                   
                   {/* Actions */}
-                  <div className="flex gap-2 pt-2 border-t">
+                  <div className="flex flex-wrap gap-2 pt-2 border-t">
                     {card.status === 'active' ? (
                       <Button 
                         variant="outline" 
-                        size="sm" 
-                        className="flex-1"
+                        size="sm"
                         onClick={() => handleBlockCard(card.id, 'block')}
                       >
                         <Lock className="w-4 h-4 mr-1" />
@@ -464,14 +621,22 @@ export default function VirtualCardsPage() {
                     ) : card.status === 'blocked' ? (
                       <Button 
                         variant="outline" 
-                        size="sm" 
-                        className="flex-1"
+                        size="sm"
                         onClick={() => handleBlockCard(card.id, 'unblock')}
                       >
                         <Unlock className="w-4 h-4 mr-1" />
                         Débloquer
                       </Button>
                     ) : null}
+                    
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => openCardSettings(card)}
+                    >
+                      <Settings className="w-4 h-4 mr-1" />
+                      Gérer
+                    </Button>
                     
                     <Button 
                       variant="outline" 
@@ -499,8 +664,240 @@ export default function VirtualCardsPage() {
           </div>
         )}
 
+        {/* Card Settings Dialog */}
+        <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Settings className="w-5 h-5" />
+                Gérer la carte
+              </DialogTitle>
+              <DialogDescription>
+                {selectedCard?.card_name} •••• {selectedCard?.last_four}
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-3 py-4">
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => { setShowSettingsDialog(false); setShowPinDialog(true); }}
+              >
+                <KeyRound className="w-4 h-4 mr-3" />
+                Modifier le code PIN
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => { setShowSettingsDialog(false); setShowLimitsDialog(true); }}
+              >
+                <TrendingUp className="w-4 h-4 mr-3" />
+                Configurer les limites
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                onClick={() => { setShowSettingsDialog(false); setShowBoostDialog(true); }}
+              >
+                <Zap className="w-4 h-4 mr-3" />
+                Augmentation temporaire du plafond
+              </Button>
+              
+              <Button 
+                variant="outline" 
+                className="w-full justify-start text-destructive hover:text-destructive"
+                onClick={() => { setShowSettingsDialog(false); handleDeleteCard(selectedCard?.id); }}
+              >
+                <Trash2 className="w-4 h-4 mr-3" />
+                Supprimer la carte
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+
+        {/* Update PIN Dialog */}
+        <Dialog open={showPinDialog} onOpenChange={(open) => { setShowPinDialog(open); if (!open) resetPinForm(); }}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <KeyRound className="w-5 h-5" />
+                Modifier le code PIN
+              </DialogTitle>
+              <DialogDescription>
+                Entrez votre PIN actuel et choisissez un nouveau PIN à 4 chiffres
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>PIN actuel</Label>
+                <PinInput value={currentPin} onChange={setCurrentPin} />
+              </div>
+              <div className="space-y-2">
+                <Label>Nouveau PIN (4 chiffres)</Label>
+                <PinInput value={newPin} onChange={setNewPin} />
+              </div>
+              <div className="space-y-2">
+                <Label>Confirmer le nouveau PIN</Label>
+                <PinInput value={confirmPin} onChange={setConfirmPin} />
+              </div>
+              {newPin && confirmPin && newPin !== confirmPin && (
+                <p className="text-sm text-destructive">Les PIN ne correspondent pas</p>
+              )}
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => { setShowPinDialog(false); resetPinForm(); }}>
+                Annuler
+              </Button>
+              <Button 
+                onClick={handleUpdatePin}
+                disabled={processing || currentPin.length !== 4 || newPin.length !== 4 || newPin !== confirmPin}
+              >
+                {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Mettre à jour
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Update Limits Dialog */}
+        <Dialog open={showLimitsDialog} onOpenChange={setShowLimitsDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <TrendingUp className="w-5 h-5" />
+                Configurer les limites
+              </DialogTitle>
+              <DialogDescription>
+                Ajustez les limites de dépenses pour cette carte
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-6 py-4">
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <Label>Limite par transaction</Label>
+                  <span className="font-mono font-medium">{formatAmount(tempLimits.transaction_limit, selectedCard?.currency)}</span>
+                </div>
+                <Slider
+                  value={[tempLimits.transaction_limit]}
+                  onValueChange={([v]) => setTempLimits({...tempLimits, transaction_limit: v})}
+                  max={200000}
+                  min={5000}
+                  step={5000}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <Label>Limite journalière</Label>
+                  <span className="font-mono font-medium">{formatAmount(tempLimits.daily_limit, selectedCard?.currency)}</span>
+                </div>
+                <Slider
+                  value={[tempLimits.daily_limit]}
+                  onValueChange={([v]) => setTempLimits({...tempLimits, daily_limit: v})}
+                  max={500000}
+                  min={10000}
+                  step={10000}
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <div className="flex justify-between text-sm">
+                  <Label>Limite mensuelle</Label>
+                  <span className="font-mono font-medium">{formatAmount(tempLimits.monthly_limit, selectedCard?.currency)}</span>
+                </div>
+                <Slider
+                  value={[tempLimits.monthly_limit]}
+                  onValueChange={([v]) => setTempLimits({...tempLimits, monthly_limit: v})}
+                  max={2000000}
+                  min={50000}
+                  step={50000}
+                />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowLimitsDialog(false)}>
+                Annuler
+              </Button>
+              <Button onClick={handleUpdateLimits} disabled={processing}>
+                {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Enregistrer
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
+        {/* Boost Limit Dialog */}
+        <Dialog open={showBoostDialog} onOpenChange={setShowBoostDialog}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500" />
+                Augmentation temporaire
+              </DialogTitle>
+              <DialogDescription>
+                Augmentez temporairement votre plafond pour un achat important
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label>Montant supplémentaire</Label>
+                <div className="flex justify-between text-sm mb-2">
+                  <span className="text-muted-foreground">Nouveau plafond journalier:</span>
+                  <span className="font-mono font-bold text-primary">
+                    {formatAmount((selectedCard?.daily_limit || 0) + boostAmount, selectedCard?.currency)}
+                  </span>
+                </div>
+                <Slider
+                  value={[boostAmount]}
+                  onValueChange={([v]) => setBoostAmount(v)}
+                  max={500000}
+                  min={10000}
+                  step={10000}
+                />
+                <p className="text-xs text-muted-foreground text-right">
+                  +{formatAmount(boostAmount, selectedCard?.currency)}
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Durée</Label>
+                <Select value={boostDuration} onValueChange={setBoostDuration}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1h">1 heure</SelectItem>
+                    <SelectItem value="6h">6 heures</SelectItem>
+                    <SelectItem value="24h">24 heures</SelectItem>
+                    <SelectItem value="48h">48 heures</SelectItem>
+                    <SelectItem value="7d">7 jours</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="p-3 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  <Clock className="w-4 h-4 inline mr-1" />
+                  Le plafond reviendra automatiquement à la normale après {boostDuration}
+                </p>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setShowBoostDialog(false)}>
+                Annuler
+              </Button>
+              <Button onClick={handleBoostLimit} disabled={processing}>
+                {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : null}
+                Activer le boost
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+
         {/* Transaction History Dialog */}
-        <Dialog open={!!selectedCard} onOpenChange={() => setSelectedCard(null)}>
+        <Dialog open={!!selectedCard && !showSettingsDialog && !showPinDialog && !showLimitsDialog && !showBoostDialog} onOpenChange={() => setSelectedCard(null)}>
           <DialogContent className="max-w-lg">
             <DialogHeader>
               <DialogTitle>Historique des transactions</DialogTitle>
@@ -549,7 +946,7 @@ export default function VirtualCardsPage() {
               <div>
                 <h4 className="font-semibold text-blue-800 dark:text-blue-200">Sécurité maximale</h4>
                 <p className="text-sm text-blue-700 dark:text-blue-300">
-                  Bloquez votre carte instantanément en cas de perte
+                  Bloquez votre carte instantanément et modifiez votre PIN
                 </p>
               </div>
             </CardContent>
@@ -560,18 +957,18 @@ export default function VirtualCardsPage() {
               <div>
                 <h4 className="font-semibold text-green-800 dark:text-green-200">Contrôle total</h4>
                 <p className="text-sm text-green-700 dark:text-green-300">
-                  Définissez vos limites de dépenses
+                  Définissez vos limites quotidiennes et mensuelles
                 </p>
               </div>
             </CardContent>
           </Card>
-          <Card className="bg-purple-50 dark:bg-purple-900/20 border-purple-200 dark:border-purple-800">
+          <Card className="bg-amber-50 dark:bg-amber-900/20 border-amber-200 dark:border-amber-800">
             <CardContent className="p-4 flex items-start gap-3">
-              <Wifi className="w-8 h-8 text-purple-600" />
+              <Zap className="w-8 h-8 text-amber-600" />
               <div>
-                <h4 className="font-semibold text-purple-800 dark:text-purple-200">Sans contact</h4>
-                <p className="text-sm text-purple-700 dark:text-purple-300">
-                  Paiements NFC dans les magasins compatibles
+                <h4 className="font-semibold text-amber-800 dark:text-amber-200">Boost temporaire</h4>
+                <p className="text-sm text-amber-700 dark:text-amber-300">
+                  Augmentez vos plafonds pour les achats importants
                 </p>
               </div>
             </CardContent>
