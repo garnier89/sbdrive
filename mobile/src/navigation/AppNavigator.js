@@ -1,4 +1,4 @@
-// Navigation principale SB Money Mobile
+// Navigation principale SBPAYGO Mobile
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -6,6 +6,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/Feather';
 
 import { useAuth } from '../hooks/useAuth';
+import { COLORS } from '../styles/theme';
 
 // Screens Auth
 import LoginScreen from '../screens/auth/LoginScreen';
@@ -23,16 +24,6 @@ import DepositScreen from '../screens/main/DepositScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Couleurs SB Money
-const COLORS = {
-  primary: '#f97316',
-  background: '#ffffff',
-  card: '#f8fafc',
-  text: '#1e293b',
-  border: '#e2e8f0',
-  inactive: '#94a3b8',
-};
 
 // Tabs principaux
 function MainTabs() {
@@ -63,12 +54,22 @@ function MainTabs() {
           return <Icon name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.inactive,
+        tabBarInactiveTintColor: COLORS.textTertiary,
         tabBarStyle: {
-          backgroundColor: COLORS.background,
+          backgroundColor: COLORS.white,
           borderTopColor: COLORS.border,
-          paddingBottom: 5,
-          height: 60,
+          paddingBottom: 8,
+          paddingTop: 8,
+          height: 68,
+          shadowColor: COLORS.primary,
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.1,
+          shadowRadius: 8,
+          elevation: 10,
+        },
+        tabBarLabelStyle: {
+          fontSize: 11,
+          fontWeight: '600',
         },
         headerShown: false,
       })}
@@ -114,9 +115,10 @@ export default function AppNavigator() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerStyle: { backgroundColor: COLORS.background },
-          headerTintColor: COLORS.text,
-          headerTitleStyle: { fontWeight: 'bold' },
+          headerStyle: { backgroundColor: COLORS.white },
+          headerTintColor: COLORS.textPrimary,
+          headerTitleStyle: { fontWeight: '700' },
+          headerShadowVisible: false,
         }}
       >
         {!isAuthenticated ? (
