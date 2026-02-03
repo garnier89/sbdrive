@@ -39,6 +39,12 @@ DEMO_MODE = os.environ.get('DEMO_MODE', 'true').lower() == 'true'
 # Create the main app
 app = FastAPI(title="SBPAYGO API", version="5.0.0")
 
+# Health check endpoint at root level for Kubernetes
+@app.get("/health")
+async def health_check():
+    """Health check endpoint for Kubernetes liveness/readiness probes"""
+    return {"status": "healthy", "app": "SBPAYGO", "version": "5.0.0"}
+
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
 
