@@ -401,8 +401,8 @@ export default function AdminMobileMoneyConfigPage() {
                               </div>
                             </div>
 
-                            {/* Services Grid */}
-                            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-2">
+                            {/* Services Grid - Responsive */}
+                            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2">
                               {Object.entries(SERVICE_LABELS).map(([key, label]) => {
                                 const Icon = SERVICE_ICONS[key];
                                 const isEnabled = operator.services?.[key] ?? false;
@@ -410,14 +410,14 @@ export default function AdminMobileMoneyConfigPage() {
                                   <button
                                     key={key}
                                     onClick={() => toggleService(country.code, operator.code, key, !isEnabled)}
-                                    className={`flex flex-col items-center gap-1 p-2 rounded-lg transition-all ${
+                                    className={`flex flex-col items-center gap-1 p-2 sm:p-3 rounded-lg transition-all min-h-[60px] ${
                                       isEnabled 
                                         ? 'bg-orange-100 text-orange-700 border border-orange-300' 
                                         : 'bg-slate-100 text-slate-400 border border-slate-200'
                                     }`}
                                   >
-                                    <Icon className="w-4 h-4" />
-                                    <span className="text-xs text-center">{label}</span>
+                                    <Icon className="w-4 h-4 sm:w-5 sm:h-5" />
+                                    <span className="text-xs text-center leading-tight">{label}</span>
                                     {isEnabled ? (
                                       <Check className="w-3 h-3 text-green-600" />
                                     ) : (
