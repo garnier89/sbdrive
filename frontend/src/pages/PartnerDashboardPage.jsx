@@ -426,7 +426,7 @@ export default function PartnerDashboardPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
                   {MOBILE_MONEY_PROVIDERS.map((provider) => (
                     <button
                       key={provider.id}
