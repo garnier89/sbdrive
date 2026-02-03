@@ -320,24 +320,24 @@ export default function AdminMobileMoneyConfigPage() {
           <div className="space-y-4">
             {filteredCountries.map((country) => (
               <Card key={country.id} className={`border-2 transition-all ${country.active ? 'border-orange-200' : 'border-slate-200 opacity-60'}`}>
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3 cursor-pointer" onClick={() => toggleExpand(country.code)}>
+                <CardHeader className="pb-2 px-3 sm:px-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div className="flex items-center gap-2 sm:gap-3 cursor-pointer flex-1 min-w-0" onClick={() => toggleExpand(country.code)}>
                       {expandedCountries[country.code] ? (
-                        <ChevronDown className="w-5 h-5 text-slate-400" />
+                        <ChevronDown className="w-5 h-5 text-slate-400 flex-shrink-0" />
                       ) : (
-                        <ChevronRight className="w-5 h-5 text-slate-400" />
+                        <ChevronRight className="w-5 h-5 text-slate-400 flex-shrink-0" />
                       )}
-                      <span className="text-2xl">{country.flag_emoji}</span>
-                      <div>
-                        <CardTitle className="text-lg">{country.name}</CardTitle>
-                        <CardDescription>
-                          {country.code} • {country.currency} ({country.currency_symbol}) • {country.operators?.length || 0} opérateurs
+                      <span className="text-xl sm:text-2xl flex-shrink-0">{country.flag_emoji}</span>
+                      <div className="min-w-0">
+                        <CardTitle className="text-base sm:text-lg truncate">{country.name}</CardTitle>
+                        <CardDescription className="text-xs sm:text-sm">
+                          {country.code} • {country.currency} • {country.operators?.length || 0} op.
                         </CardDescription>
                       </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <Badge variant={country.active ? 'default' : 'secondary'} className={country.active ? 'bg-green-500' : ''}>
+                    <div className="flex items-center gap-2 sm:gap-4 self-end sm:self-center">
+                      <Badge variant={country.active ? 'default' : 'secondary'} className={`text-xs ${country.active ? 'bg-green-500' : ''}`}>
                         {country.active ? 'Actif' : 'Inactif'}
                       </Badge>
                       <Switch
