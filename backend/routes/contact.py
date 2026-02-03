@@ -420,4 +420,158 @@ def setup_contact_routes(db, get_current_user, get_admin_user, send_push_notific
         
         return {"message": f"Statut mis à jour: {TICKET_STATUSES[request.status]['name']}"}
 
+    # ==================== PUBLIC CONTACT FORM ====================
+
+    @contact_router.post("/public-submit")
+    async def submit_public_contact(
+        request: dict,
+        background_tasks: BackgroundTasks
+    ):
+        """Submit a contact form from landing page (no auth required)"""
+        name = request.get("name", "").strip()
+        email = request.get("email", "").strip()
+        phone = request.get("phone", "").strip()
+        subject = request.get("subject", "general")
+        message = request.get("message", "").strip()
+        
+        if not name:
+            raise HTTPException(status_code=400, detail="Le nom est requis")
+        if not message:
+            raise HTTPException(status_code=400, detail="Le message est requis")
+        if not email and not phone:
+            raise HTTPException(status_code=400, detail="Email ou téléphone requis")
+        
+        now = datetime.now(timezone.utc)
+        ticket_number = f"CNT-{uuid.uuid4().hex[:8].upper()}"
+        ticket_id = str(uuid.uuid4())
+        
+        subject_labels = {
+            "general": "Question générale",
+            "account": "Mon compte",
+            "payment": "Paiements",
+            "technical": "Problème technique",
+            "partnership": "Partenariat",
+            "other": "Autre"
+        }
+        
+        ticket = {
+            "id": ticket_id,
+            "ticket_number": ticket_number,
+            "user_id": None,  # Public contact - no user
+            "user_name": name,
+            "user_email": email,
+            "user_phone": phone,
+            "subject": subject_labels.get(subject, subject),
+            "category": subject,
+            "category_name": subject_labels.get(subject, subject),
+            "priority": "normal",
+            "status": "open",
+            "source": "landing_page",  # Mark as from landing page
+            "messages": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "sender_type": "visitor",
+                    "sender_name": name,
+                    "message": message,
+                    "created_at": now.isoformat()
+                }
+            ],
+            "created_at": now.isoformat(),
+            "updated_at": now.isoformat()
+        }
+        
+        await db.support_tickets.insert_one(ticket)
+        
+        # Notify admins
+        await db.admin_notifications.insert_one({
+            "id": str(uuid.uuid4()),
+            "type": "new_public_contact",
+            "title": f"Nouveau contact: {subject_labels.get(subject, subject)}",
+            "message": f"De: {name} - {message[:80]}...",
+            "ticket_id": ticket_id,
+            "read": False,
+            "created_at": now.isoformat()
+        })
+        
+        return {
+            "message": "Message envoyé avec succès",
+            "ticket_number": ticket_number
+        }
+
+    # ==================== CONTACT SETTINGS (ADMIN) ====================
+
+    @contact_router.get("/admin/settings")
+    async def get_contact_settings(
+        current_admin: dict = Depends(get_admin_user)
+    ):
+        """Get contact settings (admin only)"""
+        settings = await db.app_settings.find_one({"key": "contact_settings"}, {"_id": 0})
+        
+        if not settings:
+            # Return defaults
+            return {
+                "whatsapp_number": "",
+                "show_whatsapp": True,
+                "support_email": "",
+                "show_email": False,
+                "tawkto_id": "",
+                "show_tawkto": True
+            }
+        
+        return settings.get("value", {})
+
+    @contact_router.put("/admin/settings")
+    async def update_contact_settings(
+        request: dict,
+        current_admin: dict = Depends(get_admin_user)
+    ):
+        """Update contact settings (admin only)"""
+        now = datetime.now(timezone.utc)
+        
+        settings_data = {
+            "whatsapp_number": request.get("whatsapp_number", ""),
+            "show_whatsapp": request.get("show_whatsapp", True),
+            "support_email": request.get("support_email", ""),
+            "show_email": request.get("show_email", False),
+            "tawkto_id": request.get("tawkto_id", ""),
+            "show_tawkto": request.get("show_tawkto", True),
+            "updated_at": now.isoformat(),
+            "updated_by": current_admin["id"]
+        }
+        
+        await db.app_settings.update_one(
+            {"key": "contact_settings"},
+            {"$set": {"key": "contact_settings", "value": settings_data}},
+            upsert=True
+        )
+        
+        return {"message": "Paramètres de contact mis à jour", "settings": settings_data}
+
+    # ==================== PUBLIC SETTINGS ENDPOINT ====================
+
+    @contact_router.get("/settings")
+    async def get_public_contact_settings():
+        """Get public contact settings (no auth required)"""
+        settings = await db.app_settings.find_one({"key": "contact_settings"}, {"_id": 0})
+        
+        if not settings:
+            return {
+                "whatsapp_number": "",
+                "show_whatsapp": False,
+                "show_email": False,
+                "show_tawkto": True
+            }
+        
+        value = settings.get("value", {})
+        
+        # Only return public-facing settings
+        return {
+            "whatsapp_number": value.get("whatsapp_number", "") if value.get("show_whatsapp", False) else "",
+            "show_whatsapp": value.get("show_whatsapp", False),
+            "show_email": value.get("show_email", False),
+            "support_email": value.get("support_email", "") if value.get("show_email", False) else "",
+            "show_tawkto": value.get("show_tawkto", True),
+            "tawkto_id": value.get("tawkto_id", "")
+        }
+
     return contact_router
