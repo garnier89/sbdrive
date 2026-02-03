@@ -234,57 +234,57 @@ export default function AdminMobileMoneyConfigPage() {
           </div>
         </div>
 
-        {/* Stats Cards */}
+        {/* Stats Cards - Responsive Grid */}
         {stats && (
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <Card className="border-orange-100">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                    <MapPin className="w-5 h-5 text-orange-600" />
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-orange-100 flex items-center justify-center flex-shrink-0">
+                    <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-slate-800">{stats.active_countries}</p>
-                    <p className="text-sm text-slate-500">Pays actifs</p>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-slate-800">{stats.active_countries}</p>
+                    <p className="text-xs sm:text-sm text-slate-500 truncate">Pays actifs</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card className="border-orange-100">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-blue-100 flex items-center justify-center">
-                    <Smartphone className="w-5 h-5 text-blue-600" />
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-blue-100 flex items-center justify-center flex-shrink-0">
+                    <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-slate-800">{stats.active_operators}</p>
-                    <p className="text-sm text-slate-500">Opérateurs actifs</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-            <Card className="border-orange-100">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-green-100 flex items-center justify-center">
-                    <Send className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-2xl font-bold text-slate-800">{stats.services_enabled?.transfer_p2p || 0}</p>
-                    <p className="text-sm text-slate-500">Transferts P2P</p>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-slate-800">{stats.active_operators}</p>
+                    <p className="text-xs sm:text-sm text-slate-500 truncate">Opérateurs</p>
                   </div>
                 </div>
               </CardContent>
             </Card>
             <Card className="border-orange-100">
-              <CardContent className="p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-lg bg-purple-100 flex items-center justify-center">
-                    <Zap className="w-5 h-5 text-purple-600" />
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <Send className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" />
                   </div>
-                  <div>
-                    <p className="text-2xl font-bold text-slate-800">{stats.services_enabled?.mobile_recharge || 0}</p>
-                    <p className="text-sm text-slate-500">Recharges Mobile</p>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-slate-800">{stats.services_enabled?.transfer_p2p || 0}</p>
+                    <p className="text-xs sm:text-sm text-slate-500 truncate">P2P actifs</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            <Card className="border-orange-100">
+              <CardContent className="p-3 sm:p-4">
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg bg-purple-100 flex items-center justify-center flex-shrink-0">
+                    <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-purple-600" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-lg sm:text-2xl font-bold text-slate-800">{stats.services_enabled?.mobile_recharge || 0}</p>
+                    <p className="text-xs sm:text-sm text-slate-500 truncate">Recharges</p>
                   </div>
                 </div>
               </CardContent>
