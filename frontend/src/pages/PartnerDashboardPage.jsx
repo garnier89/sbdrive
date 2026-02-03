@@ -632,6 +632,157 @@ export default function PartnerDashboardPage() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Mobile Money Recharge Dialog */}
+      <Dialog open={showRechargeDialog} onOpenChange={(open) => {
+        if (!open) resetRechargeState();
+        setShowRechargeDialog(open);
+      }}>
+        <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-white">
+              {rechargeStep === 'search' ? '📱 Recharge Mobile Money' : 'Confirmation OTP'}
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              {rechargeStep === 'search' 
+                ? 'Rechargez le compte Mobile Money d\'un client'
+                : 'Demandez le code OTP au client'
+              }
+            </DialogDescription>
+          </DialogHeader>
+
+          {rechargeStep === 'search' && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-slate-300">Opérateur Mobile Money</Label>
+                <Select value={rechargeProvider} onValueChange={setRechargeProvider}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                    <SelectValue placeholder="Sélectionner un opérateur" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {MOBILE_MONEY_PROVIDERS.map((provider) => (
+                      <SelectItem key={provider.id} value={provider.id}>
+                        {provider.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-slate-300">Numéro de téléphone du client</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    value={rechargePhone}
+                    onChange={(e) => setRechargePhone(e.target.value)}
+                    placeholder="+221 77 123 4567"
+                    className="bg-slate-700 border-slate-600 text-white pl-10"
+                    data-testid="recharge-phone-input"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-slate-300">Montant à recharger (XOF)</Label>
+                <Input
+                  type="number"
+                  value={rechargeAmount}
+                  onChange={(e) => setRechargeAmount(e.target.value)}
+                  placeholder="5000"
+                  className="bg-slate-700 border-slate-600 text-white"
+                  data-testid="recharge-amount-input"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowRechargeDialog(false)}
+                  className="flex-1 border-slate-600 text-slate-300"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleInitiateRecharge}
+                  disabled={processingRecharge || !rechargeProvider || !rechargePhone || !rechargeAmount}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  data-testid="recharge-initiate-btn"
+                >
+                  {processingRecharge ? 'Envoi...' : 'Continuer'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {rechargeStep === 'otp' && rechargeData && (
+            <div className="space-y-4">
+              <div className="bg-slate-700/50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Opérateur</span>
+                  <span className="text-white font-medium">
+                    {MOBILE_MONEY_PROVIDERS.find(p => p.id === rechargeProvider)?.name}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Téléphone</span>
+                  <span className="text-white">{rechargeData.phone_masked || rechargePhone}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Montant</span>
+                  <span className="text-blue-400 font-bold">
+                    {rechargeData.amount?.toLocaleString()} XOF
+                  </span>
+                </div>
+              </div>
+
+              {/* Demo OTP Notice */}
+              {rechargeData.demo_otp && (
+                <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-3">
+                  <div className="flex items-center gap-2 text-amber-400">
+                    <AlertCircle className="w-4 h-4" />
+                    <span className="text-sm font-medium">Mode DEMO</span>
+                  </div>
+                  <p className="text-amber-300 text-sm mt-1">
+                    Code OTP: <span className="font-mono font-bold">{rechargeData.demo_otp}</span>
+                  </p>
+                </div>
+              )}
+
+              <div className="space-y-2">
+                <Label className="text-slate-300">Code OTP du client</Label>
+                <Input
+                  type="text"
+                  maxLength={6}
+                  value={rechargeOtp}
+                  onChange={(e) => setRechargeOtp(e.target.value.replace(/\D/g, ''))}
+                  placeholder="123456"
+                  className="bg-slate-700 border-slate-600 text-white text-center text-2xl tracking-widest"
+                  data-testid="recharge-otp-input"
+                />
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={resetRechargeState}
+                  className="flex-1 border-slate-600 text-slate-300"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleConfirmRecharge}
+                  disabled={processingRecharge || rechargeOtp.length !== 6}
+                  className="flex-1 bg-blue-600 hover:bg-blue-700"
+                  data-testid="recharge-confirm-btn"
+                >
+                  {processingRecharge ? 'Vérification...' : 'Confirmer la recharge'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
