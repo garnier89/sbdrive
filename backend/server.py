@@ -3694,6 +3694,10 @@ app.include_router(commission_configured, prefix="/api")
 limits_configured = get_limits_router(db, get_admin_user)
 app.include_router(limits_configured, prefix="/api")
 
+# Setup and include Agent Locator module routes
+setup_agent_locator_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
+app.include_router(agent_locator_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
