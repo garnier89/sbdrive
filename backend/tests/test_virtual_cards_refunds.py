@@ -290,7 +290,11 @@ class TestTransferAndRefundFlow:
         if wallets_response.status_code != 200:
             pytest.skip("Could not get wallets")
         
-        wallets = wallets_response.json().get("wallets", [])
+        # Wallets endpoint returns a list directly
+        wallets = wallets_response.json()
+        if isinstance(wallets, dict):
+            wallets = wallets.get("wallets", [])
+        
         xof_wallet = next((w for w in wallets if w.get("currency") == "XOF"), None)
         
         if not xof_wallet or xof_wallet.get("balance", 0) < 1000:
