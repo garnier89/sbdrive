@@ -60,6 +60,7 @@ import AdminAlertsPage from "@/pages/admin/AdminAlertsPage";
 import AdminKYCPage from "@/pages/admin/AdminKYCPage";
 import AdminContactSettingsPage from "@/pages/admin/AdminContactSettingsPage";
 import AdminPartnersPage from "@/pages/admin/AdminPartnersPage";
+import SuperAdminPage from "@/pages/admin/SuperAdminPage";
 // Partner Pages
 import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
