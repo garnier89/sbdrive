@@ -61,11 +61,14 @@ import AdminKYCPage from "@/pages/admin/AdminKYCPage";
 import AdminContactSettingsPage from "@/pages/admin/AdminContactSettingsPage";
 import AdminPartnersPage from "@/pages/admin/AdminPartnersPage";
 import SuperAdminPage from "@/pages/admin/SuperAdminPage";
+import AdminMobileMoneyConfigPage from "@/pages/admin/AdminMobileMoneyConfigPage";
 // Partner Pages
 import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
 import PartnerDashboardPage from "@/pages/PartnerDashboardPage";
 import CashWithdrawalPage from "@/pages/CashWithdrawalPage";
+// Public Pages
+import MobileMoneyPage from "@/pages/MobileMoneyPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
