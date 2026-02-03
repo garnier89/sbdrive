@@ -78,6 +78,9 @@ from routes.receipts import setup_receipts_routes, receipts_router
 # Import Documents KYC Module
 from routes.documents import setup_documents_routes, documents_router
 
+# Import Partners/Agents Module
+from routes.partners import setup_partners_routes, partners_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
