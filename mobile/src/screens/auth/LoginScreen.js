@@ -1,4 +1,4 @@
-// Écran de connexion SB Money Mobile
+// Écran de connexion SBPAYGO Mobile
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -16,6 +16,7 @@ import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../hooks/useAuth';
 import storage from '../../services/storage';
 import biometricService from '../../services/biometric';
+import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 
 const LOGO_URL = 'https://customer-assets.emergentagent.com/job_ce75e416-36f1-4b25-8491-7de5dd466427/artifacts/jsqaea98_1024x1024%20%281030%20x%201024%20px%29_20251125_175229_0000.png';
 
@@ -85,7 +86,7 @@ export default function LoginScreen({ navigation }) {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image source={{ uri: LOGO_URL }} style={styles.logo} />
-          <Text style={styles.title}>SB Money</Text>
+          <Text style={styles.title}>SBPAYGO</Text>
           <Text style={styles.subtitle}>Connexion</Text>
         </View>
 
@@ -184,112 +185,117 @@ export default function LoginScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,
-    padding: 24,
+    padding: SPACING.xxl,
     justifyContent: 'center',
   },
   logoContainer: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: SPACING.xxxl,
   },
   logo: {
-    width: 80,
-    height: 80,
-    marginBottom: 16,
+    width: 88,
+    height: 88,
+    marginBottom: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
   },
   title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontSize: FONT_SIZES.h1,
+    fontWeight: '700',
+    color: COLORS.primary,
   },
   subtitle: {
-    fontSize: 16,
-    color: '#64748b',
-    marginTop: 4,
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.textSecondary,
+    marginTop: SPACING.xs,
   },
   quickActions: {
     flexDirection: 'row',
     justifyContent: 'center',
-    gap: 16,
-    marginBottom: 24,
+    gap: SPACING.lg,
+    marginBottom: SPACING.xxl,
   },
   quickButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 12,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#f97316',
-    gap: 8,
+    padding: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: BORDER_RADIUS.md,
+    borderWidth: 2,
+    borderColor: COLORS.primary,
+    backgroundColor: COLORS.white,
+    gap: SPACING.sm,
+    ...SHADOWS.sm,
   },
   quickButtonText: {
-    color: '#f97316',
+    color: COLORS.primary,
     fontWeight: '600',
   },
   divider: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 24,
+    marginBottom: SPACING.xxl,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#e2e8f0',
+    backgroundColor: COLORS.border,
   },
   dividerText: {
-    marginHorizontal: 16,
-    color: '#94a3b8',
+    marginHorizontal: SPACING.lg,
+    color: COLORS.textTertiary,
   },
   form: {
-    gap: 16,
+    gap: SPACING.lg,
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1,
-    borderColor: '#e2e8f0',
-    borderRadius: 12,
-    paddingHorizontal: 16,
+    borderColor: COLORS.border,
+    borderRadius: BORDER_RADIUS.md,
+    paddingHorizontal: SPACING.lg,
     height: 56,
+    backgroundColor: COLORS.white,
   },
   inputIcon: {
-    marginRight: 12,
+    marginRight: SPACING.md,
   },
   input: {
     flex: 1,
-    fontSize: 16,
-    color: '#1e293b',
+    fontSize: FONT_SIZES.lg,
+    color: COLORS.textPrimary,
   },
   button: {
-    backgroundColor: '#f97316',
-    borderRadius: 12,
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS.md,
     height: 56,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 8,
+    marginTop: SPACING.sm,
+    ...SHADOWS.md,
   },
   buttonDisabled: {
     opacity: 0.7,
   },
   buttonText: {
-    color: '#ffffff',
-    fontSize: 18,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.xl,
     fontWeight: '600',
   },
   footer: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginTop: 32,
+    marginTop: SPACING.xxxl,
   },
   footerText: {
-    color: '#64748b',
+    color: COLORS.textSecondary,
   },
   footerLink: {
-    color: '#f97316',
+    color: COLORS.primary,
     fontWeight: '600',
   },
 });

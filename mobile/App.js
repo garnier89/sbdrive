@@ -1,4 +1,4 @@
-// Point d'entrée SB Money Mobile
+// Point d'entrée SBPAYGO Mobile - Application Fintech Africaine
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -10,7 +10,7 @@ export default function App() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
-        <StatusBar barStyle="dark-content" backgroundColor="#ffffff" />
+        <StatusBar barStyle="dark-content" backgroundColor="#fff7ed" />
         <AuthProvider>
           <AppNavigator />
         </AuthProvider>

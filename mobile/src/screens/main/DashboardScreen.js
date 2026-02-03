@@ -1,4 +1,4 @@
-// Écran Dashboard SB Money Mobile
+// Écran Dashboard SBPAYGO Mobile
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -12,6 +12,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { useAuth } from '../../hooks/useAuth';
 import { walletAPI } from '../../services/api';
+import { COLORS, SPACING, FONT_SIZES, BORDER_RADIUS, SHADOWS } from '../../styles/theme';
 import CONFIG from '../../config';
 
 export default function DashboardScreen({ navigation }) {
@@ -72,14 +73,14 @@ export default function DashboardScreen({ navigation }) {
     <ScrollView
       style={styles.container}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#f97316']} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[COLORS.primary]} tintColor={COLORS.primary} />
       }
     >
       {/* Header */}
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Bonjour, {user?.full_name?.split(' ')[0]}! 👋</Text>
-          <Text style={styles.subGreeting}>Bienvenue sur SB Money</Text>
+          <Text style={styles.subGreeting}>Bienvenue sur SBPAYGO</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <View style={styles.avatar}>
@@ -182,175 +183,179 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: COLORS.background,
   },
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8fafc',
+    backgroundColor: COLORS.background,
   },
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: 24,
+    padding: SPACING.xxl,
     paddingTop: 56,
-    backgroundColor: '#ffffff',
+    backgroundColor: COLORS.white,
   },
   greeting: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#1e293b',
+    fontSize: FONT_SIZES.h3,
+    fontWeight: '700',
+    color: COLORS.textPrimary,
   },
   subGreeting: {
-    fontSize: 14,
-    color: '#64748b',
+    fontSize: FONT_SIZES.md,
+    color: COLORS.textSecondary,
     marginTop: 2,
   },
   avatar: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-    backgroundColor: '#fef3cd',
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: COLORS.primaryBg,
     justifyContent: 'center',
     alignItems: 'center',
+    ...SHADOWS.sm,
   },
   balanceCard: {
-    margin: 16,
-    padding: 24,
-    backgroundColor: '#f97316',
-    borderRadius: 20,
+    margin: SPACING.lg,
+    padding: SPACING.xxl,
+    backgroundColor: COLORS.primary,
+    borderRadius: BORDER_RADIUS.xxl,
+    ...SHADOWS.card,
   },
   balanceLabel: {
     color: 'rgba(255,255,255,0.8)',
-    fontSize: 14,
+    fontSize: FONT_SIZES.md,
   },
   balanceAmount: {
-    color: '#ffffff',
-    fontSize: 36,
-    fontWeight: 'bold',
-    marginTop: 4,
+    color: COLORS.white,
+    fontSize: FONT_SIZES.hero,
+    fontWeight: '700',
+    marginTop: SPACING.xs,
   },
   balanceActions: {
     flexDirection: 'row',
-    gap: 12,
-    marginTop: 20,
+    gap: SPACING.md,
+    marginTop: SPACING.xl,
   },
   balanceButton: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255,255,255,0.2)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 12,
-    gap: 8,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: BORDER_RADIUS.md,
+    gap: SPACING.sm,
   },
   balanceButtonText: {
-    color: '#ffffff',
+    color: COLORS.white,
     fontWeight: '600',
   },
   quickActions: {
-    padding: 16,
+    padding: SPACING.lg,
   },
   sectionTitle: {
-    fontSize: 18,
+    fontSize: FONT_SIZES.xl,
     fontWeight: '600',
-    color: '#1e293b',
-    marginBottom: 12,
+    color: COLORS.textPrimary,
+    marginBottom: SPACING.md,
   },
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
+    gap: SPACING.md,
   },
   actionButton: {
     width: '47%',
-    backgroundColor: '#ffffff',
-    padding: 16,
-    borderRadius: 16,
+    backgroundColor: COLORS.white,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.lg,
     alignItems: 'center',
+    ...SHADOWS.sm,
   },
   actionIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: '#fef3cd',
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+    backgroundColor: COLORS.primaryBg,
     justifyContent: 'center',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: SPACING.sm,
   },
   actionLabel: {
-    fontSize: 14,
+    fontSize: FONT_SIZES.md,
     fontWeight: '500',
-    color: '#1e293b',
+    color: COLORS.textPrimary,
   },
   transactions: {
-    padding: 16,
+    padding: SPACING.lg,
   },
   transactionsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 12,
+    marginBottom: SPACING.md,
   },
   seeAllLink: {
-    color: '#f97316',
-    fontWeight: '500',
+    color: COLORS.primary,
+    fontWeight: '600',
   },
   emptyState: {
     alignItems: 'center',
-    padding: 32,
-    backgroundColor: '#ffffff',
-    borderRadius: 16,
+    padding: SPACING.xxxl,
+    backgroundColor: COLORS.white,
+    borderRadius: BORDER_RADIUS.lg,
   },
   emptyText: {
-    color: '#94a3b8',
-    marginTop: 12,
+    color: COLORS.textTertiary,
+    marginTop: SPACING.md,
   },
   transactionItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
-    padding: 16,
-    borderRadius: 12,
-    marginBottom: 8,
+    backgroundColor: COLORS.white,
+    padding: SPACING.lg,
+    borderRadius: BORDER_RADIUS.md,
+    marginBottom: SPACING.sm,
+    ...SHADOWS.sm,
   },
   txIcon: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     justifyContent: 'center',
     alignItems: 'center',
   },
   txIconIn: {
-    backgroundColor: '#dcfce7',
+    backgroundColor: COLORS.successLight,
   },
   txIconOut: {
-    backgroundColor: '#fee2e2',
+    backgroundColor: COLORS.errorLight,
   },
   txInfo: {
     flex: 1,
-    marginLeft: 12,
+    marginLeft: SPACING.md,
   },
   txDescription: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1e293b',
+    fontSize: FONT_SIZES.md,
+    fontWeight: '600',
+    color: COLORS.textPrimary,
   },
   txDate: {
-    fontSize: 12,
-    color: '#94a3b8',
+    fontSize: FONT_SIZES.sm,
+    color: COLORS.textTertiary,
     marginTop: 2,
   },
   txAmount: {
-    fontSize: 14,
-    fontWeight: '600',
+    fontSize: FONT_SIZES.md,
+    fontWeight: '700',
   },
   txAmountIn: {
-    color: '#22c55e',
+    color: COLORS.success,
   },
   txAmountOut: {
-    color: '#ef4444',
+    color: COLORS.error,
   },
 });
