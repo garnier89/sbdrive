@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Global rebrand to SBPAYGO)  
+**Last Updated:** February 2026 (Mobile App Screens with Orange 50% Theme)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://vibrant-gauss.preview.emergentagent.com
 
