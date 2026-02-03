@@ -1,4 +1,4 @@
-// Service API pour SB Money Mobile
+// Service API pour SBPAYGO Mobile
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CONFIG from '../config';
@@ -75,8 +75,23 @@ export const walletAPI = {
     api.get(`/wallet/users/lookup-phone?phone=${encodeURIComponent(phone)}`),
 };
 
+// ==================== TRANSFER ====================
+export const transferAPI = {
+  verifyRecipient: (method, recipient) =>
+    api.post('/transfer/verify-recipient', { method, recipient }),
+  
+  create: (data) =>
+    api.post('/transfer/p2p', data),
+  
+  getDetails: (transferId) =>
+    api.get(`/transfer/${transferId}`),
+};
+
 // ==================== VAULT ====================
 export const vaultAPI = {
+  getVault: () =>
+    api.get('/vault/balance'),
+  
   getBalance: () =>
     api.get('/vault/balance'),
   
@@ -86,33 +101,48 @@ export const vaultAPI = {
   verifyPin: (pin) =>
     api.post('/vault/verify-pin', { pin }),
   
-  deposit: (amount, currency, pin) =>
-    api.post('/vault/deposit', { amount, currency, pin }),
+  deposit: (data) =>
+    api.post('/vault/deposit', data),
   
-  withdraw: (amount, currency, pin) =>
-    api.post('/vault/withdraw', { amount, currency, pin }),
+  withdraw: (data) =>
+    api.post('/vault/withdraw', data),
   
   getTransactions: () =>
     api.get('/vault/transactions'),
 };
 
 // ==================== VIRTUAL CARDS ====================
-export const cardsAPI = {
+export const cardAPI = {
   getCards: () =>
-    api.get('/virtual-card/list'),
+    api.get('/virtual-cards'),
   
   createCard: (data) =>
-    api.post('/virtual-card/create', data),
+    api.post('/virtual-cards', data),
   
-  blockCard: (cardId, block) =>
-    api.post('/virtual-card/block', { card_id: cardId, block }),
+  toggleCard: (cardId) =>
+    api.post(`/virtual-cards/${cardId}/toggle`),
+  
+  verifyPin: (cardId, pin) =>
+    api.post(`/virtual-cards/${cardId}/verify-pin`, { pin }),
   
   deleteCard: (cardId) =>
-    api.delete(`/virtual-card/${cardId}`),
+    api.delete(`/virtual-cards/${cardId}`),
+  
+  updateLimits: (cardId, limits) =>
+    api.put(`/virtual-cards/${cardId}/limits`, limits),
+  
+  getColors: () =>
+    api.get('/virtual-cards/colors'),
 };
+
+// Legacy export for backwards compatibility
+export const cardsAPI = cardAPI;
 
 // ==================== DEPOSITS ====================
 export const depositAPI = {
+  create: (data) =>
+    api.post('/deposit', data),
+  
   createStripeSession: (amount, currency) =>
     api.post('/deposit/stripe/create-session', { amount, currency }),
   
@@ -136,6 +166,18 @@ export const userAPI = {
   
   getDocuments: () =>
     api.get('/documents/my'),
+};
+
+// ==================== MOBILE MONEY ====================
+export const mobileMoneyAPI = {
+  getOperators: () =>
+    api.get('/mobile-money/operators'),
+  
+  transfer: (data) =>
+    api.post('/mobile-money/transfer', data),
+  
+  topUp: (data) =>
+    api.post('/mobile-money/airtime', data),
 };
 
 export default api;
