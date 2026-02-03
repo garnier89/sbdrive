@@ -42,6 +42,7 @@ const adminItems = [
   { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
   { href: '/admin/tickets', icon: Headphones, label: 'Tickets Support' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
+  { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
   { href: '/admin/transactions', icon: History, label: 'Transactions' },
   { href: '/admin/card-approvals', icon: CreditCard, label: 'Approbation Cartes' },
