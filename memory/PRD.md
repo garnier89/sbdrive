@@ -355,6 +355,35 @@
   - Affichage des valeurs actuelles
   - Vérification manuelle
 
+#### 🎁 Administration des Récompenses (NEW - Feb 2026)
+- [x] **Gestion des Niveaux (Tiers)**
+  - Modifier les paramètres de chaque niveau (Bronze, Argent, Or, Platine, Diamant)
+  - Ajuster les points minimum, taux de cashback, couleurs
+  - Personnaliser les avantages par niveau
+- [x] **Gestion des Offres**
+  - Créer de nouvelles offres de récompenses
+  - Types: Cashback, Réduction, Bonus, Cadeau
+  - Définir le coût en points et la valeur
+  - Activer/Désactiver les offres
+  - Limiter le nombre d'utilisations
+  - Supprimer des offres
+- [x] **Gestion des Règles d'Attribution**
+  - Créer des règles pour attribuer des points
+  - Types: Transaction, Parrainage, Inscription, Dépôt
+  - Définir les points attribués et multiplicateurs
+  - Limites journalières
+  - Activer/Désactiver les règles
+- [x] **Gestion des Utilisateurs**
+  - Liste des utilisateurs avec leurs points
+  - Filtrer par niveau
+  - Rechercher par nom/email
+  - Attribuer des points bonus manuellement
+- [x] **Statistiques**
+  - Répartition des utilisateurs par niveau
+  - Total points en circulation
+  - Nombre d'offres et règles actives
+  - Page: /admin/rewards
+
 #### 🔑 RBAC Avancé (Permissions Détaillées)
 - [x] **45+ permissions granulaires**
   - Utilisateurs (voir, créer, modifier, supprimer, bloquer)
