@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Mobile Money Config System + Orange Theme Mobile Screens)  
+**Last Updated:** February 2026 (Rewards Admin + Zones Config System)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://sbpaygo-africa.preview.emergentagent.com
 
