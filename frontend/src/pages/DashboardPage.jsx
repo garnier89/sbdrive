@@ -23,8 +23,8 @@ const CURRENCY_SYMBOLS = {
 };
 
 const quickActions = [
-  { icon: Send, label: 'Envoyer', href: '/transfer', color: 'bg-blue-500' },
-  { icon: ArrowDownCircle, label: 'Dépôt', href: '/deposit', color: 'bg-green-500' },
+  { icon: Send, label: 'Envoyer', href: '/transfer', color: 'bg-sky-500' },
+  { icon: ArrowDownCircle, label: 'Dépôt', href: '/deposit', color: 'bg-emerald-500' },
   { icon: ArrowUpCircle, label: 'Retrait', href: '/withdraw', color: 'bg-orange-500' },
   { icon: Receipt, label: 'Factures', href: '/bills', color: 'bg-purple-500' }
 ];
