@@ -158,10 +158,10 @@ export default function LoginPage() {
               </form>
 
               <div className="mt-6 text-center text-sm">
-                <span className="text-muted-foreground">Pas encore de compte? </span>
+                <span className="text-slate-500">Pas encore de compte? </span>
                 <Link 
                   to="/register" 
-                  className="text-primary hover:underline font-medium"
+                  className="text-sky-600 hover:text-sky-700 hover:underline font-medium"
                   data-testid="register-link"
                 >
                   Créer un compte
@@ -173,7 +173,7 @@ export default function LoginPage() {
       </div>
 
       {/* Right Panel - Decorative */}
-      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-primary to-orange-600 items-center justify-center p-12">
+      <div className="hidden lg:flex lg:flex-1 bg-gradient-to-br from-sky-500 via-sky-600 to-orange-500 items-center justify-center p-12">
         <div className="text-white max-w-md text-center">
           <h2 className="text-3xl font-bold font-['Manrope'] mb-4">
             Gérez votre argent en toute simplicité
