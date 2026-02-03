@@ -99,6 +99,9 @@ from routes.rewards_admin import router as rewards_admin_router, get_rewards_adm
 # Import Zones Config Module
 from routes.zones_config import router as zones_config_router, get_zones_config_router
 
+# Import Staff Management Module
+from routes.staff_management import router as staff_router, get_staff_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
