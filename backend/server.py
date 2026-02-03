@@ -84,6 +84,9 @@ from routes.partners import setup_partners_routes, partners_router
 # Import Refunds Module
 from routes.refunds import setup_refunds_routes, refunds_router
 
+# Import Mobile Money Config Module
+from routes.mobile_money_config import setup_mobile_money_config_routes, mobile_money_config_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
