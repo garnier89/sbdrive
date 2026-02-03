@@ -3,7 +3,7 @@
 ## Project Overview
 **Name:** SBPAYGO  
 **Official Website:** sbpaygo.com  
-**Type:** Online Payment System (Fintech Super App for Africa)  
+**Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
 **Last Updated:** February 2026 (Global Rebrand to SBPAYGO)  
 **Stack:** React + FastAPI + MongoDB  
