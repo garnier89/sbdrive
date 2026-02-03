@@ -370,6 +370,9 @@ function App() {
             <Route path="/help" element={
               <ProtectedRoute><HelpCenterPage /></ProtectedRoute>
             } />
+            <Route path="/cash-withdrawal" element={
+              <ProtectedRoute><CashWithdrawalPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
