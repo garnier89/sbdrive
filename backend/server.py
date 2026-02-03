@@ -3639,6 +3639,10 @@ app.include_router(documents_router)
 setup_partners_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, hash_password, verify_password, create_access_token, send_push_notification)
 app.include_router(partners_router)
 
+# Setup and include Refunds module routes
+setup_refunds_routes(db, get_current_user, get_admin_user, send_push_notification, send_email_notification)
+app.include_router(refunds_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
