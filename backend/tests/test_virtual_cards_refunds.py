@@ -10,9 +10,9 @@ from datetime import datetime
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-USER_EMAIL = "user@sbpay.com"
+USER_EMAIL = "user@sbpaygo.com"
 USER_PASSWORD = "userpassword"
-ADMIN_EMAIL = "admin@sbpay.com"
+ADMIN_EMAIL = "admin@sbpaygo.com"
 ADMIN_PASSWORD = "adminpassword"
 
 
@@ -302,7 +302,7 @@ class TestTransferAndRefundFlow:
         
         # Create a small transfer
         response = self.session.post(f"{BASE_URL}/api/transfers", json={
-            "recipient_email": "admin@sbpay.com",
+            "recipient_email": "admin@sbpaygo.com",
             "amount": 1000,
             "currency": "XOF",
             "description": "TEST_Refund_Transfer"

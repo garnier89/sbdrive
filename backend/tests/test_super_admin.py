@@ -14,7 +14,7 @@ class TestSuperAdminAuthentication:
     @pytest.fixture(autouse=True)
     def setup(self):
         """Setup admin token for tests"""
-        self.admin_email = "admin@sbpay.com"
+        self.admin_email = "admin@sbpaygo.com"
         self.admin_password = "adminpassword"
         self.session = requests.Session()
         self.session.headers.update({"Content-Type": "application/json"})
@@ -44,7 +44,7 @@ class TestSuperAdminAuthentication:
     def test_admin_login_invalid_credentials(self):
         """Test login fails with invalid credentials"""
         response = requests.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "wrong@sbpay.com",
+            "email": "wrong@sbpaygo.com",
             "password": "wrongpassword"
         })
         assert response.status_code == 401
@@ -62,7 +62,7 @@ class TestUserManagement:
         
         # Login as admin
         response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@sbpay.com",
+            "email": "admin@sbpaygo.com",
             "password": "adminpassword"
         })
         if response.status_code == 200:
@@ -105,7 +105,7 @@ class TestUserManagement:
         
         non_admin_user = None
         for user in users:
-            if user.get("role") != "admin" and user.get("email") != "admin@sbpay.com":
+            if user.get("role") != "admin" and user.get("email") != "admin@sbpaygo.com":
                 non_admin_user = user
                 break
         
@@ -154,7 +154,7 @@ class TestPartnerManagement:
         
         # Login as admin
         response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@sbpay.com",
+            "email": "admin@sbpaygo.com",
             "password": "adminpassword"
         })
         if response.status_code == 200:
@@ -179,7 +179,7 @@ class TestPartnerManagement:
         partner_data = {
             "business_name": f"TEST_SuperAdmin_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_superadmin_{unique_id}@sbpay.com",
+            "email": f"test_superadmin_{unique_id}@sbpaygo.com",
             "phone": f"+221771234{unique_id[:4]}",
             "address": "123 Test Street",
             "city": "Dakar",
@@ -250,7 +250,7 @@ class TestWalletOperations:
         
         # Login as admin
         response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@sbpay.com",
+            "email": "admin@sbpaygo.com",
             "password": "adminpassword"
         })
         if response.status_code == 200:
@@ -349,7 +349,7 @@ class TestDocumentManagement:
         
         # Login as admin
         response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@sbpay.com",
+            "email": "admin@sbpaygo.com",
             "password": "adminpassword"
         })
         if response.status_code == 200:
@@ -392,7 +392,7 @@ class TestSearchFunctionality:
         
         # Login as admin
         response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "admin@sbpay.com",
+            "email": "admin@sbpaygo.com",
             "password": "adminpassword"
         })
         if response.status_code == 200:

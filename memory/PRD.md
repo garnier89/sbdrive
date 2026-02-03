@@ -1,7 +1,7 @@
-# SB Money - Product Requirements Document
+# SBPAYGO - Product Requirements Document
 
 ## Project Overview
-**Name:** SB Money  
+**Name:** SBPAYGO  
 **Type:** Online Payment System (PayPal-like Fintech Platform)  
 **Created:** December 2025  
 **Last Updated:** February 2026 (Super Admin Panel completed)  
@@ -150,7 +150,7 @@
   - Utilisateurs atteints
   - Historique avec détails
 
-#### 🔐 Coffre-Fort SB Money (NEW)
+#### 🔐 Coffre-Fort SBPAYGO (NEW)
 - [x] **Sécurisation de l'argent**
   - Coffre-fort séparé du wallet principal
   - PIN à 6 chiffres obligatoire
@@ -185,9 +185,9 @@
   - Confirmation création ticket
   - Notification nouvelle réponse
 
-#### 📱 Transferts entre Utilisateurs SB Money
+#### 📱 Transferts entre Utilisateurs SBPAYGO
 - [x] **Recherche par numéro de téléphone**
-  - Validation utilisateur SB Money
+  - Validation utilisateur SBPAYGO
   - Nom masqué pour confidentialité (Test U.)
   - Numéro masqué (***4567)
 - [x] **Transferts P2P gratuits**
@@ -397,9 +397,9 @@
 users, wallets, cards, bank_accounts, banks, mobile_money_accounts, mobile_money_providers, transactions, currencies, languages, zones, zone_payment_methods, documents, admin_logs, exchange_rates, payment_transactions, payment_gateways, payment_links, qr_payments, rewards, rewards_history, app_settings, **mobile_money_transfers**, **airtime_topups**, **bill_payments**, **beneficiaries**, **scheduled_transfers**, **disputes**, **fee_configurations**, **transaction_limits**, **p2p_transfers**, **pending_p2p_transfers**, **virtual_cards**, **card_transactions**, **card_activity_logs**, **notifications_campaigns**, **notification_logs**, **vaults**, **vault_transactions**, **vault_activity_logs**, **support_tickets**, **admin_notifications**, **quick_logins**, **security_logs**
 
 ## Test Credentials
-- **Admin:** admin@sbmoney.com / adminpassword
-- **User:** user@sbmoney.com / userpassword (vault PIN: 123456, Quick PIN: 1234)
-- **User 2:** test@sbmoney.com / testpassword (phone: +221771234567)
+- **Admin:** admin@sbpaygo.com / adminpassword
+- **User:** user@sbpaygo.com / userpassword (vault PIN: 123456, Quick PIN: 1234)
+- **User 2:** test@sbpaygo.com / testpassword (phone: +221771234567)
 
 ## API Endpoints (120+)
 See /app/docs/API_REFERENCE.md for complete list
