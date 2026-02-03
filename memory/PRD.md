@@ -115,6 +115,10 @@
   - Génération instantanée VISA/Mastercard
   - Numéro, CVV, expiration (affichés une seule fois)
   - Choix de devise et limites personnalisables
+- [x] **🎨 Couleurs personnalisées (NEW)**
+  - 8 couleurs disponibles : Bleu, Rouge, Vert, Violet, Orange, Noir, Or, Turquoise
+  - Différenciation des cartes par usage (Shopping, Netflix, Personnel...)
+  - Nom de carte personnalisable
 - [x] **Paiements simulés (Mode DEMO)**
   - Paiements en ligne
   - Paiements sans contact (NFC)
