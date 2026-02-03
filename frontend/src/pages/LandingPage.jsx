@@ -379,14 +379,14 @@ export default function LandingPage() {
       </section>
 
       {/* Cards Section */}
-      <section id="cards" className="py-20 px-4 bg-gradient-to-b from-white to-sky-50/50">
+      <section id="cards" className="py-20 px-4 bg-gradient-to-b from-white to-orange-50/50">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="order-2 lg:order-1 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-orange-400/20 rounded-3xl blur-3xl" />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-orange-300/20 rounded-3xl blur-3xl" />
               <div className="relative space-y-4">
                 {/* Card Preview */}
-                <div className="bg-gradient-to-br from-sky-500 via-sky-600 to-orange-500 rounded-2xl p-6 shadow-2xl shadow-sky-500/30 max-w-sm mx-auto">
+                <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl p-6 shadow-2xl shadow-orange-500/30 max-w-sm mx-auto">
                   <div className="flex justify-between items-start mb-8">
                     <div className="w-12 h-9 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-md" />
                     <span className="text-white/80 text-xs">SBPAYGO Cards</span>
@@ -409,8 +409,8 @@ export default function LandingPage() {
                 
                 {/* Color options */}
                 <div className="flex justify-center gap-2">
-                  {['bg-sky-500', 'bg-red-500', 'bg-emerald-500', 'bg-purple-500', 'bg-orange-500', 'bg-slate-700', 'bg-amber-500', 'bg-teal-500'].map((color, i) => (
-                    <div key={i} className={`w-8 h-8 rounded-full ${color} ${i === 0 ? 'ring-2 ring-sky-400 ring-offset-2' : ''} shadow-md`} />
+                  {['bg-orange-500', 'bg-red-500', 'bg-emerald-500', 'bg-purple-500', 'bg-blue-500', 'bg-slate-700', 'bg-amber-500', 'bg-teal-500'].map((color, i) => (
+                    <div key={i} className={`w-8 h-8 rounded-full ${color} ${i === 0 ? 'ring-2 ring-orange-400 ring-offset-2' : ''} shadow-md`} />
                   ))}
                 </div>
               </div>
@@ -423,7 +423,7 @@ export default function LandingPage() {
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
                 Votre carte,{' '}
-                <span className="bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                   votre contrôle
                 </span>
               </h2>
@@ -436,14 +436,14 @@ export default function LandingPage() {
               <div className="space-y-3 mb-8">
                 {cardFeatures.map((feature, i) => (
                   <div key={i} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-sky-500" />
+                    <CheckCircle className="w-5 h-5 text-orange-500" />
                     <span className="text-slate-700">{feature}</span>
                   </div>
                 ))}
               </div>
 
               <Link to="/register">
-                <Button className="bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white px-6 py-5 rounded-xl">
+                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-5 rounded-xl shadow-lg shadow-orange-500/25">
                   Créer ma première carte
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
