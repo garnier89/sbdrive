@@ -376,28 +376,86 @@ export default function PartnerDashboardPage() {
           </Card>
         </div>
 
-        {/* Main Action */}
-        <Card className="bg-slate-800 border-slate-700 mb-8">
-          <CardHeader>
-            <CardTitle className="text-white flex items-center gap-2">
-              <ArrowDownLeft className="w-5 h-5 text-green-500" />
-              Effectuer un retrait client
-            </CardTitle>
-            <CardDescription className="text-slate-400">
-              Recherchez un client par numéro de téléphone ou scannez son QR code
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <Button 
-              onClick={() => setShowWithdrawalDialog(true)}
-              className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
-              data-testid="new-withdrawal-btn"
-            >
-              <Search className="w-4 h-4 mr-2" />
-              Nouveau retrait
-            </Button>
-          </CardContent>
-        </Card>
+        {/* Main Services with Tabs */}
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
+          <TabsList className="grid w-full grid-cols-2 bg-slate-800 border border-slate-700">
+            <TabsTrigger value="withdrawal" className="data-[state=active]:bg-green-600">
+              <ArrowDownLeft className="w-4 h-4 mr-2" />
+              Retrait Cash
+            </TabsTrigger>
+            <TabsTrigger value="recharge" className="data-[state=active]:bg-blue-600">
+              <Smartphone className="w-4 h-4 mr-2" />
+              Recharge Mobile Money
+            </TabsTrigger>
+          </TabsList>
+          
+          <TabsContent value="withdrawal">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <ArrowDownLeft className="w-5 h-5 text-green-500" />
+                  Effectuer un retrait client
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Recherchez un client par numéro de téléphone ou scannez son QR code
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button 
+                  onClick={() => setShowWithdrawalDialog(true)}
+                  className="w-full sm:w-auto bg-green-600 hover:bg-green-700"
+                  data-testid="new-withdrawal-btn"
+                >
+                  <Search className="w-4 h-4 mr-2" />
+                  Nouveau retrait
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          <TabsContent value="recharge">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-blue-500" />
+                  📱 Recharge Mobile Money
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Rechargez le compte Mobile Money d'un client (Orange, Wave, MTN...)
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                  {MOBILE_MONEY_PROVIDERS.map((provider) => (
+                    <button
+                      key={provider.id}
+                      onClick={() => {
+                        setRechargeProvider(provider.id);
+                        setShowRechargeDialog(true);
+                      }}
+                      className={`p-4 rounded-lg border-2 border-slate-600 hover:border-blue-500 transition-all flex flex-col items-center gap-2 ${
+                        rechargeProvider === provider.id ? 'border-blue-500 bg-blue-500/10' : ''
+                      }`}
+                    >
+                      <div className={`w-12 h-12 ${provider.color} rounded-full flex items-center justify-center`}>
+                        <Smartphone className="w-6 h-6 text-white" />
+                      </div>
+                      <span className="text-white text-sm font-medium">{provider.name}</span>
+                    </button>
+                  ))}
+                </div>
+                <Button 
+                  onClick={() => setShowRechargeDialog(true)}
+                  className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700"
+                  data-testid="new-recharge-btn"
+                >
+                  <ArrowUpCircle className="w-4 h-4 mr-2" />
+                  Nouvelle recharge
+                </Button>
+              </CardContent>
+            </Card>
+          </TabsContent>
+        </Tabs>
 
         {/* Recent Withdrawals */}
         <Card className="bg-slate-800 border-slate-700">
