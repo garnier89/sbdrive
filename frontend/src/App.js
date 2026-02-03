@@ -384,6 +384,9 @@ function App() {
             <Route path="/cash-withdrawal" element={
               <ProtectedRoute><CashWithdrawalPage /></ProtectedRoute>
             } />
+            <Route path="/find-agent" element={
+              <ProtectedRoute><AgentLocatorPage /></ProtectedRoute>
+            } />
             
             {/* Public Payment Page */}
             <Route path="/pay/:linkId" element={<PayPage />} />
