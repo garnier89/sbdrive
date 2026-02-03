@@ -96,6 +96,9 @@ from routes.mobile_money_config import setup_mobile_money_config_routes, mobile_
 # Import Rewards Admin Module
 from routes.rewards_admin import router as rewards_admin_router, get_rewards_admin_router
 
+# Import Zones Config Module
+from routes.zones_config import router as zones_config_router, get_zones_config_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
