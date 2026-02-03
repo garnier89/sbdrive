@@ -507,21 +507,21 @@ export default function LandingPage() {
       </section>
 
       {/* Partners Section */}
-      <section id="partners" className="py-20 px-4 bg-slate-900/50">
+      <section id="partners" className="py-20 px-4 bg-gradient-to-b from-sky-50/50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 mb-6">
-                <Users className="w-4 h-4 text-teal-400" />
-                <span className="text-teal-400 text-sm font-medium">SBPAYGO Partners</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 border border-sky-200 mb-6">
+                <Users className="w-4 h-4 text-sky-600" />
+                <span className="text-sky-600 text-sm font-medium">SBPAYGO Partners</span>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6">
+              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
                 Devenez agent{' '}
-                <span className="bg-gradient-to-r from-teal-400 to-emerald-400 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">
                   SBPAYGO
                 </span>
               </h2>
-              <p className="text-gray-400 mb-8">
+              <p className="text-slate-600 mb-8">
                 Rejoignez notre réseau de partenaires et offrez des services financiers 
                 à votre communauté. Gagnez des commissions sur chaque transaction.
               </p>
@@ -533,17 +533,17 @@ export default function LandingPage() {
                   { icon: Smartphone, text: "Recharger Mobile Money" },
                   { icon: Wallet, text: "Gérer votre wallet partenaire" }
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white/5 border border-white/10">
-                    <div className="w-10 h-10 rounded-lg bg-teal-500/20 flex items-center justify-center">
-                      <item.icon className="w-5 h-5 text-teal-400" />
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white border border-sky-100 shadow-sm">
+                    <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-sky-600" />
                     </div>
-                    <span className="text-gray-300">{item.text}</span>
+                    <span className="text-slate-700">{item.text}</span>
                   </div>
                 ))}
               </div>
 
               <Link to="/partner/register">
-                <Button className="bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white px-6 py-5 rounded-xl">
+                <Button className="bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white px-6 py-5 rounded-xl">
                   Devenir partenaire
                   <ArrowUpRight className="ml-2 w-5 h-5" />
                 </Button>
@@ -551,27 +551,27 @@ export default function LandingPage() {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-teal-500/20 to-emerald-500/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-slate-800/80 backdrop-blur-xl rounded-3xl p-8 border border-white/10">
+              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-orange-400/20 rounded-3xl blur-3xl" />
+              <div className="relative bg-white rounded-3xl p-8 border border-sky-100 shadow-xl shadow-sky-100/50">
                 <div className="text-center mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-teal-500 to-emerald-500 mx-auto mb-4 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-500 to-orange-500 mx-auto mb-4 flex items-center justify-center">
                     <Users className="w-10 h-10 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-white">Espace Partenaire</h3>
-                  <p className="text-gray-400 text-sm">Agent ID: AG-7X9K2M4P</p>
+                  <h3 className="text-xl font-bold text-slate-800">Espace Partenaire</h3>
+                  <p className="text-slate-500 text-sm">Agent ID: AG-7X9K2M4P</p>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex justify-between p-3 rounded-xl bg-white/5">
-                    <span className="text-gray-400">Solde wallet</span>
-                    <span className="font-bold text-white">1 250 000 CFA</span>
+                  <div className="flex justify-between p-3 rounded-xl bg-sky-50">
+                    <span className="text-slate-600">Solde wallet</span>
+                    <span className="font-bold text-slate-800">1 250 000 CFA</span>
                   </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-white/5">
-                    <span className="text-gray-400">Transactions/jour</span>
-                    <span className="font-bold text-emerald-400">47</span>
+                  <div className="flex justify-between p-3 rounded-xl bg-sky-50">
+                    <span className="text-slate-600">Transactions/jour</span>
+                    <span className="font-bold text-emerald-600">47</span>
                   </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-white/5">
-                    <span className="text-gray-400">Commissions</span>
-                    <span className="font-bold text-orange-400">25 000 CFA</span>
+                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
+                    <span className="text-slate-600">Commissions</span>
+                    <span className="font-bold text-orange-600">25 000 CFA</span>
                   </div>
                 </div>
               </div>
