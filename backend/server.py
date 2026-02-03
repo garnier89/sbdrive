@@ -3687,6 +3687,10 @@ app.include_router(staff_configured, prefix="/api")
 commission_configured = get_commission_router(db, get_admin_user)
 app.include_router(commission_configured, prefix="/api")
 
+# Setup and include Limits Engine module routes
+limits_configured = get_limits_router(db, get_admin_user)
+app.include_router(limits_configured, prefix="/api")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
