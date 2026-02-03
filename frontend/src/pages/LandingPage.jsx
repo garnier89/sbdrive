@@ -454,20 +454,20 @@ export default function LandingPage() {
       </section>
 
       {/* Mobile Money Section */}
-      <section id="mobile-money" className="py-20 px-4">
+      <section id="mobile-money" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-500/10 border border-orange-500/20 mb-6">
-              <Smartphone className="w-4 h-4 text-orange-400" />
-              <span className="text-orange-400 text-sm font-medium">Mobile Money</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
+              <Smartphone className="w-4 h-4 text-orange-600" />
+              <span className="text-orange-600 text-sm font-medium">Mobile Money</span>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
               Connecté à toute{' '}
-              <span className="bg-gradient-to-r from-orange-400 to-yellow-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-sky-500 bg-clip-text text-transparent">
                 l'Afrique
               </span>
             </h2>
-            <p className="text-gray-400 max-w-2xl mx-auto">
+            <p className="text-slate-600 max-w-2xl mx-auto">
               SBPAYGO permet l'envoi et la réception via tous les principaux 
               opérateurs Mobile Money du continent.
             </p>
@@ -475,32 +475,32 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-5 gap-4 mb-12">
             {mobileMoneyOperators.map((op, i) => (
-              <Card key={i} className="bg-white/5 border-white/10 hover:bg-white/10 transition-all">
+              <Card key={i} className="bg-white border-sky-100 hover:border-sky-200 hover:shadow-lg transition-all">
                 <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 rounded-2xl ${op.color} mx-auto mb-4 flex items-center justify-center`}>
+                  <div className={`w-16 h-16 rounded-2xl ${op.color} mx-auto mb-4 flex items-center justify-center shadow-lg`}>
                     <Smartphone className="w-8 h-8 text-white" />
                   </div>
-                  <p className="font-medium text-white">{op.name}</p>
+                  <p className="font-medium text-slate-800">{op.name}</p>
                 </CardContent>
               </Card>
             ))}
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <Repeat className="w-10 h-10 text-orange-400 mx-auto mb-4" />
-              <h3 className="font-bold text-white mb-2">Transfert inter-opérateurs</h3>
-              <p className="text-sm text-gray-400">Wave ⇄ Orange ⇄ MTN ⇄ Moov</p>
+            <div className="p-6 rounded-2xl bg-sky-50 border border-sky-100 text-center">
+              <Repeat className="w-10 h-10 text-sky-600 mx-auto mb-4" />
+              <h3 className="font-bold text-slate-800 mb-2">Transfert inter-opérateurs</h3>
+              <p className="text-sm text-slate-600">Wave ⇄ Orange ⇄ MTN ⇄ Moov</p>
             </div>
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <Phone className="w-10 h-10 text-orange-400 mx-auto mb-4" />
-              <h3 className="font-bold text-white mb-2">Crédit téléphonique</h3>
-              <p className="text-sm text-gray-400">Rechargez tous les opérateurs</p>
+            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
+              <Phone className="w-10 h-10 text-orange-600 mx-auto mb-4" />
+              <h3 className="font-bold text-slate-800 mb-2">Crédit téléphonique</h3>
+              <p className="text-sm text-slate-600">Rechargez tous les opérateurs</p>
             </div>
-            <div className="p-6 rounded-2xl bg-white/5 border border-white/10 text-center">
-              <MapPin className="w-10 h-10 text-orange-400 mx-auto mb-4" />
-              <h3 className="font-bold text-white mb-2">Recharge via partenaires</h3>
-              <p className="text-sm text-gray-400">Réseau d'agents partout</p>
+            <div className="p-6 rounded-2xl bg-sky-50 border border-sky-100 text-center">
+              <MapPin className="w-10 h-10 text-sky-600 mx-auto mb-4" />
+              <h3 className="font-bold text-slate-800 mb-2">Recharge via partenaires</h3>
+              <p className="text-sm text-slate-600">Réseau d'agents partout</p>
             </div>
           </div>
         </div>
