@@ -241,6 +241,35 @@
   - Permissions personnalisables par module
   - Logs de toutes les actions admin
 
+#### 🛡️ Super Admin Panel (NEW - Feb 2026)
+- [x] **Gestion complète des Utilisateurs**
+  - Liste avec recherche (nom, email, téléphone)
+  - Modification profil utilisateur
+  - Opérations wallet (crédit/débit)
+  - Visualisation documents KYC
+  - Historique d'activité
+  - Activation/Suspension compte
+  - Suppression utilisateur
+- [x] **Gestion complète des Partenaires/Agents**
+  - Liste avec recherche (nom, code, email)
+  - Création de nouveaux agents
+  - Ajustement des plafonds (journalier, mensuel, par transaction)
+  - Visualisation localisation
+  - Activation/Suspension compte
+  - Suppression partenaire
+- [x] **Opérations Financières Admin**
+  - Créditer wallet utilisateur ou partenaire
+  - Débiter wallet utilisateur ou partenaire
+  - Multi-devises (XOF, EUR, USD)
+  - Raison/commentaire obligatoire
+  - Logs d'audit
+- [x] **Statistiques temps réel**
+  - Compteur utilisateurs
+  - Compteur partenaires
+  - Comptes actifs
+  - Demandes en attente
+- [x] **Page**: /admin/super
+
 #### 📊 Module Analytics & KPIs (NEW)
 - [x] **Dashboard Analytics**
   - KPIs en temps réel (Volume, Revenus, Transactions)
