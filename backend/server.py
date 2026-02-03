@@ -114,6 +114,9 @@ from routes.agent_locator import setup_agent_locator_routes, agent_locator_route
 # Import Withdrawals Module
 from routes.withdrawals import setup_withdrawals_routes, withdrawals_router
 
+# Import Deposits V2 Module
+from routes.deposits_v2 import setup_deposits_v2_routes, deposits_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
