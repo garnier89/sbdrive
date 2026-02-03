@@ -660,28 +660,28 @@ export default function LandingPage() {
             <div>
               <h4 className="font-bold text-white mb-4">Produits</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><button onClick={() => scrollToSection('transfers')} className="hover:text-sky-400">Transferts</button></li>
-                <li><button onClick={() => scrollToSection('cards')} className="hover:text-sky-400">Cartes virtuelles</button></li>
-                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-sky-400">Mobile Money</button></li>
-                <li><Link to="/login" className="hover:text-sky-400">Coffre-fort</Link></li>
+                <li><button onClick={() => scrollToSection('transfers')} className="hover:text-orange-400">Transferts</button></li>
+                <li><button onClick={() => scrollToSection('cards')} className="hover:text-orange-400">Cartes virtuelles</button></li>
+                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-orange-400">Mobile Money</button></li>
+                <li><Link to="/login" className="hover:text-orange-400">Coffre-fort</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold text-white mb-4">Entreprise</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><button onClick={() => scrollToSection('partners')} className="hover:text-sky-400">Devenir partenaire</button></li>
-                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-sky-400">Contact</button></li>
-                <li><Link to="/help" className="hover:text-sky-400">Centre d'aide</Link></li>
+                <li><button onClick={() => scrollToSection('partners')} className="hover:text-orange-400">Devenir partenaire</button></li>
+                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-orange-400">Contact</button></li>
+                <li><Link to="/help" className="hover:text-orange-400">Centre d'aide</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold text-white mb-4">Légal</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-sky-400">Conditions d'utilisation</a></li>
-                <li><a href="#" className="hover:text-sky-400">Politique de confidentialité</a></li>
-                <li><a href="#" className="hover:text-sky-400">Conformité KYC/AML</a></li>
+                <li><a href="#" className="hover:text-orange-400">Conditions d'utilisation</a></li>
+                <li><a href="#" className="hover:text-orange-400">Politique de confidentialité</a></li>
+                <li><a href="#" className="hover:text-orange-400">Conformité KYC/AML</a></li>
               </ul>
             </div>
           </div>
