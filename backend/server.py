@@ -93,6 +93,9 @@ from routes.refunds import setup_refunds_routes, refunds_router
 # Import Mobile Money Config Module
 from routes.mobile_money_config import setup_mobile_money_config_routes, mobile_money_config_router
 
+# Import Rewards Admin Module
+from routes.rewards_admin import router as rewards_admin_router, get_rewards_admin_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
