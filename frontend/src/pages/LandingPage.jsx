@@ -507,17 +507,17 @@ export default function LandingPage() {
       </section>
 
       {/* Partners Section */}
-      <section id="partners" className="py-20 px-4 bg-gradient-to-b from-sky-50/50 to-white">
+      <section id="partners" className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-100 border border-sky-200 mb-6">
-                <Users className="w-4 h-4 text-sky-600" />
-                <span className="text-sky-600 text-sm font-medium">SBPAYGO Partners</span>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
+                <Users className="w-4 h-4 text-orange-600" />
+                <span className="text-orange-600 text-sm font-medium">SBPAYGO Partners</span>
               </div>
               <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
                 Devenez agent{' '}
-                <span className="bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                   SBPAYGO
                 </span>
               </h2>
@@ -533,9 +533,9 @@ export default function LandingPage() {
                   { icon: Smartphone, text: "Recharger Mobile Money" },
                   { icon: Wallet, text: "Gérer votre wallet partenaire" }
                 ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white border border-sky-100 shadow-sm">
-                    <div className="w-10 h-10 rounded-lg bg-sky-100 flex items-center justify-center">
-                      <item.icon className="w-5 h-5 text-sky-600" />
+                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white border border-orange-100 shadow-sm hover:shadow-md transition-all">
+                    <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
+                      <item.icon className="w-5 h-5 text-orange-600" />
                     </div>
                     <span className="text-slate-700">{item.text}</span>
                   </div>
@@ -543,7 +543,7 @@ export default function LandingPage() {
               </div>
 
               <Link to="/partner/register">
-                <Button className="bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white px-6 py-5 rounded-xl">
+                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-5 rounded-xl shadow-lg shadow-orange-500/25">
                   Devenir partenaire
                   <ArrowUpRight className="ml-2 w-5 h-5" />
                 </Button>
@@ -551,25 +551,25 @@ export default function LandingPage() {
             </div>
 
             <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-sky-400/20 to-orange-400/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-white rounded-3xl p-8 border border-sky-100 shadow-xl shadow-sky-100/50">
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-orange-300/20 rounded-3xl blur-3xl" />
+              <div className="relative bg-white rounded-3xl p-8 border border-orange-100 shadow-xl shadow-orange-100/50">
                 <div className="text-center mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-sky-500 to-orange-500 mx-auto mb-4 flex items-center justify-center">
+                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-orange-500/30">
                     <Users className="w-10 h-10 text-white" />
                   </div>
                   <h3 className="text-xl font-bold text-slate-800">Espace Partenaire</h3>
                   <p className="text-slate-500 text-sm">Agent ID: AG-7X9K2M4P</p>
                 </div>
                 <div className="space-y-4">
-                  <div className="flex justify-between p-3 rounded-xl bg-sky-50">
+                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
                     <span className="text-slate-600">Solde wallet</span>
                     <span className="font-bold text-slate-800">1 250 000 CFA</span>
                   </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-sky-50">
+                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
                     <span className="text-slate-600">Transactions/jour</span>
                     <span className="font-bold text-emerald-600">47</span>
                   </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
+                  <div className="flex justify-between p-3 rounded-xl bg-orange-100">
                     <span className="text-slate-600">Commissions</span>
                     <span className="font-bold text-orange-600">25 000 CFA</span>
                   </div>
