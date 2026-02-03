@@ -117,6 +117,12 @@ from routes.withdrawals import setup_withdrawals_routes, withdrawals_router
 # Import Deposits V2 Module
 from routes.deposits_v2 import setup_deposits_v2_routes, deposits_router
 
+# Import Airtime Module
+from routes.airtime import setup_airtime_routes, airtime_router
+
+# Import Transfers V2 Module
+from routes.transfers_v2 import setup_transfers_v2_routes, transfers_v2_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
