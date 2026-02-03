@@ -197,7 +197,7 @@ npx react-native generate-bootsplash assets/logo.png
 
 L'application se connecte à:
 ```
-https://moneyhub-sb.preview.emergentagent.com/api
+https://payport-9.preview.emergentagent.com/api
 ```
 
 Pour la production, modifier `src/config.js`:

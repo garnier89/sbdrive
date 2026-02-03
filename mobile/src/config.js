@@ -1,7 +1,7 @@
 // Configuration API SB Pay Mobile
 const CONFIG = {
   // URL de l'API Backend
-  API_URL: 'https://moneyhub-sb.preview.emergentagent.com/api',
+  API_URL: 'https://payport-9.preview.emergentagent.com/api',
   
   // Version de l'application
   APP_VERSION: '1.0.0',
