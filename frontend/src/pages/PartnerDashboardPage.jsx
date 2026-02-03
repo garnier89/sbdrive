@@ -181,6 +181,77 @@ export default function PartnerDashboardPage() {
     setOtpCode('');
   };
 
+  // Mobile Money Recharge functions
+  const handleInitiateRecharge = async () => {
+    if (!rechargeProvider || !rechargePhone || !rechargeAmount) {
+      toast.error('Veuillez remplir tous les champs');
+      return;
+    }
+    
+    const amount = parseFloat(rechargeAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Montant invalide');
+      return;
+    }
+    
+    setProcessingRecharge(true);
+    try {
+      const token = localStorage.getItem('sbmoney_partner_token');
+      const response = await axios.post(`${API}/partners/mobile-money/recharge/initiate`, {
+        provider: rechargeProvider,
+        phone_number: rechargePhone,
+        amount: amount,
+        currency: 'XOF'
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setRechargeData(response.data);
+      setRechargeStep('otp');
+      toast.success('Code OTP envoyé au client (mode démo)');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la recharge');
+    } finally {
+      setProcessingRecharge(false);
+    }
+  };
+
+  const handleConfirmRecharge = async () => {
+    if (!rechargeOtp || rechargeOtp.length !== 6) {
+      toast.error('Veuillez entrer un code OTP valide (6 chiffres)');
+      return;
+    }
+    
+    setProcessingRecharge(true);
+    try {
+      const token = localStorage.getItem('sbmoney_partner_token');
+      const response = await axios.post(`${API}/partners/mobile-money/recharge/confirm`, {
+        recharge_id: rechargeData.recharge_id,
+        otp_code: rechargeOtp
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success(`Recharge de ${response.data.amount} XOF confirmée!`);
+      setShowRechargeDialog(false);
+      resetRechargeState();
+      fetchDashboard(token);
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Code OTP incorrect');
+    } finally {
+      setProcessingRecharge(false);
+    }
+  };
+
+  const resetRechargeState = () => {
+    setRechargeStep('search');
+    setRechargeProvider('');
+    setRechargePhone('');
+    setRechargeAmount('');
+    setRechargeData(null);
+    setRechargeOtp('');
+  };
+
   const getStatusBadge = (status) => {
     const statusConfig = {
       completed: { color: 'bg-green-500/20 text-green-400', icon: CheckCircle2 },
