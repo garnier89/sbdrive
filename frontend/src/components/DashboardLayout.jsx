@@ -171,23 +171,23 @@ export const DashboardLayout = ({ children }) => {
   );
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-orange-50/30">
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-card border-r border-border">
+      <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-sky-100 shadow-sm">
         <SidebarContent />
       </aside>
 
       {/* Mobile Header */}
-      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur border-b border-border">
+      <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur border-b border-sky-100 shadow-sm">
         <div className="flex items-center justify-between px-4 h-16">
           <Link to="/dashboard" className="flex items-center gap-2">
             <img src={LOGO_URL} alt="SBPAYGO" className="w-8 h-8 object-contain" />
-            <span className="text-lg font-bold font-['Manrope']">SBPAYGO</span>
+            <span className="text-lg font-bold font-['Manrope'] bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">SBPAYGO</span>
           </Link>
           
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" data-testid="mobile-menu-btn">
+              <Button variant="ghost" size="icon" className="text-slate-600 hover:bg-sky-50" data-testid="mobile-menu-btn">
                 <Menu className="w-6 h-6" />
               </Button>
             </SheetTrigger>
