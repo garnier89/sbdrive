@@ -240,6 +240,7 @@ def setup_virtual_cards_routes(db, get_current_user, send_push_notification, sen
             "card": {
                 "id": card_id,
                 "card_name": card_doc["card_name"],
+                "card_color": card_color,
                 "card_number": card_number,  # Only shown at creation!
                 "cvv": cvv,  # Only shown at creation!
                 "expiry": card_doc["expiry"],
@@ -251,6 +252,15 @@ def setup_virtual_cards_routes(db, get_current_user, send_push_notification, sen
             },
             "wallet_balance": wallet.get("balance", 0),
             "warning": "Conservez ces informations en lieu sûr. Le numéro complet et le CVV ne seront plus affichés."
+        }
+    
+    @virtual_cards_router.get("/colors")
+    async def get_card_colors():
+        """Get available card colors"""
+        return {
+            "colors": [
+                {"code": code, **data} for code, data in CARD_COLORS.items()
+            ]
         }
 
     @virtual_cards_router.get("/list")
