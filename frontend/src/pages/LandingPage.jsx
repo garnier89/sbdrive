@@ -463,7 +463,7 @@ export default function LandingPage() {
             </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
               Connecté à toute{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-sky-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 l'Afrique
               </span>
             </h2>
@@ -475,7 +475,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-5 gap-4 mb-12">
             {mobileMoneyOperators.map((op, i) => (
-              <Card key={i} className="bg-white border-sky-100 hover:border-sky-200 hover:shadow-lg transition-all">
+              <Card key={i} className="bg-white border-orange-100 hover:border-orange-200 hover:shadow-lg transition-all">
                 <CardContent className="p-6 text-center">
                   <div className={`w-16 h-16 rounded-2xl ${op.color} mx-auto mb-4 flex items-center justify-center shadow-lg`}>
                     <Smartphone className="w-8 h-8 text-white" />
@@ -487,8 +487,8 @@ export default function LandingPage() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-sky-50 border border-sky-100 text-center">
-              <Repeat className="w-10 h-10 text-sky-600 mx-auto mb-4" />
+            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
+              <Repeat className="w-10 h-10 text-orange-600 mx-auto mb-4" />
               <h3 className="font-bold text-slate-800 mb-2">Transfert inter-opérateurs</h3>
               <p className="text-sm text-slate-600">Wave ⇄ Orange ⇄ MTN ⇄ Moov</p>
             </div>
@@ -497,8 +497,8 @@ export default function LandingPage() {
               <h3 className="font-bold text-slate-800 mb-2">Crédit téléphonique</h3>
               <p className="text-sm text-slate-600">Rechargez tous les opérateurs</p>
             </div>
-            <div className="p-6 rounded-2xl bg-sky-50 border border-sky-100 text-center">
-              <MapPin className="w-10 h-10 text-sky-600 mx-auto mb-4" />
+            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
+              <MapPin className="w-10 h-10 text-orange-600 mx-auto mb-4" />
               <h3 className="font-bold text-slate-800 mb-2">Recharge via partenaires</h3>
               <p className="text-sm text-slate-600">Réseau d'agents partout</p>
             </div>
