@@ -361,21 +361,25 @@ export default function VirtualCardsPage() {
 
   const CardVisual = ({ card, showFull = false }) => {
     const isVisa = card.card_brand === 'visa';
-    const gradientClass = isVisa 
-      ? 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900'
-      : 'bg-gradient-to-br from-orange-500 via-red-600 to-red-800';
+    // Use custom card color or default based on brand
+    const colorConfig = CARD_COLORS[card.card_color] || CARD_COLORS.blue;
+    const gradientClass = colorConfig.gradient;
     
     return (
       <div className={`relative w-full max-w-sm h-48 rounded-2xl p-6 text-white shadow-xl ${gradientClass}`}>
+        {/* Chip */}
         <div className="absolute top-6 left-6 w-12 h-9 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-md" />
+        {/* Contactless Icon */}
         <div className="absolute top-6 right-6">
           <Wifi className="w-6 h-6 rotate-90 opacity-80" />
         </div>
+        {/* Card Number */}
         <div className="absolute bottom-20 left-6 right-6">
           <p className="text-lg font-mono tracking-widest">
             {showFull ? card.card_number : card.card_number_masked}
           </p>
         </div>
+        {/* Card Details */}
         <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
           <div>
             <p className="text-xs opacity-70">TITULAIRE</p>
@@ -392,11 +396,18 @@ export default function VirtualCardsPage() {
             </div>
           )}
         </div>
+        {/* Brand Logo */}
         <div className="absolute bottom-4 right-4">
           <span className="text-2xl font-bold opacity-90">
             {isVisa ? 'VISA' : 'MC'}
           </span>
         </div>
+        {/* Color indicator badge */}
+        {card.card_color && (
+          <div className="absolute top-6 left-1/2 -translate-x-1/2">
+            <span className="text-xs opacity-60 uppercase tracking-wider">{colorConfig.name}</span>
+          </div>
+        )}
       </div>
     );
   };
