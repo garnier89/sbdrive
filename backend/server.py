@@ -111,6 +111,9 @@ from routes.limits_engine import router as limits_router, get_limits_router
 # Import Agent Locator Module
 from routes.agent_locator import setup_agent_locator_routes, agent_locator_router
 
+# Import Withdrawals Module
+from routes.withdrawals import setup_withdrawals_routes, withdrawals_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
