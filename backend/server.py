@@ -3701,6 +3701,10 @@ app.include_router(limits_configured, prefix="/api")
 setup_agent_locator_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
 app.include_router(agent_locator_router)
 
+# Setup and include Withdrawals module routes
+setup_withdrawals_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
+app.include_router(withdrawals_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
