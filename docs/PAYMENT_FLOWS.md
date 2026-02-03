@@ -1,4 +1,4 @@
-# SB Pay - Diagramme des Flux de Paiement
+# SB Money - Diagramme des Flux de Paiement
 
 ## Vue d'Ensemble du Circuit d'Argent
 
@@ -77,7 +77,7 @@
 ```
 ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐    ┌──────────┐
 │  Client  │───▶│ Frontend │───▶│ Backend  │───▶│  Stripe  │───▶│  Webhook │
-│          │    │ SB Pay   │    │ /deposit │    │ Checkout │    │ /webhook │
+│          │    │ SB Money   │    │ /deposit │    │ Checkout │    │ /webhook │
 └──────────┘    └──────────┘    └──────────┘    └──────────┘    └──────────┘
      │                                │               │               │
      │ 1. Clique "Dépôt"              │               │               │
@@ -107,7 +107,7 @@
 ```
 ┌──────────┐    ┌──────────┐    ┌───────────┐    ┌──────────┐    ┌──────────┐
 │  Client  │───▶│ Backend  │───▶│Flutterwave│───▶│  Orange  │───▶│  Client  │
-│          │    │  SB Pay  │    │    API    │    │  Money   │    │  Mobile  │
+│          │    │  SB Money  │    │    API    │    │  Money   │    │  Mobile  │
 └──────────┘    └──────────┘    └───────────┘    └──────────┘    └──────────┘
      │               │                │                │               │
      │ 1. Initie dépôt MM             │                │               │
@@ -219,7 +219,7 @@ Mode Manuel     : Autorisation puis capture manuelle par admin
 
 ## Frais par Canal
 
-| Canal | Frais SB Pay | Frais Passerelle | Total |
+| Canal | Frais SB Money | Frais Passerelle | Total |
 |-------|--------------|------------------|-------|
 | Wallet → Wallet | 0% | 0% | **0%** |
 | Carte → Wallet | 1.5% | 1.4% + 0.25€ | **~3%** |

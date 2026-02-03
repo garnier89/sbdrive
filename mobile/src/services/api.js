@@ -1,4 +1,4 @@
-// Service API pour SB Pay Mobile
+// Service API pour SB Money Mobile
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import CONFIG from '../config';

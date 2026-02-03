@@ -1,4 +1,4 @@
-// Navigation principale SB Pay Mobile
+// Navigation principale SB Money Mobile
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
@@ -24,7 +24,7 @@ import DepositScreen from '../screens/main/DepositScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Couleurs SB Pay
+// Couleurs SB Money
 const COLORS = {
   primary: '#f97316',
   background: '#ffffff',

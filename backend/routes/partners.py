@@ -1,4 +1,4 @@
-# Module Partenaires / Agents SB Pay
+# Module Partenaires / Agents SB Money
 # Gestion des agents de retrait cash
 
 from fastapi import APIRouter, HTTPException, Header, Depends, BackgroundTasks, UploadFile, File, Form
@@ -610,7 +610,7 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         
         # Notify partner
         status_messages = {
-            "active": "Votre compte partenaire SB Pay a été activé!",
+            "active": "Votre compte partenaire SB Money a été activé!",
             "suspended": f"Votre compte partenaire a été suspendu. Raison: {reason}",
             "rejected": f"Votre demande de partenariat a été rejetée. Raison: {reason}"
         }

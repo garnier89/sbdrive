@@ -1,7 +1,7 @@
-# SB Pay - Database Schema Documentation
+# SB Money - Database Schema Documentation
 
 ## Overview
-Complete database schema for SB Pay payment system with support for:
+Complete database schema for SB Money payment system with support for:
 - Multi-currency wallets
 - Bank accounts & cards
 - Mobile Money integration
@@ -274,7 +274,7 @@ Complete database schema for SB Pay payment system with support for:
 | max_amount | Decimal | Maximum recharge |
 | denomination_type | String | fixed, range |
 | denominations | Array | Fixed amounts available |
-| commission_rate | Decimal | SB Pay commission |
+| commission_rate | Decimal | SB Money commission |
 | active | Boolean | Is available |
 | created_at | DateTime | Creation date |
 
@@ -400,7 +400,7 @@ Complete database schema for SB Pay payment system with support for:
 | type | Enum | electricity, water, internet, tv |
 | country | String | Country code |
 | logo_url | String | Provider logo |
-| commission_rate | Decimal | SB Pay commission |
+| commission_rate | Decimal | SB Money commission |
 | active | Boolean | Is available |
 | created_at | DateTime | Creation date |
 

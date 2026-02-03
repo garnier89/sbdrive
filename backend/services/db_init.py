@@ -1,5 +1,5 @@
 """
-SB Pay - Database Initialization
+SB Money - Database Initialization
 Seeds currencies, languages, banks, zones, and payment methods
 """
 
@@ -157,11 +157,11 @@ ZONE_PAYMENT_METHODS = [
 async def init_database():
     """Initialize database with seed data"""
     client = AsyncIOMotorClient(os.environ.get('MONGO_URL', 'mongodb://localhost:27017'))
-    db = client[os.environ.get('DB_NAME', 'sbpay')]
+    db = client[os.environ.get('DB_NAME', 'sbmoney')]
     
     now = datetime.now(timezone.utc).isoformat()
     
-    print("🗄️  Initializing SB Pay Database...")
+    print("🗄️  Initializing SB Money Database...")
     
     # Currencies
     existing_currencies = await db.currencies.count_documents({})

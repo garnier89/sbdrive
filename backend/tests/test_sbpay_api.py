@@ -1,5 +1,5 @@
 """
-SB Pay API Tests - Comprehensive backend testing
+SB Money API Tests - Comprehensive backend testing
 Tests: Authentication, Admin Dashboard, Users, Transactions, Documents, Zones, Wallets, Transfers
 """
 import pytest
@@ -10,9 +10,9 @@ import uuid
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-ADMIN_EMAIL = "admin@sbpay.com"
+ADMIN_EMAIL = "admin@sbmoney.com"
 ADMIN_PASSWORD = "adminpassword"
-USER_EMAIL = "user@sbpay.com"
+USER_EMAIL = "user@sbmoney.com"
 USER_PASSWORD = "userpassword"
 
 

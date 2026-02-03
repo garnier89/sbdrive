@@ -26,7 +26,7 @@ client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
 # JWT Config
-JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'sbpay_secret_key')
+JWT_SECRET_KEY = os.environ.get('JWT_SECRET_KEY', 'sbmoney_secret_key')
 JWT_ALGORITHM = os.environ.get('JWT_ALGORITHM', 'HS256')
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get('ACCESS_TOKEN_EXPIRE_MINUTES', 1440))
 
@@ -37,7 +37,7 @@ STRIPE_API_KEY = os.environ.get('STRIPE_API_KEY', '')
 DEMO_MODE = os.environ.get('DEMO_MODE', 'true').lower() == 'true'
 
 # Create the main app
-app = FastAPI(title="SB Pay API", version="5.0.0")
+app = FastAPI(title="SB Money API", version="5.0.0")
 
 # Create a router with the /api prefix
 api_router = APIRouter(prefix="/api")
@@ -333,28 +333,28 @@ def convert_currency(amount: float, from_currency: str, to_currency: str) -> flo
 
 TRANSLATIONS = {
     "fr": {
-        "welcome": "Bienvenue sur SB Pay",
+        "welcome": "Bienvenue sur SB Money",
         "transfer_success": "Transfert de {amount} {currency} effectué avec succès vers {recipient}",
         "bank_transfer_pending": "Virement bancaire de {amount} {currency} en cours de traitement",
         "deposit_success": "Dépôt de {amount} {currency} effectué avec succès",
         "withdrawal_pending": "Demande de retrait de {amount} {currency} en cours de traitement",
         "bill_paid": "Facture {type} payée avec succès: {amount} {currency}",
-        "otp_message": "Votre code de vérification SB Pay est: {code}",
-        "login_alert": "Nouvelle connexion détectée sur votre compte SB Pay",
+        "otp_message": "Votre code de vérification SB Money est: {code}",
+        "login_alert": "Nouvelle connexion détectée sur votre compte SB Money",
         "account_credited": "Votre compte a été crédité de {amount} {currency}",
         "account_debited": "Votre compte a été débité de {amount} {currency}",
         "kyc_approved": "Votre document a été approuvé",
         "kyc_rejected": "Votre document a été rejeté: {reason}"
     },
     "en": {
-        "welcome": "Welcome to SB Pay",
+        "welcome": "Welcome to SB Money",
         "transfer_success": "Transfer of {amount} {currency} successfully sent to {recipient}",
         "bank_transfer_pending": "Bank transfer of {amount} {currency} is being processed",
         "deposit_success": "Deposit of {amount} {currency} completed successfully",
         "withdrawal_pending": "Withdrawal request of {amount} {currency} is being processed",
         "bill_paid": "Bill {type} paid successfully: {amount} {currency}",
-        "otp_message": "Your SB Pay verification code is: {code}",
-        "login_alert": "New login detected on your SB Pay account",
+        "otp_message": "Your SB Money verification code is: {code}",
+        "login_alert": "New login detected on your SB Money account",
         "account_credited": "Your account has been credited with {amount} {currency}",
         "account_debited": "Your account has been debited {amount} {currency}",
         "kyc_approved": "Your document has been approved",
@@ -1673,7 +1673,7 @@ async def create_mobile_money_deposit(request: MobileMoneyRequest, background_ta
     background_tasks.add_task(
         send_sms_notification,
         request.phone_number,
-        f"SB Pay: Paiement {provider_name} de {request.amount} {request.currency}. Ref: {reference}. [DEMO]"
+        f"SB Money: Paiement {provider_name} de {request.amount} {request.currency}. Ref: {reference}. [DEMO]"
     )
     
     return {
@@ -3113,7 +3113,7 @@ async def get_support_settings():
     if not settings:
         return {
             "whatsapp_number": "+33612345678",
-            "whatsapp_message": "Bonjour, j'ai une question concernant SB Pay.",
+            "whatsapp_message": "Bonjour, j'ai une question concernant SB Money.",
             "tawkto_property_id": None,
             "tawkto_widget_id": None,
             "enabled": True
@@ -3366,7 +3366,7 @@ async def get_transaction_receipt(transaction_id: str, current_user: dict = Depe
         textColor=colors.HexColor('#FF6B00'),
         spaceAfter=20
     )
-    story.append(Paragraph("SB Pay - Reçu de Transaction", title_style))
+    story.append(Paragraph("SB Money - Reçu de Transaction", title_style))
     story.append(Spacer(1, 20))
     
     # Transaction details
@@ -3402,8 +3402,8 @@ async def get_transaction_receipt(transaction_id: str, current_user: dict = Depe
         textColor=colors.gray,
         alignment=1
     )
-    story.append(Paragraph("Ce document est généré automatiquement par SB Pay.", footer_style))
-    story.append(Paragraph("Pour toute question, contactez support@sbpay.com", footer_style))
+    story.append(Paragraph("Ce document est généré automatiquement par SB Money.", footer_style))
+    story.append(Paragraph("Pour toute question, contactez support@sbmoney.com", footer_style))
     
     doc.build(story)
     buffer.seek(0)
@@ -3411,7 +3411,7 @@ async def get_transaction_receipt(transaction_id: str, current_user: dict = Depe
     return StreamingResponse(
         buffer,
         media_type="application/pdf",
-        headers={"Content-Disposition": f"attachment; filename=sbpay_receipt_{transaction_id[:8]}.pdf"}
+        headers={"Content-Disposition": f"attachment; filename=sbmoney_receipt_{transaction_id[:8]}.pdf"}
     )
 
 # ==================== ZONES API ====================
@@ -3430,7 +3430,7 @@ async def get_currencies():
 
 @api_router.get("/")
 async def root():
-    return {"message": "SB Pay API v3.0", "status": "healthy", "demo_mode": DEMO_MODE}
+    return {"message": "SB Money API v3.0", "status": "healthy", "demo_mode": DEMO_MODE}
 
 # Include the router
 app.include_router(api_router)

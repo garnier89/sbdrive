@@ -18,7 +18,7 @@ class TestPDFReceipts:
         
         # Login to get token
         login_response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "user@sbpay.com",
+            "email": "user@sbmoney.com",
             "password": "userpassword"
         })
         assert login_response.status_code == 200, f"Login failed: {login_response.text}"
@@ -79,7 +79,7 @@ class TestPDFReceipts:
         
         assert response.status_code == 200
         content_disposition = response.headers.get("Content-Disposition", "")
-        assert "recu_sbpay_" in content_disposition
+        assert "recu_sbmoney_" in content_disposition
         assert ".pdf" in content_disposition
 
 
@@ -94,7 +94,7 @@ class TestDashboardData:
         
         # Login to get token
         login_response = self.session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "user@sbpay.com",
+            "email": "user@sbmoney.com",
             "password": "userpassword"
         })
         assert login_response.status_code == 200
@@ -151,7 +151,7 @@ class TestThemeSupport:
         
         # Login
         response = session.post(f"{BASE_URL}/api/auth/login", json={
-            "email": "user@sbpay.com",
+            "email": "user@sbmoney.com",
             "password": "userpassword"
         })
         

@@ -70,7 +70,7 @@ export default function HistoryPage() {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `recu_sbpay_${transactionId.slice(0, 8)}.pdf`);
+      link.setAttribute('download', `recu_sbmoney_${transactionId.slice(0, 8)}.pdf`);
       document.body.appendChild(link);
       link.click();
       link.remove();

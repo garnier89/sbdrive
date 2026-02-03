@@ -184,7 +184,7 @@ export default function UserTransferPage() {
             </h1>
           </div>
           <p className="text-muted-foreground">
-            Envoyez de l'argent instantanément à d'autres utilisateurs SB Pay via leur numéro de téléphone
+            Envoyez de l'argent instantanément à d'autres utilisateurs SB Money via leur numéro de téléphone
           </p>
         </div>
 
@@ -194,7 +194,7 @@ export default function UserTransferPage() {
           <div>
             <p className="font-medium text-green-800 dark:text-green-200">Transferts gratuits</p>
             <p className="text-sm text-green-700 dark:text-green-300">
-              Les transferts entre utilisateurs SB Pay sont gratuits et instantanés.
+              Les transferts entre utilisateurs SB Money sont gratuits et instantanés.
             </p>
           </div>
         </div>
@@ -255,7 +255,7 @@ export default function UserTransferPage() {
               <CardHeader>
                 <CardTitle className="font-['Manrope']">Rechercher un destinataire</CardTitle>
                 <CardDescription>
-                  Entrez le numéro de téléphone d'un utilisateur SB Pay
+                  Entrez le numéro de téléphone d'un utilisateur SB Money
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -297,7 +297,7 @@ export default function UserTransferPage() {
                         {recipientInfo.display_name}
                       </p>
                       <p className="text-sm text-green-600 dark:text-green-400">
-                        Utilisateur SB Pay vérifié • {recipientInfo.phone_masked}
+                        Utilisateur SB Money vérifié • {recipientInfo.phone_masked}
                       </p>
                     </div>
                   </div>

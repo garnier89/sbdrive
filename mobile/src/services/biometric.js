@@ -1,4 +1,4 @@
-// Service Biométrique pour SB Pay Mobile
+// Service Biométrique pour SB Money Mobile
 import ReactNativeBiometrics from 'react-native-biometrics';
 import CONFIG from '../config';
 import storage from './storage';

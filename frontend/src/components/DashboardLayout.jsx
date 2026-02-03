@@ -91,8 +91,8 @@ export const DashboardLayout = ({ children }) => {
       {/* Logo */}
       <div className="p-6 border-b border-border">
         <Link to="/dashboard" className="flex items-center gap-3" data-testid="sidebar-logo">
-          <img src={LOGO_URL} alt="SB Pay" className="w-10 h-10 object-contain" />
-          <span className="text-xl font-bold font-['Manrope'] text-foreground">SB Pay</span>
+          <img src={LOGO_URL} alt="SB Money" className="w-10 h-10 object-contain" />
+          <span className="text-xl font-bold font-['Manrope'] text-foreground">SB Money</span>
         </Link>
       </div>
 
@@ -180,8 +180,8 @@ export const DashboardLayout = ({ children }) => {
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card/95 backdrop-blur border-b border-border">
         <div className="flex items-center justify-between px-4 h-16">
           <Link to="/dashboard" className="flex items-center gap-2">
-            <img src={LOGO_URL} alt="SB Pay" className="w-8 h-8 object-contain" />
-            <span className="text-lg font-bold font-['Manrope']">SB Pay</span>
+            <img src={LOGO_URL} alt="SB Money" className="w-8 h-8 object-contain" />
+            <span className="text-lg font-bold font-['Manrope']">SB Money</span>
           </Link>
           
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

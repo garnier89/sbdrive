@@ -1,4 +1,4 @@
-// Configuration API SB Pay Mobile
+// Configuration API SB Money Mobile
 const CONFIG = {
   // URL de l'API Backend
   API_URL: 'https://payport-9.preview.emergentagent.com/api',
@@ -11,12 +11,12 @@ const CONFIG = {
   
   // Clés de stockage
   STORAGE_KEYS: {
-    AUTH_TOKEN: 'sbpay_token',
-    USER_DATA: 'sbpay_user',
-    DEVICE_TOKEN: 'sbpay_device_token',
-    BIOMETRIC_ENABLED: 'sbpay_biometric',
-    THEME: 'sbpay_theme',
-    LANGUAGE: 'sbpay_language',
+    AUTH_TOKEN: 'sbmoney_token',
+    USER_DATA: 'sbmoney_user',
+    DEVICE_TOKEN: 'sbmoney_device_token',
+    BIOMETRIC_ENABLED: 'sbmoney_biometric',
+    THEME: 'sbmoney_theme',
+    LANGUAGE: 'sbmoney_language',
   },
   
   // Configuration biométrique

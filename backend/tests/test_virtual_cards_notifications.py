@@ -1,5 +1,5 @@
 """
-Test Suite for SB Pay Virtual Cards and Notifications Zone Modules
+Test Suite for SB Money Virtual Cards and Notifications Zone Modules
 Tests:
 - Virtual Cards: Create, List, Block/Unblock, Simulate Payment, Delete
 - Notifications Zone: Get Zones, Send Notification, History, Stats
@@ -13,8 +13,8 @@ from datetime import datetime
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials
-USER_CREDENTIALS = {"email": "user@sbpay.com", "password": "userpassword"}
-ADMIN_CREDENTIALS = {"email": "admin@sbpay.com", "password": "adminpassword"}
+USER_CREDENTIALS = {"email": "user@sbmoney.com", "password": "userpassword"}
+ADMIN_CREDENTIALS = {"email": "admin@sbmoney.com", "password": "adminpassword"}
 
 
 class TestAuth:

@@ -1,4 +1,4 @@
-// Translations for SB Pay
+// Translations for SB Money
 export const translations = {
   fr: {
     // Navigation

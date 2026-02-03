@@ -182,8 +182,8 @@ export default function PayPage() {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 to-orange-100 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center border-b">
-          <img src={LOGO_URL} alt="SB Pay" className="w-16 h-16 mx-auto mb-2" />
-          <CardTitle className="font-['Manrope']">Paiement SB Pay</CardTitle>
+          <img src={LOGO_URL} alt="SB Money" className="w-16 h-16 mx-auto mb-2" />
+          <CardTitle className="font-['Manrope']">Paiement SB Money</CardTitle>
           <CardDescription>Paiement sécurisé</CardDescription>
         </CardHeader>
         
@@ -227,7 +227,7 @@ export default function PayPage() {
               {!isAuthenticated ? (
                 <div className="text-center space-y-4">
                   <p className="text-muted-foreground">
-                    Connectez-vous pour payer avec votre wallet SB Pay
+                    Connectez-vous pour payer avec votre wallet SB Money
                   </p>
                   <Button 
                     onClick={() => navigate(`/login?redirect=/pay/${linkId}`)}
@@ -288,7 +288,7 @@ export default function PayPage() {
           {/* Security Notice */}
           <div className="flex items-center justify-center gap-2 text-xs text-muted-foreground">
             <Lock className="w-3 h-3" />
-            <span>Paiement sécurisé par SB Pay</span>
+            <span>Paiement sécurisé par SB Money</span>
           </div>
         </CardContent>
       </Card>

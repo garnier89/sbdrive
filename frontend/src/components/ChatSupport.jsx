@@ -3,7 +3,7 @@ import { MessageCircle, X } from 'lucide-react';
 
 // WhatsApp Business Number (configure this)
 const WHATSAPP_NUMBER = '+33612345678'; // Replace with actual WhatsApp Business number
-const WHATSAPP_MESSAGE = 'Bonjour, j\'ai une question concernant SB Pay.';
+const WHATSAPP_MESSAGE = 'Bonjour, j\'ai une question concernant SB Money.';
 
 // Tawk.to Widget ID (configure this in admin settings)
 const TAWKTO_PROPERTY_ID = 'YOUR_PROPERTY_ID'; // Replace with actual Tawk.to property ID

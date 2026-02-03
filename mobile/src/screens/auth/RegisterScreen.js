@@ -1,4 +1,4 @@
-// Écran d'inscription SB Pay Mobile
+// Écran d'inscription SB Money Mobile
 import React, { useState } from 'react';
 import {
   View,

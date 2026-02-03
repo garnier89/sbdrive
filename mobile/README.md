@@ -1,4 +1,4 @@
-# SB Pay Mobile - Guide de Génération APK/IPA
+# SB Money Mobile - Guide de Génération APK/IPA
 
 ## 📱 Structure du Projet
 
@@ -59,14 +59,14 @@ npx react-native init SBPayMobile --version 0.73.2
 ### 2. Configurer la signature
 Créer le fichier `android/app/my-release-key.keystore`:
 ```bash
-keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias sbpay -keyalg RSA -keysize 2048 -validity 10000
+keytool -genkeypair -v -storetype PKCS12 -keystore my-release-key.keystore -alias sbmoney -keyalg RSA -keysize 2048 -validity 10000
 ```
 
 ### 3. Configurer gradle
 Ajouter dans `android/gradle.properties`:
 ```properties
 MYAPP_RELEASE_STORE_FILE=my-release-key.keystore
-MYAPP_RELEASE_KEY_ALIAS=sbpay
+MYAPP_RELEASE_KEY_ALIAS=sbmoney
 MYAPP_RELEASE_STORE_PASSWORD=******
 MYAPP_RELEASE_KEY_PASSWORD=******
 ```
@@ -156,7 +156,7 @@ xcodebuild -exportArchive \
 ### iOS (Info.plist)
 ```xml
 <key>NSFaceIDUsageDescription</key>
-<string>SB Pay utilise Face ID pour vous connecter rapidement et en toute sécurité.</string>
+<string>SB Money utilise Face ID pour vous connecter rapidement et en toute sécurité.</string>
 ```
 
 ## 📦 Distribution

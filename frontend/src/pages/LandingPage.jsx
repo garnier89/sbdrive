@@ -110,8 +110,8 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <Link to="/" className="flex items-center gap-3" data-testid="landing-logo">
-              <img src={LOGO_URL} alt="SB Pay" className="w-10 h-10 object-contain" />
-              <span className="text-xl font-bold font-['Manrope'] text-foreground">SB Pay</span>
+              <img src={LOGO_URL} alt="SB Money" className="w-10 h-10 object-contain" />
+              <span className="text-xl font-bold font-['Manrope'] text-foreground">SB Money</span>
             </Link>
             
             <nav className="hidden md:flex items-center gap-8">
@@ -163,7 +163,7 @@ export default function LandingPage() {
               </h1>
               
               <p className="text-lg text-muted-foreground mb-8 max-w-lg">
-                SB Pay révolutionne vos paiements. Envoyez, recevez et gérez votre argent 
+                SB Money révolutionne vos paiements. Envoyez, recevez et gérez votre argent 
                 en toute simplicité, où que vous soyez dans le monde.
               </p>
               
@@ -190,7 +190,7 @@ export default function LandingPage() {
               {/* App Store Badges */}
               <div className="flex flex-wrap gap-4" id="download">
                 <a 
-                  href="https://play.google.com/store/apps/details?id=com.sbpay.app" 
+                  href="https://play.google.com/store/apps/details?id=com.sbmoney.app" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative transition-transform hover:scale-105 flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl shadow-lg"
@@ -206,7 +206,7 @@ export default function LandingPage() {
                   <span className="absolute -top-2 -right-2 bg-primary text-white text-[10px] px-2 py-1 rounded-full font-bold animate-pulse">BIENTÔT</span>
                 </a>
                 <a 
-                  href="https://apps.apple.com/app/sbpay/id000000000" 
+                  href="https://apps.apple.com/app/sbmoney/id000000000" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative transition-transform hover:scale-105 flex items-center gap-3 px-5 py-3 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-xl shadow-lg"
@@ -229,7 +229,7 @@ export default function LandingPage() {
               <div className="relative z-10">
                 <img 
                   src="https://images.pexels.com/photos/4199583/pexels-photo-4199583.jpeg"
-                  alt="Paiement mobile SB Pay"
+                  alt="Paiement mobile SB Money"
                   className="rounded-2xl shadow-2xl w-full object-cover"
                   style={{ maxHeight: '500px' }}
                 />
@@ -270,7 +270,7 @@ export default function LandingPage() {
               Tout ce dont vous avez besoin
             </h2>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              SB Pay offre une gamme complète de services financiers pour simplifier votre vie quotidienne.
+              SB Money offre une gamme complète de services financiers pour simplifier votre vie quotidienne.
             </p>
           </div>
 
@@ -305,7 +305,7 @@ export default function LandingPage() {
             <div>
               <img 
                 src="https://images.pexels.com/photos/6612710/pexels-photo-6612710.jpeg"
-                alt="Solution Business SB Pay"
+                alt="Solution Business SB Money"
                 className="rounded-2xl shadow-xl w-full object-cover"
                 style={{ maxHeight: '400px' }}
               />
@@ -316,7 +316,7 @@ export default function LandingPage() {
               </h2>
               <p className="text-lg text-muted-foreground mb-8">
                 Que vous soyez un particulier qui souhaite envoyer de l'argent à sa famille 
-                ou une entreprise qui gère des paiements internationaux, SB Pay s'adapte à vos besoins.
+                ou une entreprise qui gère des paiements internationaux, SB Money s'adapte à vos besoins.
               </p>
               
               <div className="space-y-4">
@@ -345,7 +345,7 @@ export default function LandingPage() {
               Prêt à simplifier vos finances?
             </h2>
             <p className="text-lg opacity-90 mb-8 max-w-2xl mx-auto">
-              Rejoignez des milliers d'utilisateurs qui font confiance à SB Pay pour leurs 
+              Rejoignez des milliers d'utilisateurs qui font confiance à SB Money pour leurs 
               transactions quotidiennes.
             </p>
             <Button 
@@ -368,8 +368,8 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <img src={LOGO_URL} alt="SB Pay" className="w-10 h-10 object-contain" />
-                <span className="text-xl font-bold font-['Manrope']">SB Pay</span>
+                <img src={LOGO_URL} alt="SB Money" className="w-10 h-10 object-contain" />
+                <span className="text-xl font-bold font-['Manrope']">SB Money</span>
               </div>
               <p className="text-muted-foreground text-sm">
                 La solution de paiement moderne pour tous vos besoins financiers.
@@ -437,7 +437,7 @@ export default function LandingPage() {
               <h4 className="font-semibold font-['Manrope'] mb-4">Télécharger</h4>
               <div className="flex flex-col gap-3">
                 <a 
-                  href="https://play.google.com/store/apps/details?id=com.sbpay.app" 
+                  href="https://play.google.com/store/apps/details?id=com.sbmoney.app" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-lg text-sm hover:from-gray-800 hover:to-gray-700 transition-all shadow-md"
@@ -453,7 +453,7 @@ export default function LandingPage() {
                   <span className="absolute -top-2 -right-2 bg-primary text-white text-[8px] px-1.5 py-0.5 rounded-full font-bold">BIENTÔT</span>
                 </a>
                 <a 
-                  href="https://apps.apple.com/app/sbpay/id000000000" 
+                  href="https://apps.apple.com/app/sbmoney/id000000000" 
                   target="_blank"
                   rel="noopener noreferrer"
                   className="relative flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-gray-900 to-gray-800 text-white rounded-lg text-sm hover:from-gray-800 hover:to-gray-700 transition-all shadow-md"
@@ -474,7 +474,7 @@ export default function LandingPage() {
           
           <div className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-sm text-muted-foreground">
-              © {new Date().getFullYear()} SB Pay. Tous droits réservés.
+              © {new Date().getFullYear()} SB Money. Tous droits réservés.
             </p>
             <div className="flex gap-6 text-sm text-muted-foreground">
               <a href="#" className="hover:text-foreground transition-colors">Confidentialité</a>

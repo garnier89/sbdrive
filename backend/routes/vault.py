@@ -1,4 +1,4 @@
-# Module Coffre-Fort SB Pay
+# Module Coffre-Fort SB Money
 # Routes pour la gestion du coffre-fort sécurisé
 
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks

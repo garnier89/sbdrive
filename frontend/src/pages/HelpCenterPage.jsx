@@ -244,7 +244,7 @@ export default function HelpCenterPage() {
                         <User className="w-4 h-4" />
                       )}
                       <span className="font-medium text-sm">
-                        {msg.sender_type === 'admin' ? 'Support SB Pay' : msg.sender_name || 'Vous'}
+                        {msg.sender_type === 'admin' ? 'Support SB Money' : msg.sender_name || 'Vous'}
                       </span>
                       <span className="text-xs text-muted-foreground">
                         {new Date(msg.created_at).toLocaleString('fr-FR')}

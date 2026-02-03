@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SB Pay Backend API Testing Suite
+SB Money Backend API Testing Suite
 Tests all endpoints with comprehensive coverage
 """
 
@@ -94,7 +94,7 @@ class SBPayAPITester:
         
         # Test with provided credentials
         test_data = {
-            "email": "user@sbpay.com",
+            "email": "user@sbmoney.com",
             "password": "User123!",
             "full_name": "Test User",
             "phone": "+33123456789"
@@ -116,7 +116,7 @@ class SBPayAPITester:
         print("\n🔍 Testing User Login...")
         
         login_data = {
-            "email": "user@sbpay.com",
+            "email": "user@sbmoney.com",
             "password": "User123!"
         }
         
@@ -136,7 +136,7 @@ class SBPayAPITester:
         print("\n🔍 Testing Admin Registration...")
         
         admin_data = {
-            "email": "admin@sbpay.com",
+            "email": "admin@sbmoney.com",
             "password": "Admin123!",
             "full_name": "Admin User",
             "phone": "+33987654321"
@@ -190,7 +190,7 @@ class SBPayAPITester:
         
         # First create a recipient user
         recipient_data = {
-            "email": "recipient@sbpay.com",
+            "email": "recipient@sbmoney.com",
             "password": "Recipient123!",
             "full_name": "Recipient User"
         }
@@ -204,7 +204,7 @@ class SBPayAPITester:
         
         # Try transfer (should fail due to insufficient balance)
         transfer_data = {
-            "recipient_email": "recipient@sbpay.com",
+            "recipient_email": "recipient@sbmoney.com",
             "amount": 10.0,
             "currency": "EUR",
             "description": "Test transfer"
@@ -320,7 +320,7 @@ class SBPayAPITester:
 
     def run_all_tests(self):
         """Run all tests in sequence"""
-        print("🚀 Starting SB Pay API Tests...")
+        print("🚀 Starting SB Money API Tests...")
         print(f"Testing against: {self.base_url}")
         
         # Basic health check

@@ -53,7 +53,7 @@ export default function AdminContactSettingsPage() {
     try {
       await axios.put(`${API}/admin/support/settings`, {
         whatsapp_number: settings.whatsapp_number,
-        whatsapp_message: "Bonjour, j'ai une question concernant SB Pay.",
+        whatsapp_message: "Bonjour, j'ai une question concernant SB Money.",
         support_email: settings.support_email,
         tawkto_property_id: settings.tawkto_property_id,
         tawkto_widget_id: settings.tawkto_widget_id,

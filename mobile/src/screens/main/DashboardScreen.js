@@ -1,4 +1,4 @@
-// Écran Dashboard SB Pay Mobile
+// Écran Dashboard SB Money Mobile
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -79,7 +79,7 @@ export default function DashboardScreen({ navigation }) {
       <View style={styles.header}>
         <View>
           <Text style={styles.greeting}>Bonjour, {user?.full_name?.split(' ')[0]}! 👋</Text>
-          <Text style={styles.subGreeting}>Bienvenue sur SB Pay</Text>
+          <Text style={styles.subGreeting}>Bienvenue sur SB Money</Text>
         </View>
         <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
           <View style={styles.avatar}>

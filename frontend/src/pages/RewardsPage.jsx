@@ -93,8 +93,8 @@ export default function RewardsPage() {
 
   const shareReferral = async () => {
     const shareData = {
-      title: 'Rejoignez SB Pay !',
-      text: `Utilisez mon code ${rewards?.referral_code} pour obtenir un bonus de bienvenue sur SB Pay !`,
+      title: 'Rejoignez SB Money !',
+      text: `Utilisez mon code ${rewards?.referral_code} pour obtenir un bonus de bienvenue sur SB Money !`,
       url: `${window.location.origin}/register?ref=${rewards?.referral_code}`
     };
     

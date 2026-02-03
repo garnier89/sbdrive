@@ -1,4 +1,4 @@
-# SB Pay - Plan de Déploiement
+# SB Money - Plan de Déploiement
 
 ## 🎯 Objectif
 Lancer rapidement une V1 solide sur le marché, puis itérer avec des fonctionnalités avancées.

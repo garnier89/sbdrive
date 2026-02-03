@@ -1,10 +1,10 @@
-# SB Pay - Modèle Économique
+# SB Money - Modèle Économique
 
 ## 💰 Sources de Revenus
 
 ### 1️⃣ Frais sur les Paiements
 
-| Type | Commission SB Pay | Frais Passerelle | Total Client |
+| Type | Commission SB Money | Frais Passerelle | Total Client |
 |------|-------------------|------------------|--------------|
 | Paiement carte | 1.5% | 1.4% + 0.25€ | ~3% |
 | Mobile Money dépôt | 1% | 1-2% | ~2-3% |
@@ -34,7 +34,7 @@
 
 ### 4️⃣ Conversion de Devises 💱
 
-| Paire | Marge SB Pay |
+| Paire | Marge SB Money |
 |-------|--------------|
 | EUR ↔ XOF | 0.5% |
 | USD ↔ XOF | 0.7% |
@@ -44,7 +44,7 @@
 
 ### 5️⃣ Recharge Crédit Téléphonique 📞
 
-| Montant Recharge | Commission Opérateur | Marge SB Pay |
+| Montant Recharge | Commission Opérateur | Marge SB Money |
 |------------------|---------------------|--------------|
 | < 1000 XOF | 3% | 1% |
 | 1000-5000 XOF | 4% | 1.5% |

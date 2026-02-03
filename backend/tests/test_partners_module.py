@@ -1,5 +1,5 @@
 """
-Test Partners/Agents Module for SB Pay
+Test Partners/Agents Module for SB Money
 Tests: Partner registration, login, dashboard, withdrawal flow, admin management
 """
 import pytest
@@ -11,9 +11,9 @@ import time
 BASE_URL = os.environ.get('REACT_APP_BACKEND_URL', '').rstrip('/')
 
 # Test credentials from review request
-EXISTING_PARTNER = {"email": "testagent@sbpay.com", "password": "testpassword123"}
-ADMIN_USER = {"email": "admin@sbpay.com", "password": "adminpassword"}
-TEST_USER = {"email": "user@sbpay.com", "password": "userpassword"}
+EXISTING_PARTNER = {"email": "testagent@sbmoney.com", "password": "testpassword123"}
+ADMIN_USER = {"email": "admin@sbmoney.com", "password": "adminpassword"}
+TEST_USER = {"email": "user@sbmoney.com", "password": "userpassword"}
 
 
 class TestPartnerRegistration:
@@ -25,7 +25,7 @@ class TestPartnerRegistration:
         payload = {
             "business_name": f"TEST_Boutique_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_partner_{unique_id}@sbpay.com",
+            "email": f"test_partner_{unique_id}@sbmoney.com",
             "phone": f"+221771234{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -52,7 +52,7 @@ class TestPartnerRegistration:
         payload = {
             "business_name": f"TEST_Boutique_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_dup_{unique_id}@sbpay.com",
+            "email": f"test_dup_{unique_id}@sbmoney.com",
             "phone": f"+221779999{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -82,7 +82,7 @@ class TestPartnerLogin:
         register_payload = {
             "business_name": f"TEST_Pending_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_pending_{unique_id}@sbpay.com",
+            "email": f"test_pending_{unique_id}@sbmoney.com",
             "phone": f"+221775555{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -108,7 +108,7 @@ class TestPartnerLogin:
     def test_login_invalid_credentials(self):
         """POST /api/partners/login - Invalid credentials should return 401"""
         payload = {
-            "email": "nonexistent@sbpay.com",
+            "email": "nonexistent@sbmoney.com",
             "password": "wrongpassword"
         }
         
@@ -119,7 +119,7 @@ class TestPartnerLogin:
     
     def test_login_missing_fields(self):
         """POST /api/partners/login - Missing fields should return 400"""
-        payload = {"email": "test@sbpay.com"}  # Missing password
+        payload = {"email": "test@sbmoney.com"}  # Missing password
         
         response = requests.post(f"{BASE_URL}/api/partners/login", json=payload)
         
@@ -174,7 +174,7 @@ class TestAdminPartnerManagement:
         register_payload = {
             "business_name": f"TEST_Activate_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_activate_{unique_id}@sbpay.com",
+            "email": f"test_activate_{unique_id}@sbmoney.com",
             "phone": f"+221776666{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -227,7 +227,7 @@ class TestAdminPartnerManagement:
         register_payload = {
             "business_name": f"TEST_Suspend_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_suspend_{unique_id}@sbpay.com",
+            "email": f"test_suspend_{unique_id}@sbmoney.com",
             "phone": f"+221777777{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -331,7 +331,7 @@ class TestPartnerDashboard:
         register_payload = {
             "business_name": f"TEST_Dashboard_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",
-            "email": f"test_dashboard_{unique_id}@sbpay.com",
+            "email": f"test_dashboard_{unique_id}@sbmoney.com",
             "phone": f"+221778888{unique_id[:4]}",
             "address": "123 Rue du Commerce",
             "city": "Dakar",
@@ -430,7 +430,7 @@ class TestWithdrawalFlow:
         """Setup: Create active partner and ensure test user has balance"""
         # Register partner
         unique_id = str(uuid.uuid4())[:8]
-        partner_email = f"test_withdrawal_{unique_id}@sbpay.com"
+        partner_email = f"test_withdrawal_{unique_id}@sbmoney.com"
         register_payload = {
             "business_name": f"TEST_Withdrawal_{unique_id}",
             "owner_name": f"TEST_Owner_{unique_id}",

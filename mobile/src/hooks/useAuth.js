@@ -1,4 +1,4 @@
-// Contexte d'authentification SB Pay Mobile
+// Contexte d'authentification SB Money Mobile
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { authAPI } from '../services/api';
 import storage from '../services/storage';

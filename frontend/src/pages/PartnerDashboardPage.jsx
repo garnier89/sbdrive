@@ -38,8 +38,8 @@ export default function PartnerDashboardPage() {
   const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem('sbpay_partner_token');
-    const partnerData = localStorage.getItem('sbpay_partner');
+    const token = localStorage.getItem('sbmoney_partner_token');
+    const partnerData = localStorage.getItem('sbmoney_partner');
     
     if (!token || !partnerData) {
       navigate('/partner/login');
@@ -69,8 +69,8 @@ export default function PartnerDashboardPage() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('sbpay_partner_token');
-    localStorage.removeItem('sbpay_partner');
+    localStorage.removeItem('sbmoney_partner_token');
+    localStorage.removeItem('sbmoney_partner');
     navigate('/partner/login');
   };
 
@@ -88,7 +88,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingWithdrawal(true);
     try {
-      const token = localStorage.getItem('sbpay_partner_token');
+      const token = localStorage.getItem('sbmoney_partner_token');
       const response = await axios.post(`${API}/partners/withdrawal/initiate`, {
         client_identifier: searchInput,
         amount: amount,
@@ -115,7 +115,7 @@ export default function PartnerDashboardPage() {
     
     setProcessingWithdrawal(true);
     try {
-      const token = localStorage.getItem('sbpay_partner_token');
+      const token = localStorage.getItem('sbmoney_partner_token');
       const response = await axios.post(`${API}/partners/withdrawal/confirm`, {
         withdrawal_id: withdrawalData.withdrawal_id,
         otp_code: otpCode
@@ -138,7 +138,7 @@ export default function PartnerDashboardPage() {
     if (!withdrawalData?.withdrawal_id) return;
     
     try {
-      const token = localStorage.getItem('sbpay_partner_token');
+      const token = localStorage.getItem('sbmoney_partner_token');
       await axios.post(`${API}/partners/withdrawal/cancel/${withdrawalData.withdrawal_id}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });

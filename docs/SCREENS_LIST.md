@@ -1,4 +1,4 @@
-# 🖥️ SB Pay - Liste des Écrans de l'Application
+# 🖥️ SB Money - Liste des Écrans de l'Application
 
 ## Vue d'ensemble
 
@@ -28,12 +28,12 @@
 
 ### 1. Landing Page (`/`)
 
-**Objectif:** Présenter SB Pay et convertir les visiteurs
+**Objectif:** Présenter SB Money et convertir les visiteurs
 
 **Éléments:**
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│ [Logo SB] SB Pay          [Fonctionnalités] [À propos] [Login] │
+│ [Logo SB] SB Money          [Fonctionnalités] [À propos] [Login] │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
 │  L'ARGENT SE DÉPLACE. RAPIDEMENT.                              │
@@ -63,7 +63,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │                                                                  │
-│  [Logo SB Pay]                    │    ZONE DÉCORATIVE          │
+│  [Logo SB Money]                    │    ZONE DÉCORATIVE          │
 │                                   │    Gradient Orange          │
 │  ┌─────────────────────────────┐  │    "Gérez votre argent      │
 │  │      CONNEXION              │  │     en toute simplicité"    │
@@ -94,7 +94,7 @@
 ```
 ┌──────────────────────────────────────────────────────────────────┐
 │  ZONE DÉCORATIVE              │                                  │
-│  "Rejoignez SB Pay"           │  [Logo SB Pay]                   │
+│  "Rejoignez SB Money"           │  [Logo SB Money]                   │
 │                               │                                  │
 │                               │  ┌─────────────────────────────┐ │
 │                               │  │    CRÉER UN COMPTE          │ │
@@ -432,7 +432,7 @@
 │  │ Utilisateur      │ Email           │ Rôle  │ Statut │ KYC  │ ⋮    ││
 │  ├──────────────────┼─────────────────┼───────┼────────┼──────┼──────┤│
 │  │ 👤 Jean Dupont   │ jean@email.com  │ User  │ ✓ Actif│ ✓    │ [⋮] ││
-│  │ 👑 Admin SB      │ admin@sbpay.com │ Admin │ ✓ Actif│ ✓    │ [⋮] ││
+│  │ 👑 Admin SB      │ admin@sbmoney.com │ Admin │ ✓ Actif│ ✓    │ [⋮] ││
 │  │ 👤 Marie Martin  │ marie@email.com │ User  │ ✓ Actif│ ⏳   │ [⋮] ││
 │  │ 👤 Paul Durand   │ paul@email.com  │ User  │ ❌ Inactif│ ❌  │ [⋮] ││
 │  └────────────────────────────────────────────────────────────────────┘│
@@ -569,7 +569,7 @@
 ### Sidebar Navigation
 ```
 ┌────────────────────┐
-│ [Logo] SB Pay      │
+│ [Logo] SB Money      │
 ├────────────────────┤
 │ MENU PRINCIPAL     │
 │ ○ Dashboard        │

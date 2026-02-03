@@ -160,7 +160,7 @@ export default function AdminDashboard() {
             Tableau de bord Admin
           </h1>
           <p className="text-muted-foreground mt-1">
-            Vue d'ensemble de la plateforme SB Pay
+            Vue d'ensemble de la plateforme SB Money
           </p>
         </div>
 

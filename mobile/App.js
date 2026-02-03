@@ -1,4 +1,4 @@
-// Point d'entrée SB Pay Mobile
+// Point d'entrée SB Money Mobile
 import React from 'react';
 import { StatusBar } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';

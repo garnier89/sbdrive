@@ -1,4 +1,4 @@
-# SB Pay - Interopérabilité Mobile Money Afrique
+# SB Money - Interopérabilité Mobile Money Afrique
 
 ## 🎯 Objectif
 Permettre les transferts entre différents opérateurs Mobile Money, même sur des réseaux différents.
@@ -48,7 +48,7 @@ Permettre les transferts entre différents opérateurs Mobile Money, même sur d
        ▼
 ┌──────────────┐
 │   Backend    │
-│   SB Pay     │
+│   SB Money     │
 └──────┬───────┘
        │ 2. Validation
        │    - Solde suffisant?
@@ -97,13 +97,13 @@ Permettre les transferts entre différents opérateurs Mobile Money, même sur d
 │   Webhook    │
 │ Confirmation │
 └──────┬───────┘
-       │ 7. Notification SB Pay
+       │ 7. Notification SB Money
        │    - Status: SUCCESS
        │    - Ref: TXN123456
        ▼
 ┌──────────────┐
 │   Backend    │
-│   SB Pay     │
+│   SB Money     │
 └──────┬───────┘
        │ 8. Finalisation
        │    - Met à jour transaction
@@ -263,7 +263,7 @@ Utilisateur
      ▼
 ┌──────────┐
 │ Backend  │
-│ SB Pay   │
+│ SB Money   │
 └────┬─────┘
      │ 3. Validation + débit wallet
      ▼

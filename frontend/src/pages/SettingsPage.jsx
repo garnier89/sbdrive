@@ -12,7 +12,7 @@ import { toast } from 'sonner';
 import { Settings, Globe, Shield, Smartphone, Loader2, Check, Fingerprint, Eye, EyeOff, Trash2, RefreshCw } from 'lucide-react';
 import axios from 'axios';
 
-const DEVICE_TOKEN_KEY = 'sbpay_device_token';
+const DEVICE_TOKEN_KEY = 'sbmoney_device_token';
 
 const LANGUAGES = [
   { code: 'fr', name: 'Français', native: 'Français', flag: '🇫🇷' },

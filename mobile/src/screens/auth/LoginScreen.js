@@ -1,4 +1,4 @@
-// Écran de connexion SB Pay Mobile
+// Écran de connexion SB Money Mobile
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -85,7 +85,7 @@ export default function LoginScreen({ navigation }) {
         {/* Logo */}
         <View style={styles.logoContainer}>
           <Image source={{ uri: LOGO_URL }} style={styles.logo} />
-          <Text style={styles.title}>SB Pay</Text>
+          <Text style={styles.title}>SB Money</Text>
           <Text style={styles.subtitle}>Connexion</Text>
         </View>
 

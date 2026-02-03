@@ -1,4 +1,4 @@
-// Écran PIN Rapide SB Pay Mobile
+// Écran PIN Rapide SB Money Mobile
 import React, { useState, useEffect } from 'react';
 import {
   View,
