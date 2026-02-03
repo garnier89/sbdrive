@@ -23,6 +23,18 @@ import axios from 'axios';
 const CURRENCIES = ['XOF', 'EUR', 'USD', 'GBP', 'MAD'];
 const CURRENCY_SYMBOLS = { EUR: '€', USD: '$', XOF: 'CFA', GBP: '£', MAD: 'DH' };
 
+// Card color configurations
+const CARD_COLORS = {
+  blue: { name: 'Bleu', gradient: 'bg-gradient-to-br from-blue-600 via-blue-700 to-blue-900', preview: 'bg-blue-600' },
+  red: { name: 'Rouge', gradient: 'bg-gradient-to-br from-red-500 via-red-600 to-red-800', preview: 'bg-red-600' },
+  green: { name: 'Vert', gradient: 'bg-gradient-to-br from-emerald-500 via-emerald-600 to-emerald-800', preview: 'bg-emerald-600' },
+  purple: { name: 'Violet', gradient: 'bg-gradient-to-br from-purple-500 via-purple-600 to-purple-900', preview: 'bg-purple-600' },
+  orange: { name: 'Orange', gradient: 'bg-gradient-to-br from-orange-500 via-orange-600 to-orange-800', preview: 'bg-orange-500' },
+  black: { name: 'Noir', gradient: 'bg-gradient-to-br from-gray-700 via-gray-800 to-gray-900', preview: 'bg-gray-800' },
+  gold: { name: 'Or', gradient: 'bg-gradient-to-br from-yellow-500 via-amber-500 to-amber-700', preview: 'bg-amber-500' },
+  teal: { name: 'Turquoise', gradient: 'bg-gradient-to-br from-teal-500 via-teal-600 to-teal-800', preview: 'bg-teal-600' }
+};
+
 // Visibility timeout in seconds
 const CARD_VISIBILITY_TIMEOUT = 60;
 
