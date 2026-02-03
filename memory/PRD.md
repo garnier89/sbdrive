@@ -78,6 +78,34 @@
   - Instructions étape par étape
   - Page: /cash-withdrawal
 
+#### 📍 Localisation des Agents (NEW - Feb 2026)
+- [x] **Carte interactive Leaflet**
+  - Affichage des agents sur carte OpenStreetMap
+  - Marqueurs personnalisés avec couleurs
+  - Géolocalisation de l'utilisateur
+  - Calcul des distances en temps réel
+- [x] **Filtres de recherche**
+  - Par pays (22 pays: 21 africains + France)
+  - Par service (retrait, dépôt, Mobile Money, etc.)
+  - Par rayon (5-100 km)
+  - Recherche textuelle
+- [x] **Informations agents**
+  - Nom, adresse, téléphone
+  - Services disponibles
+  - Horaires d'ouverture
+  - Notes et avis
+- [x] **Actions rapides**
+  - Appeler l'agent
+  - Itinéraire Google Maps
+  - Vue carte/liste
+- [x] **Backend API**
+  - GET /api/agents/search - Recherche par géolocalisation
+  - GET /api/agents/by-country/{code} - Par pays
+  - GET /api/agents/services - Liste des services
+  - GET /api/agents/countries - Liste des pays
+  - POST /api/agents/admin/seed - Données démo
+- [x] **Page**: /find-agent
+
 #### 📱 Boutons Téléchargement Mobile (NEW - Feb 2026)
 - [x] **Landing Page**
   - Boutons stylisés Google Play et App Store
