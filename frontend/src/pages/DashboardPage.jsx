@@ -160,7 +160,7 @@ export default function DashboardPage() {
     return (
       <DashboardLayout>
         <div className="flex items-center justify-center h-96">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sky-500"></div>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500"></div>
         </div>
       </DashboardLayout>
     );
@@ -180,7 +180,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Total Balance Card */}
-        <Card className="bg-gradient-to-br from-sky-500 via-sky-600 to-orange-500 text-white border-0 shadow-xl shadow-sky-500/25">
+        <Card className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 text-white border-0 shadow-xl shadow-orange-500/30">
           <CardContent className="p-6">
             <div className="flex items-center justify-between">
               <div>
