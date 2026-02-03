@@ -808,9 +808,51 @@ export default function VirtualCardsPage() {
                   </div>
                 </CardContent>
               </Card>
-            ))}
+            );
+            })}
           </div>
         )}
+
+        {/* Reveal Card PIN Dialog */}
+        <Dialog open={showRevealDialog} onOpenChange={setShowRevealDialog}>
+          <DialogContent className="max-w-sm">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-amber-500" />
+                Vérification de sécurité
+              </DialogTitle>
+              <DialogDescription>
+                Entrez le code PIN de votre carte pour afficher les informations sensibles
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="p-4 bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 rounded-lg">
+                <div className="flex items-center gap-2 text-amber-700 dark:text-amber-300 text-sm">
+                  <AlertTriangle className="w-4 h-4" />
+                  <span>Les informations seront visibles pendant {CARD_VISIBILITY_TIMEOUT} secondes</span>
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label>Code PIN (4 chiffres)</Label>
+                <PinInput value={revealPin} onChange={setRevealPin} />
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => { setShowRevealDialog(false); setRevealPin(''); }}>
+                Annuler
+              </Button>
+              <Button 
+                onClick={handleRevealCard}
+                disabled={processing || revealPin.length !== 4}
+                className="bg-gradient-to-r from-amber-500 to-orange-500"
+              >
+                {processing ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Eye className="w-4 h-4 mr-2" />}
+                Afficher
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
 
         {/* Card Settings Dialog */}
         <Dialog open={showSettingsDialog} onOpenChange={setShowSettingsDialog}>
