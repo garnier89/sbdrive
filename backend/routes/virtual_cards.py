@@ -284,6 +284,214 @@ def setup_virtual_cards_routes(db, get_current_user, send_push_notification, sen
         
         return {"card": card}
 
+    @virtual_cards_router.post("/reveal/{card_id}")
+    async def reveal_card_details(
+        card_id: str,
+        request: VirtualCardReveal,
+        current_user: dict = Depends(get_current_user)
+    ):
+        """Reveal sensitive card details after PIN validation"""
+        user_id = current_user["id"]
+        
+        # Validate PIN format
+        if not request.pin or len(request.pin) != 4 or not request.pin.isdigit():
+            raise HTTPException(status_code=400, detail="PIN invalide (4 chiffres requis)")
+        
+        # Find the card
+        card = await db.virtual_cards.find_one({
+            "id": card_id,
+            "user_id": user_id,
+            "status": {"$ne": "deleted"}
+        })
+        
+        if not card:
+            raise HTTPException(status_code=404, detail="Carte non trouvée")
+        
+        if card["status"] != "active":
+            raise HTTPException(status_code=400, detail="Cette carte n'est pas active")
+        
+        # Verify PIN (hash comparison)
+        pin_hash = hash_sensitive_data(request.pin)
+        stored_pin_hash = card.get("pin_hash", hash_sensitive_data("0000"))  # Default PIN is 0000
+        
+        if pin_hash != stored_pin_hash:
+            # Log failed attempt
+            await db.card_activity_logs.insert_one({
+                "id": str(uuid.uuid4()),
+                "card_id": card_id,
+                "user_id": user_id,
+                "action": "reveal_failed",
+                "details": "PIN incorrect",
+                "created_at": datetime.now(timezone.utc).isoformat()
+            })
+            raise HTTPException(status_code=401, detail="Code PIN incorrect")
+        
+        # Log successful reveal for audit
+        await db.card_activity_logs.insert_one({
+            "id": str(uuid.uuid4()),
+            "card_id": card_id,
+            "user_id": user_id,
+            "action": "reveal_success",
+            "details": "Informations sensibles révélées",
+            "ip_address": "N/A",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        # Return full card details
+        return {
+            "card_number": card.get("card_number"),
+            "cvv": card.get("cvv"),
+            "expiry": card.get("expiry"),
+            "card_name": card.get("card_name"),
+            "revealed_at": datetime.now(timezone.utc).isoformat()
+        }
+
+    @virtual_cards_router.put("/limits/{card_id}")
+    async def update_card_limits(
+        card_id: str,
+        request: VirtualCardLimitsUpdate,
+        current_user: dict = Depends(get_current_user)
+    ):
+        """Update card spending limits"""
+        user_id = current_user["id"]
+        
+        card = await db.virtual_cards.find_one({
+            "id": card_id,
+            "user_id": user_id,
+            "status": {"$ne": "deleted"}
+        })
+        
+        if not card:
+            raise HTTPException(status_code=404, detail="Carte non trouvée")
+        
+        # Update limits
+        update_data = {"updated_at": datetime.now(timezone.utc).isoformat()}
+        
+        if request.daily_limit is not None:
+            update_data["daily_limit"] = request.daily_limit
+        if request.monthly_limit is not None:
+            update_data["monthly_limit"] = request.monthly_limit
+        if request.transaction_limit is not None:
+            update_data["transaction_limit"] = request.transaction_limit
+        
+        await db.virtual_cards.update_one(
+            {"id": card_id},
+            {"$set": update_data}
+        )
+        
+        return {"message": "Limites mises à jour", "updated": update_data}
+
+    @virtual_cards_router.post("/boost/{card_id}")
+    async def boost_card_limit(
+        card_id: str,
+        request: VirtualCardBoost,
+        current_user: dict = Depends(get_current_user)
+    ):
+        """Temporarily boost card limit"""
+        user_id = current_user["id"]
+        
+        card = await db.virtual_cards.find_one({
+            "id": card_id,
+            "user_id": user_id,
+            "status": "active"
+        })
+        
+        if not card:
+            raise HTTPException(status_code=404, detail="Carte non trouvée ou inactive")
+        
+        # Calculate boost expiry
+        duration_map = {
+            "1h": timedelta(hours=1),
+            "6h": timedelta(hours=6),
+            "24h": timedelta(days=1),
+            "48h": timedelta(days=2),
+            "7d": timedelta(days=7)
+        }
+        
+        boost_duration = duration_map.get(request.duration, timedelta(days=1))
+        boost_expiry = datetime.now(timezone.utc) + boost_duration
+        
+        await db.virtual_cards.update_one(
+            {"id": card_id},
+            {
+                "$set": {
+                    "boost_amount": request.amount,
+                    "boost_expiry": boost_expiry.isoformat(),
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Log boost
+        await db.card_activity_logs.insert_one({
+            "id": str(uuid.uuid4()),
+            "card_id": card_id,
+            "user_id": user_id,
+            "action": "boost_activated",
+            "details": f"Boost de {request.amount} pour {request.duration}",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        return {
+            "message": f"Plafond augmenté de {request.amount}",
+            "boost_expiry": boost_expiry.isoformat(),
+            "new_effective_limit": card["daily_limit"] + request.amount
+        }
+
+    @virtual_cards_router.post("/update-pin/{card_id}")
+    async def update_card_pin(
+        card_id: str,
+        current_pin: str,
+        new_pin: str,
+        current_user: dict = Depends(get_current_user)
+    ):
+        """Update card PIN"""
+        user_id = current_user["id"]
+        
+        # Validate PIN formats
+        if not new_pin or len(new_pin) != 4 or not new_pin.isdigit():
+            raise HTTPException(status_code=400, detail="Le nouveau PIN doit contenir 4 chiffres")
+        
+        card = await db.virtual_cards.find_one({
+            "id": card_id,
+            "user_id": user_id,
+            "status": {"$ne": "deleted"}
+        })
+        
+        if not card:
+            raise HTTPException(status_code=404, detail="Carte non trouvée")
+        
+        # Verify current PIN
+        current_pin_hash = hash_sensitive_data(current_pin)
+        stored_pin_hash = card.get("pin_hash", hash_sensitive_data("0000"))
+        
+        if current_pin_hash != stored_pin_hash:
+            raise HTTPException(status_code=401, detail="PIN actuel incorrect")
+        
+        # Update PIN
+        new_pin_hash = hash_sensitive_data(new_pin)
+        await db.virtual_cards.update_one(
+            {"id": card_id},
+            {
+                "$set": {
+                    "pin_hash": new_pin_hash,
+                    "updated_at": datetime.now(timezone.utc).isoformat()
+                }
+            }
+        )
+        
+        # Log PIN change
+        await db.card_activity_logs.insert_one({
+            "id": str(uuid.uuid4()),
+            "card_id": card_id,
+            "user_id": user_id,
+            "action": "pin_changed",
+            "details": "PIN mis à jour",
+            "created_at": datetime.now(timezone.utc).isoformat()
+        })
+        
+        return {"message": "PIN mis à jour avec succès"}
+
     @virtual_cards_router.post("/block")
     async def block_unblock_card(
         request: VirtualCardBlock,
