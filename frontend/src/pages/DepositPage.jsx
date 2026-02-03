@@ -191,17 +191,20 @@ export default function DepositPage() {
             </TabsTrigger>
           </TabsList>
 
-          {/* Stripe/Card Tab */}
+          {/* Card Payment Tab */}
           <TabsContent value="card">
             <Card>
               <CardHeader>
                 <CardTitle className="font-['Manrope'] flex items-center gap-2">
                   <CreditCard className="w-5 h-5 text-primary" />
                   Dépôt par carte
-                  <Badge variant="secondary">Stripe</Badge>
+                  <Badge variant="secondary" className="bg-green-100 text-green-700">
+                    <Shield className="w-3 h-3 mr-1" />
+                    Sécurisé
+                  </Badge>
                 </CardTitle>
                 <CardDescription>
-                  Paiement sécurisé via Stripe
+                  Paiement par carte bancaire sécurisé
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
