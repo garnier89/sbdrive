@@ -160,14 +160,14 @@ export default function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-sky-50 via-white to-sky-50 text-slate-800">
+    <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50/50 text-slate-800">
       {/* Navigation */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-sky-100 shadow-sm">
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-orange-100 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center gap-3">
               <img src={LOGO_URL} alt="SBPAYGO" className="h-10 w-10 rounded-xl" />
-              <span className="text-xl font-bold bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">
+              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 SBPAYGO
               </span>
             </div>
@@ -184,7 +184,7 @@ export default function LandingPage() {
                   key={item.id}
                   onClick={() => scrollToSection(item.id)}
                   className={`text-sm font-medium transition-colors ${
-                    activeSection === item.id ? 'text-orange-500' : 'text-slate-600 hover:text-sky-600'
+                    activeSection === item.id ? 'text-orange-600' : 'text-slate-600 hover:text-orange-500'
                   }`}
                 >
                   {item.label}
@@ -194,12 +194,12 @@ export default function LandingPage() {
 
             <div className="flex items-center gap-3">
               <Link to="/login">
-                <Button variant="ghost" className="text-slate-700 hover:bg-sky-50">
+                <Button variant="ghost" className="text-slate-700 hover:bg-orange-50 hover:text-orange-600">
                   Connexion
                 </Button>
               </Link>
               <Link to="/register">
-                <Button className="bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white border-0">
+                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25">
                   Créer un compte
                 </Button>
               </Link>
