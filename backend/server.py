@@ -3648,7 +3648,7 @@ app.include_router(refunds_router)
 
 # Setup and include Mobile Money Config module routes
 setup_mobile_money_config_routes(db)
-api_router.include_router(mobile_money_config_router)
+app.include_router(mobile_money_config_router, prefix="/api")
 
 app.add_middleware(
     CORSMiddleware,
