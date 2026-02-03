@@ -20,6 +20,7 @@ class VirtualCardCreate(BaseModel):
     daily_limit: float = Field(default=100000, gt=0)
     transaction_limit: float = Field(default=50000, gt=0)
     card_name: Optional[str] = None  # Custom name for the card
+    card_color: str = "blue"  # Card color theme: blue, red, green, purple, orange, black, gold, teal
 
 class VirtualCardUpdate(BaseModel):
     daily_limit: Optional[float] = None
