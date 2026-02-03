@@ -1,324 +1,572 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Badge } from '@/components/ui/badge';
 import { toast } from 'sonner';
-import { API } from '@/App';
 import axios from 'axios';
-import { Phone, CheckCircle, Loader2, History, Zap } from 'lucide-react';
+import { API } from '@/App';
+import { 
+  Phone, Smartphone, Wifi, CheckCircle, Loader2, 
+  Star, History, Plus, Trash2, ChevronRight
+} from 'lucide-react';
 
-const COUNTRIES = [
-  { code: 'SN', name: 'Sénégal', flag: '🇸🇳', prefix: '+221' },
-  { code: 'CI', name: 'Côte d\'Ivoire', flag: '🇨🇮', prefix: '+225' },
-  { code: 'ML', name: 'Mali', flag: '🇲🇱', prefix: '+223' },
-  { code: 'BF', name: 'Burkina Faso', flag: '🇧🇫', prefix: '+226' },
-  { code: 'CM', name: 'Cameroun', flag: '🇨🇲', prefix: '+237' },
-];
-
-const QUICK_AMOUNTS = [500, 1000, 2000, 5000, 10000, 20000];
+const CURRENCY_SYMBOLS = { 
+  EUR: '€', USD: '$', XOF: 'CFA', XAF: 'CFA', GHS: '₵', NGN: '₦', KES: 'KSh',
+  GNF: 'GNF', CDF: 'CDF', TZS: 'TZS', UGX: 'UGX', RWF: 'RWF', ZMW: 'ZMW', MAD: 'MAD'
+};
 
 export default function AirtimePage() {
-  const [country, setCountry] = useState('SN');
-  const [operator, setOperator] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [amount, setAmount] = useState('');
-  const [operators, setOperators] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [countries, setCountries] = useState([]);
+  const [operators, setOperators] = useState([]);
+  const [dataPackages, setDataPackages] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [history, setHistory] = useState([]);
-  const [step, setStep] = useState(1); // 1: Form, 2: Success
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(null);
+  const [activeTab, setActiveTab] = useState('credit');
+  const [wallets, setWallets] = useState([]);
 
+  // Form state
+  const [form, setForm] = useState({
+    phone_number: '',
+    country: 'SN',
+    operator: '',
+    amount: '',
+    data_package_id: ''
+  });
+
+  const [currentConfig, setCurrentConfig] = useState({
+    currency: 'XOF',
+    quick_amounts: [],
+    phone_prefix: '+221'
+  });
+
+  // Fetch countries
   useEffect(() => {
-    fetchOperators();
-    fetchHistory();
+    const fetchCountries = async () => {
+      try {
+        const res = await axios.get(`${API}/airtime/countries`);
+        setCountries(res.data.countries || []);
+      } catch (error) {
+        console.error('Error fetching countries:', error);
+      }
+    };
+    fetchCountries();
+  }, []);
+
+  // Fetch operators when country changes
+  useEffect(() => {
+    const fetchOperators = async () => {
+      try {
+        const res = await axios.get(`${API}/airtime/operators/${form.country}`);
+        setOperators(res.data.operators || []);
+        setCurrentConfig({
+          currency: res.data.currency,
+          quick_amounts: res.data.quick_amounts || [],
+          phone_prefix: res.data.phone_prefix
+        });
+        if (res.data.operators?.length > 0) {
+          setForm(f => ({ ...f, operator: res.data.operators[0].code }));
+        }
+      } catch (error) {
+        console.error('Error fetching operators:', error);
+      }
+    };
+    if (form.country) {
+      fetchOperators();
+    }
+  }, [form.country]);
+
+  // Fetch data packages when operator changes
+  useEffect(() => {
+    const fetchPackages = async () => {
+      if (!form.country || !form.operator) return;
+      try {
+        const res = await axios.get(`${API}/airtime/data-packages/${form.country}/${form.operator}`);
+        setDataPackages(res.data.packages || []);
+      } catch (error) {
+        console.error('Error fetching packages:', error);
+      }
+    };
+    fetchPackages();
+  }, [form.country, form.operator]);
+
+  // Fetch user data
+  const fetchUserData = useCallback(async () => {
+    try {
+      const [walletsRes, favoritesRes, historyRes] = await Promise.all([
+        axios.get(`${API}/wallets`),
+        axios.get(`${API}/airtime/favorites`),
+        axios.get(`${API}/airtime/history?limit=10`)
+      ]);
+      setWallets(walletsRes.data || []);
+      setFavorites(favoritesRes.data.favorites || []);
+      setHistory(historyRes.data.topups || []);
+    } catch (error) {
+      console.error('Error fetching user data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
   useEffect(() => {
-    setOperator('');
-  }, [country]);
+    fetchUserData();
+  }, [fetchUserData]);
 
-  const fetchOperators = async () => {
-    try {
-      const response = await axios.get(`${API}/africa/airtime/operators`);
-      setOperators(response.data.operators_by_country || {});
-    } catch (error) {
-      toast.error('Erreur lors du chargement des opérateurs');
-    }
+  // Get wallet balance
+  const getWalletBalance = (currency) => {
+    const wallet = wallets.find(w => w.currency === currency);
+    return wallet?.balance || 0;
   };
 
-  const fetchHistory = async () => {
-    try {
-      const response = await axios.get(`${API}/africa/airtime/history`);
-      setHistory(response.data.topups || []);
-    } catch (error) {
-      console.error('Error fetching history:', error);
-    }
+  // Quick amounts
+  const QuickAmounts = ({ onSelect, selectedAmount }) => {
+    return (
+      <div className="flex flex-wrap gap-2 mt-2">
+        {currentConfig.quick_amounts.map(amount => (
+          <Button
+            key={amount}
+            type="button"
+            variant={parseFloat(selectedAmount) === amount ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => onSelect(amount.toString())}
+            className="text-xs"
+          >
+            {amount.toLocaleString()} {CURRENCY_SYMBOLS[currentConfig.currency] || currentConfig.currency}
+          </Button>
+        ))}
+      </div>
+    );
   };
 
-  const handleSubmit = async (e) => {
+  // Handle credit top-up
+  const handleCreditTopup = async (e) => {
     e.preventDefault();
-    
-    if (!operator || !phoneNumber || !amount) {
+    if (!form.phone_number || !form.operator || !form.amount) {
       toast.error('Veuillez remplir tous les champs');
       return;
     }
 
-    const numAmount = parseFloat(amount);
-    const selectedOp = (operators[country] || []).find(op => op.code === operator);
-    
-    if (selectedOp && (numAmount < selectedOp.min || numAmount > selectedOp.max)) {
-      toast.error(`Le montant doit être entre ${selectedOp.min} et ${selectedOp.max} XOF`);
+    setSubmitting(true);
+    try {
+      const res = await axios.post(`${API}/airtime/topup`, {
+        phone_number: form.phone_number,
+        country: form.country,
+        operator: form.operator,
+        amount: parseFloat(form.amount),
+        currency: currentConfig.currency
+      });
+      setSuccess({ type: 'credit', ...res.data });
+      toast.success('Recharge effectuée!');
+      fetchUserData();
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  // Handle data top-up
+  const handleDataTopup = async (e) => {
+    e.preventDefault();
+    if (!form.phone_number || !form.operator || !form.data_package_id) {
+      toast.error('Veuillez remplir tous les champs');
       return;
     }
 
-    setLoading(true);
+    setSubmitting(true);
     try {
-      await axios.post(`${API}/africa/airtime/topup`, {
-        phone_number: phoneNumber,
-        operator: operator,
-        country: country,
-        amount: numAmount,
-        currency: 'XOF',
-        payment_method: 'wallet'
+      const res = await axios.post(`${API}/airtime/data-topup`, {
+        phone_number: form.phone_number,
+        country: form.country,
+        operator: form.operator,
+        data_package_id: form.data_package_id
       });
-      
-      toast.success('Recharge effectuée avec succès!');
-      setStep(2);
-      fetchHistory();
+      setSuccess({ type: 'data', ...res.data });
+      toast.success('Forfait activé!');
+      fetchUserData();
     } catch (error) {
-      toast.error(error.response?.data?.detail || 'Erreur lors de la recharge');
+      toast.error(error.response?.data?.detail || 'Erreur');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  const resetForm = () => {
-    setOperator('');
-    setPhoneNumber('');
-    setAmount('');
-    setStep(1);
+  // Add favorite
+  const addFavorite = async () => {
+    if (!form.phone_number || !form.operator) {
+      toast.error('Entrez un numéro et sélectionnez un opérateur');
+      return;
+    }
+    try {
+      await axios.post(`${API}/airtime/favorites?phone_number=${form.phone_number}&country=${form.country}&operator=${form.operator}`);
+      toast.success('Ajouté aux favoris');
+      fetchUserData();
+    } catch (error) {
+      toast.error('Erreur');
+    }
   };
 
-  const countryOps = operators[country] || [];
-  const selectedOp = countryOps.find(op => op.code === operator);
-  const countryInfo = COUNTRIES.find(c => c.code === country);
-  const fee = amount ? Math.round(parseFloat(amount) * 0.02) : 0;
-  const total = amount ? parseFloat(amount) + fee : 0;
+  // Remove favorite
+  const removeFavorite = async (id) => {
+    try {
+      await axios.delete(`${API}/airtime/favorites/${id}`);
+      toast.success('Supprimé des favoris');
+      fetchUserData();
+    } catch (error) {
+      toast.error('Erreur');
+    }
+  };
+
+  // Use favorite
+  const useFavorite = (fav) => {
+    setForm({
+      ...form,
+      phone_number: fav.phone_number,
+      country: fav.country,
+      operator: fav.operator
+    });
+  };
+
+  // Reset
+  const resetForm = () => {
+    setSuccess(null);
+    setForm({
+      phone_number: '',
+      country: 'SN',
+      operator: operators[0]?.code || '',
+      amount: '',
+      data_package_id: ''
+    });
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="w-8 h-8 animate-spin text-orange-500" />
+        </div>
+      </DashboardLayout>
+    );
+  }
+
+  // Success screen
+  if (success) {
+    return (
+      <DashboardLayout>
+        <div className="p-6 lg:p-8 max-w-2xl mx-auto" data-testid="airtime-success">
+          <Card>
+            <CardContent className="p-8 text-center">
+              <div className="w-20 h-20 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-6">
+                <CheckCircle className="w-10 h-10 text-green-600" />
+              </div>
+              <h2 className="text-2xl font-bold mb-2">
+                {success.type === 'credit' ? 'Recharge effectuée!' : 'Forfait activé!'}
+              </h2>
+              <p className="text-muted-foreground mb-4">{success.message}</p>
+              
+              <div className="bg-muted rounded-lg p-4 mb-6 text-left space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Numéro</span>
+                  <span className="font-semibold">{success.phone_number}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Opérateur</span>
+                  <span>{success.operator}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Montant</span>
+                  <span className="font-bold text-green-600">
+                    {success.amount?.toLocaleString()} {success.currency}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">Référence</span>
+                  <span className="font-mono text-sm">{success.reference}</span>
+                </div>
+              </div>
+
+              <Button onClick={resetForm} className="w-full">
+                Nouvelle recharge
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
-      <div className="p-6 max-w-6xl mx-auto space-y-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold font-['Manrope']">Recharge Crédit</h1>
-            <p className="text-muted-foreground">Achetez du crédit téléphonique pour tous les opérateurs</p>
-          </div>
-          <div className="flex items-center gap-2 px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
-            <Zap className="w-4 h-4" />
-            Instantané
-          </div>
+      <div className="p-4 lg:p-6" data-testid="airtime-page">
+        {/* Header */}
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold">Recharge Mobile</h1>
+          <p className="text-muted-foreground">Rechargez du crédit ou des forfaits data</p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
-          {/* Recharge Form */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Main form */}
           <div className="lg:col-span-2">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Phone className="w-5 h-5 text-primary" />
-                  {step === 1 ? 'Nouvelle recharge' : 'Recharge réussie'}
+                  <Phone className="w-5 h-5 text-orange-500" />
+                  Recharge
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                {step === 2 ? (
-                  <div className="text-center py-8 space-y-4">
-                    <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto">
-                      <CheckCircle className="w-8 h-8 text-green-600" />
-                    </div>
-                    <h3 className="text-xl font-semibold">Recharge effectuée!</h3>
-                    <p className="text-muted-foreground">
-                      {parseFloat(amount).toLocaleString()} XOF ont été envoyés au {phoneNumber}
-                    </p>
-                    <p className="text-sm text-muted-foreground">
-                      Opérateur: {selectedOp?.name}
-                    </p>
-                    <Button onClick={resetForm} className="mt-4">
-                      Nouvelle recharge
-                    </Button>
-                  </div>
-                ) : (
-                  <form onSubmit={handleSubmit} className="space-y-6">
-                    {/* Country Selection */}
-                    <div className="space-y-2">
-                      <Label>Pays</Label>
-                      <Select value={country} onValueChange={setCountry}>
-                        <SelectTrigger data-testid="airtime-country-select">
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {COUNTRIES.map(c => (
-                            <SelectItem key={c.code} value={c.code}>
-                              {c.flag} {c.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                <Tabs value={activeTab} onValueChange={setActiveTab}>
+                  <TabsList className="grid w-full grid-cols-2 mb-6">
+                    <TabsTrigger value="credit" className="flex items-center gap-2" data-testid="tab-credit">
+                      <Phone className="w-4 h-4" />
+                      Crédit téléphone
+                    </TabsTrigger>
+                    <TabsTrigger value="data" className="flex items-center gap-2" data-testid="tab-data">
+                      <Wifi className="w-4 h-4" />
+                      Forfait Data
+                    </TabsTrigger>
+                  </TabsList>
 
-                    {/* Operator Selection with logos */}
-                    <div className="space-y-2">
-                      <Label>Opérateur</Label>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-                        {countryOps.map(op => (
-                          <button
-                            key={op.code}
-                            type="button"
-                            onClick={() => setOperator(op.code)}
-                            className={`p-4 rounded-lg border-2 transition-all ${
-                              operator === op.code 
-                                ? 'border-primary bg-primary/5' 
-                                : 'border-border hover:border-primary/50'
-                            }`}
-                            data-testid={`operator-${op.code}`}
-                          >
-                            <div className="text-2xl mb-1">📱</div>
-                            <div className="text-sm font-medium">{op.name}</div>
-                            <div className="text-xs text-muted-foreground">
-                              {op.min.toLocaleString()} - {op.max.toLocaleString()} XOF
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-
-                    {/* Phone Number */}
-                    <div className="space-y-2">
-                      <Label>Numéro de téléphone</Label>
-                      <div className="flex gap-2">
-                        <div className="w-24 flex items-center justify-center bg-muted rounded-md text-sm font-medium">
-                          {countryInfo?.prefix}
+                  {/* Credit Top-up */}
+                  <TabsContent value="credit">
+                    <form onSubmit={handleCreditTopup} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Pays</Label>
+                          <Select value={form.country} onValueChange={(v) => setForm({...form, country: v, operator: ''})}>
+                            <SelectTrigger data-testid="country-select">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countries.map(c => (
+                                <SelectItem key={c.code} value={c.code}>
+                                  {c.flag} {c.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
-                        <Input
-                          type="tel"
-                          placeholder="77 XXX XX XX"
-                          value={phoneNumber}
-                          onChange={(e) => setPhoneNumber(e.target.value)}
-                          className="flex-1"
-                          data-testid="airtime-phone-input"
-                        />
+                        <div>
+                          <Label>Opérateur</Label>
+                          <Select value={form.operator} onValueChange={(v) => setForm({...form, operator: v})}>
+                            <SelectTrigger data-testid="operator-select">
+                              <SelectValue placeholder="Choisir" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {operators.map(op => (
+                                <SelectItem key={op.code} value={op.code}>
+                                  {op.logo} {op.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
                       </div>
-                    </div>
 
-                    {/* Quick Amounts */}
-                    <div className="space-y-2">
-                      <Label>Montant</Label>
-                      <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-2">
-                        {QUICK_AMOUNTS.map(amt => (
-                          <Button
-                            key={amt}
-                            type="button"
-                            variant={amount === String(amt) ? 'default' : 'outline'}
-                            size="sm"
-                            onClick={() => setAmount(String(amt))}
-                            className="text-sm"
-                          >
-                            {amt.toLocaleString()}
+                      <div>
+                        <Label>Numéro de téléphone</Label>
+                        <div className="flex gap-2">
+                          <Input
+                            value={form.phone_number}
+                            onChange={(e) => setForm({...form, phone_number: e.target.value})}
+                            placeholder={`${currentConfig.phone_prefix} XX XXX XX XX`}
+                            className="flex-1"
+                            data-testid="phone-input"
+                          />
+                          <Button type="button" variant="outline" size="icon" onClick={addFavorite} title="Ajouter aux favoris">
+                            <Star className="w-4 h-4" />
                           </Button>
-                        ))}
+                        </div>
                       </div>
-                      <div className="relative">
+
+                      <div>
+                        <Label>Montant ({currentConfig.currency})</Label>
                         <Input
                           type="number"
-                          placeholder="Autre montant"
-                          value={amount}
-                          onChange={(e) => setAmount(e.target.value)}
-                          className="pr-16"
-                          data-testid="airtime-amount-input"
+                          value={form.amount}
+                          onChange={(e) => setForm({...form, amount: e.target.value})}
+                          placeholder="1000"
+                          data-testid="amount-input"
                         />
-                        <span className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground">
-                          XOF
-                        </span>
-                      </div>
-                      {selectedOp && (
-                        <p className="text-xs text-muted-foreground">
-                          Min: {selectedOp.min.toLocaleString()} XOF | Max: {selectedOp.max.toLocaleString()} XOF
+                        <QuickAmounts 
+                          selectedAmount={form.amount}
+                          onSelect={(v) => setForm({...form, amount: v})}
+                        />
+                        <p className="text-xs text-muted-foreground mt-2">
+                          Solde: {getWalletBalance(currentConfig.currency).toLocaleString()} {CURRENCY_SYMBOLS[currentConfig.currency]}
                         </p>
-                      )}
-                    </div>
+                      </div>
 
-                    {/* Summary */}
-                    {amount && parseFloat(amount) > 0 && (
-                      <div className="p-4 bg-muted/50 rounded-lg space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span>Crédit envoyé</span>
-                          <span>{parseFloat(amount).toLocaleString()} XOF</span>
-                        </div>
-                        <div className="flex justify-between text-sm">
-                          <span>Frais (2%)</span>
-                          <span className="text-orange-600">{fee.toLocaleString()} XOF</span>
-                        </div>
-                        <div className="border-t pt-2 flex justify-between font-semibold">
-                          <span>Total à payer</span>
-                          <span>{total.toLocaleString()} XOF</span>
+                      <div className="bg-green-50 rounded-lg p-3 flex items-start gap-3">
+                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <div className="text-sm">
+                          <p className="font-medium text-green-800">Recharge instantanée</p>
+                          <p className="text-green-700">Sans frais de rechargement</p>
                         </div>
                       </div>
-                    )}
 
-                    <Button 
-                      type="submit" 
-                      disabled={loading || !operator || !phoneNumber || !amount}
-                      className="w-full"
-                      data-testid="submit-airtime-btn"
-                    >
-                      {loading ? (
-                        <>
-                          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          Traitement...
-                        </>
-                      ) : (
-                        `Recharger ${total.toLocaleString()} XOF`
-                      )}
-                    </Button>
-                  </form>
-                )}
+                      <Button type="submit" className="w-full" disabled={submitting || !form.phone_number || !form.amount} data-testid="submit-credit">
+                        {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Phone className="w-4 h-4 mr-2" />}
+                        Recharger maintenant
+                      </Button>
+                    </form>
+                  </TabsContent>
+
+                  {/* Data Top-up */}
+                  <TabsContent value="data">
+                    <form onSubmit={handleDataTopup} className="space-y-4">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <Label>Pays</Label>
+                          <Select value={form.country} onValueChange={(v) => setForm({...form, country: v, operator: ''})}>
+                            <SelectTrigger>
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {countries.map(c => (
+                                <SelectItem key={c.code} value={c.code}>
+                                  {c.flag} {c.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label>Opérateur</Label>
+                          <Select value={form.operator} onValueChange={(v) => setForm({...form, operator: v})}>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Choisir" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {operators.map(op => (
+                                <SelectItem key={op.code} value={op.code}>
+                                  {op.logo} {op.name}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div>
+                        <Label>Numéro de téléphone</Label>
+                        <Input
+                          value={form.phone_number}
+                          onChange={(e) => setForm({...form, phone_number: e.target.value})}
+                          placeholder={`${currentConfig.phone_prefix} XX XXX XX XX`}
+                          data-testid="phone-input-data"
+                        />
+                      </div>
+
+                      <div>
+                        <Label>Forfait Data</Label>
+                        <div className="grid grid-cols-2 gap-2 mt-2">
+                          {dataPackages.map(pkg => (
+                            <div
+                              key={pkg.id}
+                              onClick={() => setForm({...form, data_package_id: pkg.id})}
+                              className={`p-3 rounded-lg border cursor-pointer transition-all ${
+                                form.data_package_id === pkg.id 
+                                  ? 'border-orange-500 bg-orange-50' 
+                                  : 'border-gray-200 hover:border-gray-300'
+                              }`}
+                            >
+                              <div className="flex justify-between items-start">
+                                <div>
+                                  <p className="font-semibold">{pkg.data}</p>
+                                  <p className="text-xs text-muted-foreground">{pkg.validity}</p>
+                                </div>
+                                <Badge variant={form.data_package_id === pkg.id ? 'default' : 'secondary'}>
+                                  {pkg.price?.toLocaleString()} {CURRENCY_SYMBOLS[currentConfig.currency]}
+                                </Badge>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <Button type="submit" className="w-full" disabled={submitting || !form.phone_number || !form.data_package_id} data-testid="submit-data">
+                        {submitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Wifi className="w-4 h-4 mr-2" />}
+                        Activer le forfait
+                      </Button>
+                    </form>
+                  </TabsContent>
+                </Tabs>
               </CardContent>
             </Card>
           </div>
 
-          {/* History */}
-          <div>
+          {/* Sidebar */}
+          <div className="space-y-4">
+            {/* Favorites */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <History className="w-4 h-4" />
-                  Historique
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <Star className="w-4 h-4 text-yellow-500" />
+                  Numéros favoris
                 </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3">
-                {history.length === 0 ? (
-                  <p className="text-center text-muted-foreground py-4">Aucune recharge</p>
+              <CardContent>
+                {favorites.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">Aucun favori</p>
                 ) : (
-                  history.slice(0, 8).map((topup) => (
-                    <div key={topup.id} className="p-3 bg-muted/50 rounded-lg">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-sm font-medium">{topup.operator_name}</span>
-                        <span className={`text-xs px-2 py-0.5 rounded-full ${
-                          topup.status === 'completed' 
-                            ? 'bg-green-100 text-green-700' 
-                            : topup.status === 'failed'
-                            ? 'bg-red-100 text-red-700'
-                            : 'bg-yellow-100 text-yellow-700'
-                        }`}>
-                          {topup.status === 'completed' ? '✓' : 
-                           topup.status === 'failed' ? '✗' : '...'}
-                        </span>
+                  <div className="space-y-2">
+                    {favorites.map(fav => (
+                      <div key={fav.id} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                        <div 
+                          className="flex-1 cursor-pointer"
+                          onClick={() => useFavorite(fav)}
+                        >
+                          <p className="text-sm font-medium">{fav.nickname || fav.phone_number}</p>
+                          <p className="text-xs text-muted-foreground">{fav.operator_name}</p>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={() => removeFavorite(fav.id)}>
+                          <Trash2 className="w-4 h-4 text-red-500" />
+                        </Button>
                       </div>
-                      <div className="text-xs text-muted-foreground">{topup.phone_number}</div>
-                      <div className="text-sm font-semibold">{topup.amount.toLocaleString()} XOF</div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* History */}
+            <Card>
+              <CardHeader className="pb-2">
+                <CardTitle className="text-base flex items-center gap-2">
+                  <History className="w-4 h-4" />
+                  Dernières recharges
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {history.length === 0 ? (
+                  <p className="text-sm text-muted-foreground text-center py-4">Aucune recharge</p>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto">
+                    {history.map(h => (
+                      <div key={h.id} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
+                        <div>
+                          <p className="text-sm font-medium">
+                            {h.type === 'airtime' ? <Phone className="w-3 h-3 inline mr-1" /> : <Wifi className="w-3 h-3 inline mr-1" />}
+                            {h.phone_number}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {h.operator_name} • {new Date(h.created_at).toLocaleDateString('fr-FR')}
+                          </p>
+                        </div>
+                        <Badge variant="secondary">
+                          {h.amount?.toLocaleString()} {h.currency}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </CardContent>
             </Card>
