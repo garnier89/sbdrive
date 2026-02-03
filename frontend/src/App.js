@@ -72,6 +72,8 @@ import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
 import PartnerDashboardPage from "@/pages/PartnerDashboardPage";
 import CashWithdrawalPage from "@/pages/CashWithdrawalPage";
+// Agent Locator Page
+import AgentLocatorPage from "@/pages/AgentLocatorPage";
 // Public Pages
 import MobileMoneyPage from "@/pages/MobileMoneyPage";
 
