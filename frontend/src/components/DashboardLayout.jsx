@@ -76,8 +76,8 @@ export const DashboardLayout = ({ children }) => {
         onClick={() => mobile && setMobileOpen(false)}
         className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
           ${isActive 
-            ? 'bg-gradient-to-r from-sky-500 to-sky-600 text-white shadow-md shadow-sky-500/25' 
-            : 'text-slate-600 hover:bg-sky-50 hover:text-sky-700'
+            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25' 
+            : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700'
           }`}
         data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
       >
