@@ -108,6 +108,9 @@ from routes.commission_engine import router as commission_router, get_commission
 # Import Limits Engine Module
 from routes.limits_engine import router as limits_router, get_limits_router
 
+# Import Agent Locator Module
+from routes.agent_locator import setup_agent_locator_routes, agent_locator_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
