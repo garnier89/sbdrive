@@ -644,7 +644,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="py-12 px-4 border-t border-white/10">
+      <footer className="py-12 px-4 bg-slate-800 text-white border-t border-slate-700">
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 mb-12">
             <div>
@@ -652,46 +652,46 @@ export default function LandingPage() {
                 <img src={LOGO_URL} alt="SBPAYGO" className="h-10 w-10 rounded-xl" />
                 <span className="text-xl font-bold text-white">SBPAYGO</span>
               </div>
-              <p className="text-gray-400 text-sm">
+              <p className="text-slate-400 text-sm">
                 La plateforme fintech qui connecte l'Afrique au monde.
               </p>
             </div>
             
             <div>
               <h4 className="font-bold text-white mb-4">Produits</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><button onClick={() => scrollToSection('transfers')} className="hover:text-white">Transferts</button></li>
-                <li><button onClick={() => scrollToSection('cards')} className="hover:text-white">Cartes virtuelles</button></li>
-                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-white">Mobile Money</button></li>
-                <li><Link to="/login" className="hover:text-white">Coffre-fort</Link></li>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><button onClick={() => scrollToSection('transfers')} className="hover:text-sky-400">Transferts</button></li>
+                <li><button onClick={() => scrollToSection('cards')} className="hover:text-sky-400">Cartes virtuelles</button></li>
+                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-sky-400">Mobile Money</button></li>
+                <li><Link to="/login" className="hover:text-sky-400">Coffre-fort</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold text-white mb-4">Entreprise</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><button onClick={() => scrollToSection('partners')} className="hover:text-white">Devenir partenaire</button></li>
-                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-white">Contact</button></li>
-                <li><Link to="/help" className="hover:text-white">Centre d'aide</Link></li>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><button onClick={() => scrollToSection('partners')} className="hover:text-sky-400">Devenir partenaire</button></li>
+                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-sky-400">Contact</button></li>
+                <li><Link to="/help" className="hover:text-sky-400">Centre d'aide</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-bold text-white mb-4">Légal</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white">Conditions d'utilisation</a></li>
-                <li><a href="#" className="hover:text-white">Politique de confidentialité</a></li>
-                <li><a href="#" className="hover:text-white">Conformité KYC/AML</a></li>
+              <ul className="space-y-2 text-slate-400 text-sm">
+                <li><a href="#" className="hover:text-sky-400">Conditions d'utilisation</a></li>
+                <li><a href="#" className="hover:text-sky-400">Politique de confidentialité</a></li>
+                <li><a href="#" className="hover:text-sky-400">Conformité KYC/AML</a></li>
               </ul>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-gray-400 text-sm">
+          <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4">
+            <p className="text-slate-400 text-sm">
               © 2026 SBPAYGO. Tous droits réservés.
             </p>
             <div className="flex items-center gap-4">
-              <span className="text-gray-400 text-sm">sbpaygo.com</span>
+              <span className="text-slate-400 text-sm">sbpaygo.com</span>
             </div>
           </div>
         </div>
