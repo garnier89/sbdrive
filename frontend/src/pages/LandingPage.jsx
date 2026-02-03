@@ -277,12 +277,12 @@ export default function LandingPage() {
       </section>
 
       {/* Main Features Section */}
-      <section id="features" className="py-20 px-4 bg-gradient-to-b from-sky-50/50 to-white">
+      <section id="features" className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
               Pourquoi choisir{' '}
-              <span className="bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 SBPAYGO
               </span>
               ?
@@ -294,7 +294,7 @@ export default function LandingPage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {mainFeatures.map((feature, i) => (
-              <Card key={i} className="bg-white border-sky-100 hover:border-sky-200 hover:shadow-lg hover:shadow-sky-100/50 transition-all duration-300 group">
+              <Card key={i} className="bg-white border-orange-100 hover:border-orange-200 hover:shadow-lg hover:shadow-orange-100/50 transition-all duration-300 group">
                 <CardContent className="p-6">
                   <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                     <feature.icon className="w-7 h-7 text-white" />
