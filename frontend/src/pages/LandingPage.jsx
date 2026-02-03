@@ -479,6 +479,107 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+
+      {/* Contact Form Dialog */}
+      <Dialog open={contactDialogOpen} onOpenChange={setContactDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageCircle className="w-5 h-5 text-primary" />
+              Nous contacter
+            </DialogTitle>
+            <DialogDescription>
+              Envoyez-nous un message et nous vous répondrons rapidement.
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={handleContactSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="contact-name">Nom complet *</Label>
+              <Input
+                id="contact-name"
+                placeholder="Votre nom"
+                value={contactForm.name}
+                onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
+                required
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label htmlFor="contact-email">Email</Label>
+                <Input
+                  id="contact-email"
+                  type="email"
+                  placeholder="email@exemple.com"
+                  value={contactForm.email}
+                  onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="contact-phone">Téléphone</Label>
+                <Input
+                  id="contact-phone"
+                  type="tel"
+                  placeholder="+33 6 12 34 56 78"
+                  value={contactForm.phone}
+                  onChange={(e) => setContactForm({...contactForm, phone: e.target.value})}
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="contact-subject">Sujet</Label>
+              <Select 
+                value={contactForm.subject} 
+                onValueChange={(value) => setContactForm({...contactForm, subject: value})}
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Sélectionnez un sujet" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="general">Question générale</SelectItem>
+                  <SelectItem value="account">Mon compte</SelectItem>
+                  <SelectItem value="payment">Paiements</SelectItem>
+                  <SelectItem value="technical">Problème technique</SelectItem>
+                  <SelectItem value="partnership">Partenariat</SelectItem>
+                  <SelectItem value="other">Autre</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="contact-message">Message *</Label>
+              <Textarea
+                id="contact-message"
+                placeholder="Décrivez votre demande..."
+                rows={4}
+                value={contactForm.message}
+                onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
+                required
+              />
+            </div>
+            
+            <div className="flex justify-end gap-3 pt-2">
+              <Button 
+                type="button" 
+                variant="outline"
+                onClick={() => setContactDialogOpen(false)}
+              >
+                Annuler
+              </Button>
+              <Button type="submit" disabled={submittingContact}>
+                {submittingContact ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <Mail className="w-4 h-4 mr-2" />
+                )}
+                Envoyer
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
