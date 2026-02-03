@@ -3659,6 +3659,10 @@ app.include_router(refunds_router)
 setup_mobile_money_config_routes(db)
 app.include_router(mobile_money_config_router, prefix="/api")
 
+# Setup and include Rewards Admin module routes
+rewards_admin_configured = get_rewards_admin_router(db, get_admin_user)
+app.include_router(rewards_admin_configured, prefix="/api")
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
