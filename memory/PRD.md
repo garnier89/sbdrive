@@ -546,9 +546,72 @@ See /app/docs/API_REFERENCE.md for complete list
 │   ├── DATABASE_SCHEMA.md
 │   ├── PAYMENT_FLOWS.md
 │   └── SCREENS_LIST.md
-└── memory/
-    └── PRD.md
+├── memory/
+│   └── PRD.md
+└── mobile/                         # 📱 React Native App (NEW)
+    ├── App.js
+    ├── src/
+    │   ├── config.js
+    │   ├── hooks/useAuth.js
+    │   ├── navigation/AppNavigator.js
+    │   ├── screens/
+    │   │   ├── auth/
+    │   │   │   ├── LoginScreen.js
+    │   │   │   ├── RegisterScreen.js
+    │   │   │   └── QuickPinScreen.js
+    │   │   └── main/
+    │   │       ├── DashboardScreen.js
+    │   │       ├── TransferScreen.js
+    │   │       ├── CardsScreen.js
+    │   │       ├── HistoryScreen.js
+    │   │       ├── ProfileScreen.js
+    │   │       ├── VaultScreen.js
+    │   │       └── DepositScreen.js
+    │   ├── services/
+    │   │   ├── api.js
+    │   │   ├── biometric.js
+    │   │   └── storage.js
+    │   └── styles/
+    │       └── theme.js
+    └── README.md
 ```
+
+## 📱 Application Mobile SBPAYGO (NEW - Feb 2026)
+
+### Thème "Orange 50%"
+L'application mobile utilise le même thème orange que l'application web:
+- **Primary**: `#f97316` (Orange)
+- **Background**: `#fff7ed` (Orange très léger)
+- **Accents**: Bleu pour sécurité, Vert pour succès
+
+### Écrans Implémentés
+- [x] **LoginScreen** - Connexion avec email/password, PIN rapide, biométrie
+- [x] **RegisterScreen** - Création de compte
+- [x] **QuickPinScreen** - Connexion rapide avec PIN
+- [x] **DashboardScreen** - Vue d'ensemble, soldes, actions rapides
+- [x] **TransferScreen** - Transferts P2P en 3 étapes
+- [x] **CardsScreen** - Cartes virtuelles avec couleurs personnalisables
+- [x] **HistoryScreen** - Historique avec filtres
+- [x] **ProfileScreen** - Profil et paramètres
+- [x] **VaultScreen** - Coffre-fort sécurisé
+- [x] **DepositScreen** - Dépôts multi-méthodes
+
+### Fonctionnalités Mobile
+- [x] Authentification JWT
+- [x] Connexion rapide avec PIN
+- [x] Support biométrique (Face ID/Touch ID)
+- [x] Multi-devises (EUR, USD, XOF, etc.)
+- [x] Navigation par tabs (Bottom Tab Navigator)
+- [x] Pull-to-refresh
+- [x] Thème cohérent Orange 50%
+
+### Stack Mobile
+- React Native 0.73.2
+- React Navigation 6.x
+- Axios pour API
+- AsyncStorage pour persistance
+- React Native Biometrics
+- React Native Vector Icons (Feather)
 
 ## Status: PRODUCTION READY (Demo Mode)
 All features implemented. To go fully live:
@@ -556,3 +619,4 @@ All features implemented. To go fully live:
 2. Configure WhatsApp Business number
 3. Set up Tawk.to for live chat
 4. Enable Twilio for real SMS
+5. Build and publish mobile apps to stores
