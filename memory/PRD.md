@@ -6,7 +6,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://payport-9.preview.emergentagent.com
+**Preview URL:** https://fintech-africa-8.preview.emergentagent.com
 
 ## Features Summary
 

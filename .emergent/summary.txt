@@ -1,47 +1,47 @@
 <analysis>**original_problem_statement:**
-The user's vision is to create a comprehensive fintech Super App named SB Pay for the African market. Starting from a concept similar to PayPal, the project has rapidly expanded based on detailed, rolling specifications provided by the user. These specifications cover a wide array of features, including core wallet functions, multi-platform payment integrations, advanced admin controls, a secure user vault, virtual cards, targeted notifications, a built-in help center, a quick PIN login, PDF receipts, an enhanced dashboard, a dark mode, a full KYC system, and a physical agent/partner network for cash-out services. The user has also requested mobile application builds (Android/iOS).
+The user's vision is to create a comprehensive fintech Super App named SB Money (originally SB Pay) for the African market. The project involves building a feature-rich platform that includes core wallet functions, P2P transfers, virtual cards, a secure vault, multi-platform payment integrations (Stripe, PayPal, Mobile Money), a physical agent/partner network for cash-out and mobile money top-ups, advanced admin and super-admin controls, a full KYC system, a help center, and various UI/UX enhancements like PDF receipts, dark mode, and quick PIN login. The user has also requested future mobile application builds (Android/iOS).
 
 **PRODUCT REQUIREMENTS:**
 - **Core Wallet & Payments:** Multi-currency wallets, deposits, withdrawals, transaction history, live Stripe integration.
-- **User-to-User Transfers:** Instant P2P transfers between SB Pay users via phone number/email, with recipient name verification.
-- **Virtual Cards:** User-creatable virtual cards for online and contactless payments.
-- **Secure Vault (Coffre-Fort):** A PIN-protected vault for users to securely set aside funds.
-- **Africa Module:** Mobile Money interoperability (Wave, Orange, etc.) and airtime top-ups. (Currently Mocked)
-- **Advanced Admin Controls:** Super Admin role, RBAC, CMS, card approval workflows, analytics dashboard.
-- **Targeted Notifications:** An admin tool to send notifications to users based on geographical zone or country.
-- **Help Center & Ticketing System:** An in-app contact form (configurable by admin) for users to submit support tickets, with an admin interface for management.
-- **KYC & User Management:** A full document upload system for users to increase their limits, with an admin panel for verification (approve/reject). Date of birth collection is required.
-- **Partner/Agent Network:** A module for physical agents to register, get approved by an admin, and process cash withdrawals for users via QR code or phone number.
-- **Mobile & Security:** Biometric login for mobile apps, Quick PIN login for the web.
-- **UI/UX Enhancements:** PDF receipts for transactions, an enriched dashboard with analytics charts, and a full dark mode theme.
+- **User-to-User Transfers:** A multi-step, verified process for instant P2P transfers via phone/email.
+- **Virtual Cards:** User-creatable virtual cards with advanced controls (PIN management, configurable limits, show/hide sensitive info).
+- **Secure Vault (Coffre-Fort):** A PIN-protected, multi-currency vault for users to securely set aside funds.
+- **Africa Module:** Mobile Money interoperability (Wave, Orange, MTN, Free, Moov) and airtime top-ups.
+- **Advanced Admin Controls:** Super Admin role with comprehensive management over users, agents, finances, documents, and location tracking. Role-Based Access Control (RBAC), CMS, and analytics.
+- **Partner/Agent Network:** A module for physical agents to register, get approved, and process cash withdrawals and Mobile Money recharges for users.
+- **KYC & User Management:** A full document upload system for users, with an admin panel for verification.
+- **Help Center & Ticketing System:** An in-app, admin-configurable contact form.
+- **Mobile & Security:** Quick PIN login for web, with plans for biometric login for mobile apps.
+- **UI/UX Enhancements:** PDF receipts, enriched dashboard charts, a full dark mode.
 - **Mobile App Generation:** Plan and create the structure for native Android (APK) and iOS (IPA) applications.
 
 **User's preferred language**: French
 
 **what currently exists?**
-A substantial full-stack application built with React, FastAPI, and MongoDB. The backend architecture is a mix of a large monolith () and a growing number of modular  files in . The application is feature-rich, with many features implemented and tested, including Quick PIN Login, PDF receipts, a dark mode, and a full KYC document management system. A React Native project structure has been created at . The last action was removing the Stripe brand from the UI and starting the backend for the Partner/Agent Network module.
+A substantial full-stack application (React, FastAPI, MongoDB) named SB Money. A significant number of features are fully implemented and tested, including a complete Partner/Agent module (for cash-out and mobile money recharges), a redesigned multi-step Send Money page, and enhanced Virtual Card and Vault management pages. The application's name was globally changed from SB Pay to SB Money. The backend remains a mix of a large  file and modular  files. A React Native project structure exists at .
 
 **Last working item**:
-    - Last item agent was working: Implementing the Partner/Agent Network module. The agent had just finished removing Stripe branding from the UI as requested and began the new module by creating the backend route file  and was about to integrate it into .
+    - Last item agent was working: Implementing the **Super Admin Panel** as per the user's detailed specifications. The agent created the initial frontend page, added the necessary routing and sidebar links, and began implementing the backend endpoints for admin-level wallet operations.
     - Status: IN PROGRESS
     - Agent Testing Done: N
     - Which testing method agent to use? both
     - User Testing Done: N
 
 **All Pending/In progress Issue list**:
-  - Issue 1:  (P0) Complete the Partner/Agent Network module implementation.
+  - Issue 1:  (P0) Complete the Super Admin Panel implementation.
   
   Issues Detail:
   - Issue 1: 
-     - Attempted fixes: The backend file  was created. The next step is to add the API endpoints and integrate the router into .
-     - Next debug checklist: 
-        1. **Backend**: Integrate  into . Implement all required endpoints: partner registration (with document upload), admin validation, partner dashboard data, and the cash-out transaction flow (user lookup, OTP confirmation, wallet balance transfers). Define the  and  database schemas.
-        2. **Frontend**: Create a registration page for new partners.
-        3. **Frontend**: Create a dedicated dashboard for authenticated partners/agents to perform cash withdrawals.
-        4. **Frontend**: Create an admin page for approving/managing partners and viewing their transactions.
-        5. **Frontend**: Update the user's main app to include a flow for initiating a cash-out (e.g., generating a QR code).
-        6. **Testing**: Perform end-to-end testing of the entire flow: partner signs up, admin approves, user goes to partner, partner initiates withdrawal, user confirms with OTP, funds are transferred, and agent gives cash.
-     - Why fix this issue and what will be achieved with the fix? This is a major user-requested feature that adds a physical cash-out network to the digital wallet, significantly expanding the app's utility in the target market.
+     - Attempted fixes:
+       - Created frontend page: .
+       - Added route in  and sidebar link in .
+       - Started a unified backend endpoint for wallet operations () in .
+     - Next debug checklist:
+        1. **Backend**: Finalize the  endpoint. Add new endpoints in  or a new admin route file for: fetching user/partner lists, editing user/partner details, adjusting financial limits, and viewing location data.
+        2. **Frontend**: Build out the UI of  with tabs and components for the requested features: User/Agent Management, Financial Management (withdrawals, limit adjustments), Location Tracking, and Document Management.
+        3. **Integration**: Connect the frontend panel to the new backend APIs to make it fully interactive.
+        4. **Testing**: Perform end-to-end testing of all Super Admin functionalities.
+     - Why fix this issue and what will be achieved with the fix? This is a critical user-requested feature that provides top-level administrative control over the entire platform.
      - Status:  IN PROGRESS
      - Is recurring issue? N
      - Should Test frontend/backend/both after fix? both
@@ -52,33 +52,23 @@ None.
 
 **Upcoming and Future Tasks**
 Upcoming Tasks:
-- P0: **Mobile App Development & Generation**: Flesh out the scaffolded React Native project in . Connect it to the backend API, implement the core features (login, dashboard, wallet, etc.), and prepare the process for generating APK/IPA builds.
-- P1: **Live Integrations**: Deactivate Demo Mode for remaining payment gateways by implementing live integrations for PayPal and Mobile Money (via an aggregator like Flutterwave or MFS Africa).
-- P2: **Live 2FA/Notifications**: Implement real 2FA using Twilio for SMS and enable real email/WhatsApp notifications for the alert and targeted notification systems.
+- P0: **Mobile App Development & Generation**: Flesh out the scaffolded React Native project in . Connect it to the backend API and implement core features.
+- P1: **Live Integrations**: Deactivate Demo Mode for PayPal and Mobile Money gateways by implementing live integrations.
+- P2: **Live 2FA/Notifications**: Implement real 2FA using Twilio for SMS and enable real email/WhatsApp notifications.
 
 Future Tasks:
-- P0: **Backend Refactoring**: **(CRITICAL)** This is the most significant piece of technical debt. The monolithic  file must be fully broken down into the established modular structure (, , ) to ensure the platform's long-term scalability and maintainability.
-- P1: **Dynamic Admin Config**: Expand the admin settings to dynamically configure all third-party IDs and keys, such as payment gateways, notification services, etc.
+- P0: **Backend Refactoring**: **(CRITICAL)** Fully break down the monolithic  file into the modular structure (, , ) to ensure long-term scalability.
+- P1: **Dynamic Admin Config**: Expand admin settings to dynamically configure third-party keys (payment gateways, notification services, etc.).
 
 **Completed work in this session**
-- **Quick PIN Login**: Fully implemented and tested the backend and frontend for setting up and logging in with a 4-digit PIN.
-- **UI/UX Feature Pack**:
-    - **PDF Receipts**: Implemented a backend endpoint to generate PDF receipts for transactions and added a download button to the transaction history page.
-    - **Enriched Dashboard**: Added a chart to the user dashboard to visualize spending, using the  library.
-    - **Dark Mode**: Implemented a full, persistent dark/light theme toggle across the application.
-- **KYC Document System**:
-    - Implemented a full document upload system for users on their profile page to increase limits.
-    - Created a corresponding admin page () for reviewing, approving, and rejecting submitted documents.
-    - Added a mandatory 'Date of Birth' field to the user profile.
-- **Configurable Contact Form**: Replaced the static  email link in the footer with a Nous contacter button that opens a modal with a contact form. Created an admin page () to configure contact options (WhatsApp, Email, Tawk.to).
-- **Landing Page Redesign**:
-    - Redesigned the Download on App Store / Google Play badges for a more modern look, adding a Coming Soon indicator.
-    - Fixed badge placement in the footer.
-- **React Native Scaffolding**: Created a complete directory structure and initial files for a new React Native mobile application in .
-- **UI Polish**: Removed the Stripe brand name from the user-facing deposit page, replacing it with a generic Paiement par carte sécurisé label as requested.
+- **Partner/Agent Network Module**: Fully implemented and tested. Includes agent registration, login, dashboard, cash withdrawal flow, and a new Mobile Money recharge feature. The UI was fixed to correctly display all 5 mobile money operators (including Moov Money).
+- **Global Rename SB Pay -> SB Money**: Successfully performed a global search-and-replace across the entire codebase to rebrand the application.
+- **Redesigned Send Money Page**: Overhauled the  into a modern, 4-step wizard for P2P transfers as per user specs.
+- **Enhanced Virtual Cards Page**: Implemented advanced user controls including a secure Show/Hide feature for card details, requiring PIN validation via a new backend endpoint.
+- **Enhanced Vault Page**: Improved the  UI to add multi-currency support and display more detailed security information.
 
 **Earlier issues found/mentioned but not fixed**
-   - Issue 1: A  error () is present in the browser console. This is a known issue with the preview environment's internal tooling and does not impact application functionality. It can be ignored.
+   - Issue 1: A  error () appears in the browser console. This is a known issue with the preview environment's internal tooling and does not impact application functionality. It can be ignored.
 
 **Known issue recurrence from previous fork**
   - None.
@@ -87,90 +77,83 @@ Future Tasks:
 
 
 **Key Technical Concepts**
-- **Backend**: FastAPI, MongoDB (via Pymongo), Pydantic, JWT. Now uses  for PDF generation.
-- **Frontend**: React, React Router, Tailwind CSS, Axios, Shadcn/UI. Now uses  for charts.
-- **Mobile**: React Native structure has been added.
-- **Integrations**:  for Stripe.
+- **Backend**: FastAPI, MongoDB (Pymongo), Pydantic, JWT.
+- **Frontend**: React, React Router, Tailwind CSS, Axios, Shadcn/UI, Recharts, .
+- **Authentication**: JWT for users and partners, with role-based protected routes.
 
 **key DB schema**
-- ****: Stores hashes for the quick login feature.
-- ****: Stores KYC document uploads, their status, and association with users.
-- ****: More extensively used for storing configurable settings like contact details.
-- ** (Planned)**: To store agent/partner information and KYC status.
-- ** (Planned)**: To log cash-out transactions facilitated by partners.
+- ****: Stores agent/partner information, KYC status, and wallet balances.
+- ****: Logs cash-out transactions facilitated by partners.
+- ****: Logs Mobile Money top-ups initiated by partners.
+- ****: Stores KYC document uploads for users and partners.
+- ****: Stores virtual card details, including PIN hash.
 
 **changes in tech stack**
-- **Frontend**: Added  for data visualization.
-- **Backend**: Added  for PDF generation.
-- **Mobile**: Added a full React Native project structure.
+- **Frontend**: Added  dependency.
 
 **All files of reference**
-- **Backend (New)**: , , 
-- **Frontend (New)**: , , 
-- **Mobile (New)**: The entire  directory.
-- **Core (Modified)**: , , , , , , , , 
-- **Docs (Modified)**: 
+- **New Files**: , , , , , .
+- **Heavily Modified**: , , , , , , , , .
+- **Note**: A global rename affected approximately 50 files.
 
 **Areas that need refactoring**:
-- **CRITICAL**: The  monolith. This remains the highest-priority technical debt item. Refactoring the core logic (auth, wallets, profiles) into the modular  structure is essential for maintainability.
+- **CRITICAL**: The  monolith remains the highest-priority technical debt.
 
 **key api endpoints**
-- **Receipts**: 
-- **KYC Documents**: , , , 
-- **Contact Form**: 
-- **Admin Settings**: , 
-- **Partners (Planned)**: Endpoints for partner registration, login, cash-out, and admin management.
+- **Partners**: , , , .
+- **Virtual Cards**:  (New endpoint for revealing card details with PIN).
+- **Super Admin**:  (New, in progress).
 
 **Critical Info for New Agent**
-- **Top Priority**: Your immediate task is to implement the **Partner/Agent Network** module, starting with the backend integration. Follow the user's detailed specifications.
-- **User-Driven Development**: The user dictates the roadmap with very detailed specifications in French. Always seek clarification and approval before starting a new module. **You must respond in French.**
-- **Next Major Task**: After the Partner module, the next big focus is to build out the **React Native mobile app** using the scaffolded structure in .
-- **Technical Debt**: The  monolith is a major risk. Advocate for a dedicated refactoring phase after the current feature set is stable.
+- **Top Priority**: Your immediate task is to complete the **Super Admin Panel** feature.
+- **User Language**: The user communicates exclusively in **French**. You MUST respond in French.
+- **App Name**: The application is now **SB Money**. Credentials may still use the old  domain.
+- **Technical Debt**: The  monolith is a major risk. Advocate for refactoring after the current feature is stable.
 
 **documents and test reports created in this job**
-- 
-- 
--  (overwritten multiple times)
+-  (Partner/Agent module validation)
+-  (updated with new features and the name change)
 
 **Last 10 User Messages and any pending HUMAN messages** 
-10. **User**: Requests hiding the Stripe brand name from the payment UI and provides detailed specs for the **Partner/Agent Network** module, including cash-out flows and DB schema.
-9. **User**: Provides a complete roadmap, architecture diagram, and UX wireframe for the entire SB Pay project, formalizing all previous discussions.
-8. **User**: Requests removing the  email and replacing it with a configurable Contact Us form that creates support tickets, manageable by an admin.
-7. **User**: Provides detailed requirements for the KYC flow: a message explaining the need for ID for limit increases, non-editable name, and a date of birth field. Also asks for download links for the mobile apps.
-6. **Agent**: Finishes implementing PDF receipts, dashboard charts, and dark mode, and suggests exporting transaction history as a next step.
-5. **User**: Approves agent's plan to implement enhancements.
-4. **Agent**: Proposes implementing the top 3 enhancements: PDF receipts, enriched dashboard, and dark mode.
-3. **User**: Asks the agent to choose the best enhancements to implement.
-2. **User**: Confirms the agent should improve what exists and add what's missing.
-1. **User**: Provides two massive documents detailing specs for a Secure Vault and Biometric Login for the mobile app, along with a full system architecture diagram.
+10. **User**: Provides detailed specs for the Super Admin Panel. (Agent starts implementation).
+9. **User**: Asks for the partner credentials. (Agent provides them).
+8. **User**: Asks for the Super Admin credentials. (Agent provides them).
+7. **User**: Submits a screenshot showing Moov Money is not visible in the partner recharge grid and asks for it to be added. (Agent fixes the UI by changing the grid layout from 4 to 5 columns).
+6. **User**: Asks to add Moov Money to the withdrawal list. (Agent investigates and confirms it's already configured everywhere).
+5. **User**: Points out that Moov Money was forgotten. (Agent adds it to the Partner Dashboard UI and backend list).
+4. **User**: Provides specs for a secure Show/Hide feature for virtual cards and a Mobile Money Recharge feature for partners. (Agent implements both).
+3. **User**: Provides specs for enhanced virtual card, vault, and currency management pages. (Agent implements them).
+2. **User**: Provides detailed specs for a new 4-step Send Money interface. (Agent implements it).
+1. **User**: Requests to change the app name from SB Pay to SB Money. (Agent completes the global rename).
 
 **Project Health Check:**
 - **Broken**: None.
-- **Mocked**: PayPal integration, all Mobile Money provider integrations, and all notification delivery systems (Twilio SMS, Email, WhatsApp) are currently mocked in the backend and return dummy success responses.
+- **Mocked**: PayPal integration, all Mobile Money provider integrations (backend logic is mocked), and all notification delivery systems (Twilio SMS, Email, WhatsApp).
 
 **3rd Party Integrations**
 - **Stripe (Payments)** — Implemented (Live with test keys).
-- **Tawk.to (Live Chat)** — Implemented (frontend script, now configurable by admin).
-- **WhatsApp (Messaging)** — UI button implemented, no backend integration (now configurable by admin).
+- **Tawk.to (Live Chat)** — Implemented (Configurable by admin).
 - **recharts** - Frontend library for charts.
 - **reportlab** - Backend library for PDF generation.
-- **PayPal (Payments)** — Planned and mocked.
-- **Mobile Money Aggregator (e.g., Flutterwave)** — Planned and mocked.
-- **Twilio (SMS for 2FA/Notifications)** — Planned and mocked.
+- **qrcode.react** - Frontend library for QR codes.
+- **Planned/Mocked**: PayPal, Mobile Money Aggregator, Twilio.
 
 **Testing status**
-  - Testing agent used after significant changes: YES. The testing agent was used to validate the Quick PIN login () and the UI Enhancements pack ().
+  - Testing agent used after significant changes: YES. The testing agent successfully validated the entire Partner/Agent module ().
   - Troubleshoot agent used after agent stuck in loop: NO
   - Test files created: []
   - Known regressions: None.
 
 **Credentials to test flow:**
-- **Admin**:
+- **Super Admin**:
   - Email: 
   - Password: 
-- **User**:
+- **Standard User**:
+  - Email: 
+  - Password: 
+- **Partner/Agent**:
   - Email: 
   - Password: 
 
 **What agent forgot to execute**
-The agent has been highly effective and has not forgotten or overlooked any user requests. The work is proceeding sequentially based on user approval. The critical backend refactoring of  has been correctly deferred in favor of implementing new user-requested features.</analysis>
+The agent has successfully kept pace with all user requests. The critical backend refactoring of  remains a known, deferred task, which is appropriate given the user's focus on shipping new features.</analysis>

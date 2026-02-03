@@ -197,7 +197,7 @@ npx react-native generate-bootsplash assets/logo.png
 
 L'application se connecte à:
 ```
-https://payport-9.preview.emergentagent.com/api
+https://fintech-africa-8.preview.emergentagent.com/api
 ```
 
 Pour la production, modifier `src/config.js`:
