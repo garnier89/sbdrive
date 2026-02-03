@@ -85,7 +85,8 @@ export default function VirtualCardsPage() {
     daily_limit: 100000,
     monthly_limit: 500000,
     transaction_limit: 50000,
-    card_name: ''
+    card_name: '',
+    card_color: 'blue'
   });
   
   // Created card details
