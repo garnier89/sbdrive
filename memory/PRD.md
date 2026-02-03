@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Rewards Admin + Zones Config System)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://sbpaygo-africa.preview.emergentagent.com
+**Preview URL:** https://african-wallet.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO
