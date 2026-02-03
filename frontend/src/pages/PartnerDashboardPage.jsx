@@ -7,10 +7,13 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
   Store, Wallet, Users, TrendingUp, ArrowDownLeft, 
   Search, CheckCircle2, XCircle, Clock, LogOut,
-  Phone, QrCode, AlertCircle
+  Phone, QrCode, AlertCircle, Smartphone, ArrowUpCircle,
+  RefreshCw, History, CreditCard
 } from 'lucide-react';
 import {
   Dialog,
@@ -22,11 +25,19 @@ import {
 
 const API = `${process.env.REACT_APP_BACKEND_URL}/api`;
 
+const MOBILE_MONEY_PROVIDERS = [
+  { id: 'orange', name: 'Orange Money', color: 'bg-orange-500' },
+  { id: 'wave', name: 'Wave', color: 'bg-blue-500' },
+  { id: 'mtn', name: 'MTN Mobile Money', color: 'bg-yellow-500' },
+  { id: 'free', name: 'Free Money', color: 'bg-green-500' },
+];
+
 export default function PartnerDashboardPage() {
   const navigate = useNavigate();
   const [partner, setPartner] = useState(null);
   const [dashboard, setDashboard] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState('withdrawal');
   
   // Withdrawal state
   const [withdrawalStep, setWithdrawalStep] = useState('search'); // search, confirm, otp
@@ -36,6 +47,17 @@ export default function PartnerDashboardPage() {
   const [otpCode, setOtpCode] = useState('');
   const [processingWithdrawal, setProcessingWithdrawal] = useState(false);
   const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
+  
+  // Mobile Money recharge state
+  const [showRechargeDialog, setShowRechargeDialog] = useState(false);
+  const [rechargeStep, setRechargeStep] = useState('search'); // search, confirm, otp
+  const [rechargeProvider, setRechargeProvider] = useState('');
+  const [rechargePhone, setRechargePhone] = useState('');
+  const [rechargeAmount, setRechargeAmount] = useState('');
+  const [rechargeData, setRechargeData] = useState(null);
+  const [rechargeOtp, setRechargeOtp] = useState('');
+  const [processingRecharge, setProcessingRecharge] = useState(false);
+  const [rechargeHistory, setRechargeHistory] = useState([]);
 
   useEffect(() => {
     const token = localStorage.getItem('sbmoney_partner_token');
