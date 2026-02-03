@@ -437,6 +437,12 @@ function App() {
             <Route path="/admin/super" element={
               <ProtectedRoute adminOnly><SuperAdminPage /></ProtectedRoute>
             } />
+            <Route path="/admin/mobile-money-config" element={
+              <ProtectedRoute adminOnly><AdminMobileMoneyConfigPage /></ProtectedRoute>
+            } />
+            
+            {/* Public Pages */}
+            <Route path="/mobile-money" element={<MobileMoneyPage />} />
             
             {/* Fallback */}
             <Route path="*" element={<Navigate to="/" replace />} />
