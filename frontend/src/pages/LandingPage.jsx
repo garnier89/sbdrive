@@ -212,28 +212,28 @@ export default function LandingPage() {
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
         {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-500/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-400/30 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl" />
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 mb-8">
-              <span className="text-orange-400 text-sm font-medium">🌍 La Fintech #1 en Afrique</span>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-sky-100 to-orange-100 border border-sky-200 mb-8">
+              <span className="text-sky-600 text-sm font-medium">🌍 La Fintech #1 en Afrique</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-slate-800">
               Votre argent,{' '}
-              <span className="bg-gradient-to-r from-orange-400 via-orange-500 to-orange-600 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-sky-500 to-sky-600 bg-clip-text text-transparent">
                 partout
               </span>
               , en toute{' '}
-              <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 sécurité
               </span>
             </h1>
             
-            <p className="text-lg sm:text-xl text-gray-400 mb-10 max-w-2xl mx-auto">
+            <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
               SBPAYGO est la plateforme digitale qui vous permet d'envoyer, recevoir, 
               stocker et gérer votre argent facilement — entre proches, vers les banques 
               et vers les services Mobile Money.
@@ -241,7 +241,7 @@ export default function LandingPage() {
             
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
               <Link to="/register">
-                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-orange-500/25">
+                <Button size="lg" className="bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-sky-500/25">
                   Créer un compte gratuit
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
@@ -249,7 +249,7 @@ export default function LandingPage() {
               <Button 
                 size="lg" 
                 variant="outline" 
-                className="border-white/20 text-white hover:bg-white/10 px-8 py-6 text-lg rounded-xl"
+                className="border-sky-300 text-sky-700 hover:bg-sky-50 px-8 py-6 text-lg rounded-xl"
                 onClick={() => scrollToSection('features')}
               >
                 <Download className="mr-2 w-5 h-5" />
@@ -260,10 +260,10 @@ export default function LandingPage() {
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
               {stats.map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white/5 border border-white/10">
-                  <stat.icon className="w-6 h-6 mx-auto mb-2 text-orange-400" />
-                  <div className="text-2xl sm:text-3xl font-bold text-white">{stat.value}</div>
-                  <div className="text-sm text-gray-400">{stat.label}</div>
+                <div key={i} className="text-center p-4 rounded-2xl bg-white/80 border border-sky-100 shadow-sm">
+                  <stat.icon className="w-6 h-6 mx-auto mb-2 text-orange-500" />
+                  <div className="text-2xl sm:text-3xl font-bold text-slate-800">{stat.value}</div>
+                  <div className="text-sm text-slate-500">{stat.label}</div>
                 </div>
               ))}
             </div>
@@ -272,7 +272,7 @@ export default function LandingPage() {
 
         {/* Scroll indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-gray-500" />
+          <ChevronDown className="w-8 h-8 text-sky-400" />
         </div>
       </section>
 
