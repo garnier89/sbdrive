@@ -66,6 +66,7 @@ import AdminRewardsPage from "@/pages/admin/AdminRewardsPage";
 import AdminZonesConfigPage from "@/pages/admin/AdminZonesConfigPage";
 import AdminStaffPage from "@/pages/admin/AdminStaffPage";
 import AdminCommissionsPage from "@/pages/admin/AdminCommissionsPage";
+import AdminLimitsPage from "@/pages/admin/AdminLimitsPage";
 // Partner Pages
 import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
