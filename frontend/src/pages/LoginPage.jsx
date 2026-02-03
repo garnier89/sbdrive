@@ -64,16 +64,16 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-50 via-white to-orange-50/30 flex">
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30 flex">
       {/* Left Panel - Form */}
       <div className="flex-1 flex items-center justify-center p-8">
         <div className="w-full max-w-md">
           <Link to="/" className="flex items-center gap-3 mb-8" data-testid="login-logo">
             <img src={LOGO_URL} alt="SBPAYGO" className="w-12 h-12 object-contain" />
-            <span className="text-2xl font-bold font-['Manrope'] bg-gradient-to-r from-sky-500 to-orange-500 bg-clip-text text-transparent">SBPAYGO</span>
+            <span className="text-2xl font-bold font-['Manrope'] bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">SBPAYGO</span>
           </Link>
 
-          <Card className="border-sky-100 shadow-lg shadow-sky-100/50">
+          <Card className="border-orange-100 shadow-lg shadow-orange-100/50">
             <CardHeader className="space-y-1">
               <CardTitle className="text-2xl font-['Manrope'] text-slate-800">Connexion</CardTitle>
               <CardDescription className="text-slate-500">
@@ -84,11 +84,11 @@ export default function LoginPage() {
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Quick PIN Login Button */}
                 {hasQuickPin && (
-                  <div className="pb-4 border-b border-sky-100">
+                  <div className="pb-4 border-b border-orange-100">
                     <Button
                       type="button"
                       variant="outline"
-                      className="w-full h-12 text-sky-600 border-sky-200 hover:bg-sky-50"
+                      className="w-full h-12 text-orange-600 border-orange-200 hover:bg-orange-50"
                       onClick={() => navigate('/quick-login')}
                       data-testid="quick-pin-login-btn"
                     >
@@ -110,7 +110,7 @@ export default function LoginPage() {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     data-testid="login-email-input"
-                    className="border-sky-200 focus:border-sky-400"
+                    className="border-orange-200 focus:border-orange-400"
                     required
                   />
                 </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       data-testid="login-password-input"
-                      className="border-sky-200 focus:border-sky-400"
+                      className="border-orange-200 focus:border-orange-400"
                       required
                     />
                     <Button
@@ -142,7 +142,7 @@ export default function LoginPage() {
 
                 <Button 
                   type="submit" 
-                  className="w-full bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600 text-white" 
+                  className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg shadow-orange-500/25" 
                   disabled={loading}
                   data-testid="login-submit-btn"
                 >
