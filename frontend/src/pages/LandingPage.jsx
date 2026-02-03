@@ -161,18 +161,20 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50/50 text-slate-800">
-      {/* Navigation */}
+      {/* Navigation - Responsive */}
       <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-orange-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-3">
-              <img src={LOGO_URL} alt="SBPAYGO" className="h-10 w-10 rounded-xl" />
-              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-14 sm:h-16">
+            {/* Logo */}
+            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
+              <img src={LOGO_URL} alt="SBPAYGO" className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl" />
+              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent hidden xs:inline">
                 SBPAYGO
               </span>
             </div>
             
-            <div className="hidden md:flex items-center gap-8">
+            {/* Desktop Menu */}
+            <div className="hidden lg:flex items-center gap-6 xl:gap-8">
               {[
                 { id: 'features', label: 'Fonctionnalités' },
                 { id: 'transfers', label: 'Transferts' },
@@ -192,15 +194,17 @@ export default function LandingPage() {
               ))}
             </div>
 
-            <div className="flex items-center gap-3">
+            {/* Auth Buttons - Responsive */}
+            <div className="flex items-center gap-2 sm:gap-3">
               <Link to="/login">
-                <Button variant="ghost" className="text-slate-700 hover:bg-orange-50 hover:text-orange-600">
+                <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-orange-50 hover:text-orange-600 text-sm px-2 sm:px-4">
                   Connexion
                 </Button>
               </Link>
               <Link to="/register">
-                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25">
-                  Créer un compte
+                <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25 text-xs sm:text-sm px-3 sm:px-4 whitespace-nowrap">
+                  <span className="hidden sm:inline">Créer un compte</span>
+                  <span className="sm:hidden">S'inscrire</span>
                 </Button>
               </Link>
             </div>
