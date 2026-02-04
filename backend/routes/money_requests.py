@@ -282,11 +282,12 @@ async def respond_to_request(
         )
         
         # Notify requester
+        sender_name = current_user.get('full_name', 'quelqu un')
         background_tasks.add_task(
             send_push_notification,
             request["requester_id"],
-            "Demande acceptée !",
-            f"Vous avez reçu {request['amount']} {request['currency']} de {current_user.get('full_name', 'quelqu\'un')}"
+            "Demande acceptee !",
+            f"Vous avez recu {request['amount']} {request['currency']} de {sender_name}"
         )
         
         return {
