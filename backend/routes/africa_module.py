@@ -201,6 +201,7 @@ def setup_africa_routes(db, get_current_user, send_push_notification=None, send_
     @africa_router.post("/mobile-money/transfer")
     async def create_mm_transfer(
         request: MobileMoneyTransferRequest,
+        background_tasks: BackgroundTasks,
         current_user: dict = Depends(get_current_user)
     ):
         """Create cross-network Mobile Money transfer"""
@@ -265,6 +266,35 @@ def setup_africa_routes(db, get_current_user, send_push_notification=None, send_
             "created_at": datetime.now(timezone.utc)
         }
         await db.transactions.insert_one(transaction)
+        
+        # =============== NOTIFICATIONS ===============
+        user_name = current_user.get('full_name', 'Utilisateur')
+        operator_name = request.dest_operator.replace("_", " ").title()
+        
+        # Push notification to sender
+        if _send_push_notification:
+            background_tasks.add_task(
+                _send_push_notification,
+                user_id,
+                "Transfert Mobile Money envoyé",
+                f"Votre transfert de {request.amount:,.0f} {request.currency} vers {request.dest_phone} ({operator_name}) est en cours."
+            )
+        
+        # Email notification to sender
+        if _send_email_notification and current_user.get("email"):
+            background_tasks.add_task(
+                _send_email_notification,
+                current_user["email"],
+                "Transfert Mobile Money - SBPAYGO",
+                f"Bonjour {user_name},\n\nVotre transfert Mobile Money a été initié avec succès.\n\n"
+                f"Montant: {request.amount:,.0f} {request.currency}\n"
+                f"Destinataire: {request.dest_phone}\n"
+                f"Opérateur: {operator_name}\n"
+                f"Frais: {fees['total']:,.0f} {request.currency}\n"
+                f"Référence: {transfer['external_ref']}\n\n"
+                f"Merci d'utiliser SBPAYGO!",
+                current_user.get("preferred_language", "fr")
+            )
         
         # Simulate async processing (in production, this would call real API)
         # For demo: auto-complete after 3 seconds
