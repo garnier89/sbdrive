@@ -15,9 +15,9 @@ USER_PASSWORD = "userpassword"
 ADMIN_EMAIL = "admin@sbpaygo.com"
 ADMIN_PASSWORD = "adminpassword"
 
-# Test card numbers (Luhn valid)
-VALID_VISA = "4111111111111111"
-VALID_MASTERCARD = "5500000000000004"
+# Test card numbers (Luhn valid) - using unique numbers for testing
+VALID_VISA = "4532015112830366"  # Different Visa for testing
+VALID_MASTERCARD = "5425233430109903"  # Different Mastercard for testing
 INVALID_CARD = "1234567890123456"  # Fails Luhn
 
 @pytest.fixture(scope="module")
