@@ -11,7 +11,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class SBPayAPITester:
-    def __init__(self, base_url="https://africa-wallet-1.preview.emergentagent.com/api"):
+    def __init__(self, base_url="https://money-transfer-hub-11.preview.emergentagent.com/api"):
         self.base_url = base_url
         self.token = None
         self.admin_token = None
@@ -224,7 +224,7 @@ class SBPayAPITester:
         deposit_data = {
             "amount": 100.0,
             "currency": "eur",
-            "origin_url": "https://africa-wallet-1.preview.emergentagent.com"
+            "origin_url": "https://money-transfer-hub-11.preview.emergentagent.com"
         }
         
         success, response = self.run_test(

@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Phase 4 - Anti-Fraude & Améliorations)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://africa-wallet-1.preview.emergentagent.com
+**Preview URL:** https://money-transfer-hub-11.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO
