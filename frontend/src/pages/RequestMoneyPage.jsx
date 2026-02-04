@@ -413,7 +413,7 @@ export default function RequestMoneyPage() {
                             </div>
                           </div>
                           {req.message && (
-                            <p className="mt-2 text-sm text-slate-600 pl-13">"{req.message}"</p>
+                            <p className="mt-2 text-sm text-slate-600 pl-13">&quot;{req.message}&quot;</p>
                           )}
                           {req.status === 'pending' && (
                             <div className="mt-3 flex justify-end">
@@ -484,7 +484,7 @@ export default function RequestMoneyPage() {
                             </div>
                           </div>
                           {req.message && (
-                            <p className="mt-2 text-sm text-slate-600 pl-13">"{req.message}"</p>
+                            <p className="mt-2 text-sm text-slate-600 pl-13">&quot;{req.message}&quot;</p>
                           )}
                           {isPending && (
                             <div className="mt-3 flex justify-end gap-2">
