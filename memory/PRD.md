@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Bug Fixes - 24 Countries Integration)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://afripay-1.preview.emergentagent.com
+**Preview URL:** https://africa-wallet-1.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO
