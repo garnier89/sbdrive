@@ -171,9 +171,13 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         
         partner = await db.partners.find_one({"email": email})
         if not partner:
+            logger.error(f"Partner login: email not found: {email}")
             raise HTTPException(status_code=401, detail="Identifiants incorrects")
         
-        if not verify_password(password, partner.get("password_hash", "")):
+        password_ok = verify_password(password, partner.get("password_hash", ""))
+        logger.info(f"Partner login attempt: {email}, password_ok: {password_ok}")
+        
+        if not password_ok:
             raise HTTPException(status_code=401, detail="Identifiants incorrects")
         
         if partner.get("status") == "pending":
