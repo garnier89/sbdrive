@@ -475,13 +475,19 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
         raise HTTPException(status_code=400, detail="Email already registered")
     
     user_id = str(uuid.uuid4())
+    sbpaygo_id = generate_sbpaygo_id()
     now = datetime.now(timezone.utc).isoformat()
+    
+    # Ensure unique sbpaygo_id
+    while await db.users.find_one({"sbpaygo_id": sbpaygo_id}):
+        sbpaygo_id = generate_sbpaygo_id()
     
     # Build full_name from first_name and last_name
     full_name = f"{user_data.first_name} {user_data.last_name}"
     
     user_doc = {
         "id": user_id,
+        "sbpaygo_id": sbpaygo_id,
         "email": user_data.email,
         "password_hash": hash_password(user_data.password),
         "first_name": user_data.first_name,
