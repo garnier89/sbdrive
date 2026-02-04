@@ -460,17 +460,53 @@ export default function PartnerDashboardPage() {
 
         {/* Main Services with Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab} className="mb-8">
-          <TabsList className="grid w-full grid-cols-2 bg-slate-800 border border-slate-700">
-            <TabsTrigger value="withdrawal" className="data-[state=active]:bg-green-600">
+          <TabsList className="grid w-full grid-cols-3 bg-slate-800 border border-slate-700">
+            <TabsTrigger value="deposit" className="data-[state=active]:bg-orange-600" data-testid="tab-deposit">
+              <ArrowUpRight className="w-4 h-4 mr-2" />
+              Dépôt Cash
+            </TabsTrigger>
+            <TabsTrigger value="withdrawal" className="data-[state=active]:bg-green-600" data-testid="tab-withdrawal">
               <ArrowDownLeft className="w-4 h-4 mr-2" />
               Retrait Cash
             </TabsTrigger>
-            <TabsTrigger value="recharge" className="data-[state=active]:bg-blue-600">
+            <TabsTrigger value="recharge" className="data-[state=active]:bg-blue-600" data-testid="tab-recharge">
               <Smartphone className="w-4 h-4 mr-2" />
-              Recharge Mobile Money
+              Recharge Mobile
             </TabsTrigger>
           </TabsList>
           
+          {/* CASH IN (DEPOSIT) TAB */}
+          <TabsContent value="deposit">
+            <Card className="bg-slate-800 border-slate-700">
+              <CardHeader>
+                <CardTitle className="text-white flex items-center gap-2">
+                  <ArrowUpRight className="w-5 h-5 text-orange-500" />
+                  Dépôt espèces client
+                </CardTitle>
+                <CardDescription className="text-slate-400">
+                  Recevez des espèces et créditez le compte SBPAYGO du client
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <Button 
+                    onClick={() => setShowDepositDialog(true)}
+                    className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700"
+                    data-testid="new-deposit-btn"
+                  >
+                    <Plus className="w-4 h-4 mr-2" />
+                    Nouveau dépôt
+                  </Button>
+                  <div className="flex items-center gap-2 text-sm text-slate-400">
+                    <AlertCircle className="w-4 h-4" />
+                    Commission: {((dashboard?.commission_rate || 0.01) * 100).toFixed(1)}% par dépôt
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+          
+          {/* WITHDRAWAL TAB */}
           <TabsContent value="withdrawal">
             <Card className="bg-slate-800 border-slate-700">
               <CardHeader>
