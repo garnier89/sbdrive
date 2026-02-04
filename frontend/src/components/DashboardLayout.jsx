@@ -104,51 +104,114 @@ export const DashboardLayout = ({ children }) => {
       <Link
         to={item.href}
         onClick={() => mobile && setMobileOpen(false)}
-        className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200
+        className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200
           ${isActive 
             ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25' 
             : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700'
           }`}
-        data-testid={`nav-${item.label.toLowerCase().replace(' ', '-')}`}
+        data-testid={`nav-${item.label.toLowerCase().replace(/[' ]/g, '-')}`}
       >
         <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
-        <span className="font-medium">{item.label}</span>
+        <span className="font-medium text-sm">{item.label}</span>
+        {item.isNew && (
+          <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded">NEW</span>
+        )}
       </Link>
     );
+  };
+
+  const SectionTitle = ({ children, emoji }) => (
+    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-4 mb-2 px-4 flex items-center gap-2">
+      {emoji && <span>{emoji}</span>}
+      {children}
+    </div>
+  );
+
+  // Copy User ID to clipboard
+  const copyUserId = () => {
+    if (user?.sbpaygo_id) {
+      navigator.clipboard.writeText(user.sbpaygo_id);
+      toast.success('ID copié !');
+    }
   };
 
   const SidebarContent = ({ mobile = false }) => (
     <div className="flex flex-col h-full bg-white">
       {/* Logo */}
-      <div className="p-6 border-b border-orange-100">
+      <div className="p-4 border-b border-orange-100">
         <Link to="/dashboard" className="flex items-center gap-3" data-testid="sidebar-logo">
-          <img src={LOGO_URL} alt="SBPAYGO" className="w-10 h-10 object-contain" />
-          <span className="text-xl font-bold font-['Manrope'] bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">SBPAYGO</span>
+          <img src={LOGO_URL} alt="SBPAYGO" className="w-9 h-9 object-contain" />
+          <span className="text-lg font-bold font-['Manrope'] bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">SBPAYGO</span>
         </Link>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
-        <div className="text-xs font-semibold text-orange-600 uppercase tracking-wider mb-4 px-4">
-          Menu Principal
+      {/* User ID Card */}
+      {user?.sbpaygo_id && (
+        <div className="mx-4 mt-4 p-3 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-lg border border-orange-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-[10px] text-slate-500 uppercase tracking-wider">Mon ID SBPAYGO</p>
+              <p className="text-sm font-bold text-orange-600 font-mono">{user.sbpaygo_id}</p>
+            </div>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 text-orange-500 hover:bg-orange-200/50"
+              onClick={copyUserId}
+              data-testid="copy-user-id-btn"
+            >
+              <Copy className="w-4 h-4" />
+            </Button>
+          </div>
         </div>
-        {navItems.map((item) => (
+      )}
+
+      {/* Navigation */}
+      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+        {/* Main */}
+        {mainNavItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
+        {/* Money Operations */}
+        <SectionTitle emoji="💰">Opérations</SectionTitle>
+        {moneyOperationsItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
+        {/* Cards & Security */}
+        <SectionTitle emoji="🔐">Cartes & Sécurité</SectionTitle>
+        {securityItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
+        {/* Payments */}
+        <SectionTitle emoji="💳">Paiements</SectionTitle>
+        {paymentsItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
+        {/* Agent Network */}
+        <SectionTitle emoji="🏪">Réseau Agents</SectionTitle>
+        {agentItems.map((item) => (
           <NavLink key={item.href} item={item} mobile={mobile} />
         ))}
         
         {/* Africa Module Section */}
-        <div className="text-xs font-semibold text-orange-500 uppercase tracking-wider mt-6 mb-4 px-4 flex items-center gap-2">
-          <span>🌍</span> Afrique
-        </div>
+        <SectionTitle emoji="🌍">Afrique</SectionTitle>
         {africaItems.map((item) => (
+          <NavLink key={item.href} item={item} mobile={mobile} />
+        ))}
+        
+        {/* User Section */}
+        <SectionTitle emoji="👤">Mon Compte</SectionTitle>
+        {userItems.map((item) => (
           <NavLink key={item.href} item={item} mobile={mobile} />
         ))}
         
         {isAdmin && (
           <>
-            <div className="text-xs font-semibold text-blue-600 uppercase tracking-wider mt-8 mb-4 px-4">
-              Administration
-            </div>
+            <SectionTitle emoji="⚙️">Administration</SectionTitle>
             {adminItems.map((item) => (
               <NavLink key={item.href} item={item} mobile={mobile} />
             ))}
@@ -156,31 +219,32 @@ export const DashboardLayout = ({ children }) => {
         )}
       </nav>
 
-      {/* User Section */}
-      <div className="p-4 border-t border-orange-100 bg-orange-50/50">
+      {/* User Section Footer */}
+      <div className="p-3 border-t border-orange-100 bg-orange-50/50">
         {/* Theme Toggle */}
         <Button 
           variant="ghost" 
+          size="sm"
           className="w-full justify-start text-slate-600 hover:bg-orange-100 hover:text-orange-700 mb-2"
           onClick={toggleTheme}
           data-testid="theme-toggle-btn"
         >
           {theme === 'light' ? (
             <>
-              <Moon className="w-5 h-5 mr-3" />
+              <Moon className="w-4 h-4 mr-2" />
               Mode sombre
             </>
           ) : (
             <>
-              <Sun className="w-5 h-5 mr-3" />
+              <Sun className="w-4 h-4 mr-2" />
               Mode clair
             </>
           )}
         </Button>
         
-        <div className="flex items-center gap-3 px-4 py-3 mb-2">
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20">
-            <User className="w-5 h-5 text-white" />
+        <div className="flex items-center gap-2 px-3 py-2 mb-2">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center shadow-md shadow-orange-500/20">
+            <User className="w-4 h-4 text-white" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="font-medium text-sm truncate text-slate-800">{user?.full_name}</p>
@@ -189,11 +253,12 @@ export const DashboardLayout = ({ children }) => {
         </div>
         <Button 
           variant="ghost" 
+          size="sm"
           className="w-full justify-start text-slate-600 hover:text-red-600 hover:bg-red-50"
           onClick={handleLogout}
           data-testid="logout-btn"
         >
-          <LogOut className="w-5 h-5 mr-3" />
+          <LogOut className="w-4 h-4 mr-2" />
           Déconnexion
         </Button>
       </div>
