@@ -41,11 +41,13 @@ export default function MobileMoneyTransferPage() {
   const [loading, setLoading] = useState(false);
   const [loadingFees, setLoadingFees] = useState(false);
   const [transfers, setTransfers] = useState([]);
+  const [favorites, setFavorites] = useState([]);
   const [step, setStep] = useState(1); // 1: Form, 2: Confirm, 3: Success
 
   useEffect(() => {
     fetchOperators();
     fetchTransfers();
+    fetchFavorites();
   }, []);
 
   useEffect(() => {
@@ -55,6 +57,57 @@ export default function MobileMoneyTransferPage() {
       setFees(null);
     }
   }, [sourceOperator, destOperator, amount]);
+
+  const fetchFavorites = async () => {
+    try {
+      const response = await axios.get(`${API}/user/favorite-operators?category=transfer`);
+      setFavorites(response.data.favorites || []);
+    } catch (error) {
+      console.error('Error fetching favorites:', error);
+    }
+  };
+
+  const addToFavorites = async (operatorCode, operatorName, country) => {
+    try {
+      await axios.post(`${API}/user/favorite-operators`, {
+        operator_code: operatorCode,
+        operator_name: operatorName,
+        country: country,
+        category: 'transfer'
+      });
+      toast.success('Ajouté aux favoris !');
+      fetchFavorites();
+    } catch (error) {
+      toast.error('Erreur lors de l\'ajout aux favoris');
+    }
+  };
+
+  const removeFromFavorites = async (favoriteId) => {
+    try {
+      await axios.delete(`${API}/user/favorite-operators/${favoriteId}`);
+      toast.success('Supprimé des favoris');
+      fetchFavorites();
+    } catch (error) {
+      toast.error('Erreur lors de la suppression');
+    }
+  };
+
+  const selectFavorite = (fav) => {
+    // Find the country for this operator
+    const countryForOperator = Object.keys(operators).find(country => 
+      operators[country]?.some(op => op.code === fav.operator_code)
+    );
+    
+    if (countryForOperator) {
+      setDestCountry(fav.country || countryForOperator);
+      setDestOperator(fav.operator_code);
+      toast.success(`${fav.operator_name} sélectionné`);
+    }
+  };
+
+  const isFavorite = (operatorCode) => {
+    return favorites.some(f => f.operator_code === operatorCode);
+  };
 
   const fetchOperators = async () => {
     try {
