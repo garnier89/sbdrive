@@ -3,9 +3,9 @@ import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/App';
 import { useTheme } from '@/components/ThemeProvider';
 import { 
-  Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
-  History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun, Store, Banknote, Globe, Percent, MapPin, Wallet, Copy, ChevronDown, ChevronRight, HandCoins
+  Home, Send, ArrowDownCircle, ArrowUpCircle, 
+  History, User, LogOut, Shield, Menu, Settings, Bell, Link2,
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun, Store, Banknote, Globe, Percent, MapPin, Copy, HandCoins
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -62,18 +62,18 @@ const userItems = [
 
 const adminItems = [
   { href: '/admin', icon: Shield, label: 'Admin Dashboard' },
-  { href: '/admin/super', icon: Crown, label: '🛡️ Super Admin' },
+  { href: '/admin/super', icon: Crown, label: 'Super Admin' },
   { href: '/admin/analytics', icon: BarChart3, label: 'Analytics & KPIs' },
   { href: '/admin/alerts', icon: AlertTriangle, label: 'Alertes & Seuils' },
   { href: '/admin/notifications', icon: Bell, label: 'Notifications Zone' },
   { href: '/admin/tickets', icon: Headphones, label: 'Tickets Support' },
   { href: '/admin/partners', icon: Store, label: 'Partenaires/Agents' },
-  { href: '/admin/mobile-money-config', icon: Smartphone, label: '🌍 Mobile Money Config' },
-  { href: '/admin/rewards', icon: Gift, label: '🎁 Récompenses' },
-  { href: '/admin/zones-config', icon: Globe, label: '🗺️ Zones & Services' },
-  { href: '/admin/staff', icon: Users, label: '👥 Personnel Admin' },
-  { href: '/admin/commissions', icon: Percent, label: '💰 Commissions' },
-  { href: '/admin/limits', icon: Shield, label: '🛡️ Limites & Anti-Fraude' },
+  { href: '/admin/mobile-money-config', icon: Smartphone, label: 'Mobile Money Config' },
+  { href: '/admin/rewards', icon: Gift, label: 'Récompenses' },
+  { href: '/admin/zones-config', icon: Globe, label: 'Zones & Services' },
+  { href: '/admin/staff', icon: Users, label: 'Personnel Admin' },
+  { href: '/admin/commissions', icon: Percent, label: 'Commissions' },
+  { href: '/admin/limits', icon: Shield, label: 'Limites & Anti-Fraude' },
   { href: '/admin/kyc', icon: Shield, label: 'Vérification KYC' },
   { href: '/admin/contact-settings', icon: Settings, label: 'Paramètres Contact' },
   { href: '/admin/users', icon: User, label: 'Utilisateurs' },
@@ -85,6 +85,36 @@ const adminItems = [
   { href: '/admin/cms', icon: FileText, label: 'CMS Contenu' },
   { href: '/admin/admins', icon: Crown, label: 'Gestion Admins' },
 ];
+
+// NavLink Component - defined outside DashboardLayout
+const NavLink = ({ item, isActive, onClick }) => {
+  return (
+    <Link
+      to={item.href}
+      onClick={onClick}
+      className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200
+        ${isActive 
+          ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25' 
+          : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700'
+        }`}
+      data-testid={`nav-${item.label.toLowerCase().replace(/[' ]/g, '-')}`}
+    >
+      <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
+      <span className="font-medium text-sm">{item.label}</span>
+      {item.isNew && (
+        <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded">NEW</span>
+      )}
+    </Link>
+  );
+};
+
+// SectionTitle Component - defined outside DashboardLayout
+const SectionTitle = ({ children, emoji }) => (
+  <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-4 mb-2 px-4 flex items-center gap-2">
+    {emoji && <span>{emoji}</span>}
+    {children}
+  </div>
+);
 
 export const DashboardLayout = ({ children }) => {
   const { user, logout, isAdmin } = useAuth();
@@ -98,36 +128,6 @@ export const DashboardLayout = ({ children }) => {
     navigate('/');
   };
 
-  const NavLink = ({ item, mobile = false }) => {
-    const isActive = location.pathname === item.href;
-    return (
-      <Link
-        to={item.href}
-        onClick={() => mobile && setMobileOpen(false)}
-        className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all duration-200
-          ${isActive 
-            ? 'bg-gradient-to-r from-orange-500 to-orange-600 text-white shadow-md shadow-orange-500/25' 
-            : 'text-slate-600 hover:bg-orange-50 hover:text-orange-700'
-          }`}
-        data-testid={`nav-${item.label.toLowerCase().replace(/[' ]/g, '-')}`}
-      >
-        <item.icon className={`w-5 h-5 ${isActive ? 'text-white' : ''}`} />
-        <span className="font-medium text-sm">{item.label}</span>
-        {item.isNew && (
-          <span className="ml-auto px-1.5 py-0.5 text-[10px] font-bold bg-green-500 text-white rounded">NEW</span>
-        )}
-      </Link>
-    );
-  };
-
-  const SectionTitle = ({ children, emoji }) => (
-    <div className="text-[11px] font-semibold text-slate-400 uppercase tracking-wider mt-4 mb-2 px-4 flex items-center gap-2">
-      {emoji && <span>{emoji}</span>}
-      {children}
-    </div>
-  );
-
-  // Copy User ID to clipboard
   const copyUserId = () => {
     if (user?.sbpaygo_id) {
       navigator.clipboard.writeText(user.sbpaygo_id);
@@ -135,7 +135,18 @@ export const DashboardLayout = ({ children }) => {
     }
   };
 
-  const SidebarContent = ({ mobile = false }) => (
+  const renderNavItems = (items, mobile = false) => {
+    return items.map((item) => (
+      <NavLink 
+        key={item.href} 
+        item={item} 
+        isActive={location.pathname === item.href}
+        onClick={() => mobile && setMobileOpen(false)}
+      />
+    ));
+  };
+
+  const sidebarContent = (mobile = false) => (
     <div className="flex flex-col h-full bg-white">
       {/* Logo */}
       <div className="p-4 border-b border-orange-100">
@@ -169,52 +180,36 @@ export const DashboardLayout = ({ children }) => {
       {/* Navigation */}
       <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
         {/* Main */}
-        {mainNavItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(mainNavItems, mobile)}
         
         {/* Money Operations */}
         <SectionTitle emoji="💰">Opérations</SectionTitle>
-        {moneyOperationsItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(moneyOperationsItems, mobile)}
         
         {/* Cards & Security */}
         <SectionTitle emoji="🔐">Cartes & Sécurité</SectionTitle>
-        {securityItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(securityItems, mobile)}
         
         {/* Payments */}
         <SectionTitle emoji="💳">Paiements</SectionTitle>
-        {paymentsItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(paymentsItems, mobile)}
         
         {/* Agent Network */}
         <SectionTitle emoji="🏪">Réseau Agents</SectionTitle>
-        {agentItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(agentItems, mobile)}
         
         {/* Africa Module Section */}
         <SectionTitle emoji="🌍">Afrique</SectionTitle>
-        {africaItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(africaItems, mobile)}
         
         {/* User Section */}
         <SectionTitle emoji="👤">Mon Compte</SectionTitle>
-        {userItems.map((item) => (
-          <NavLink key={item.href} item={item} mobile={mobile} />
-        ))}
+        {renderNavItems(userItems, mobile)}
         
         {isAdmin && (
           <>
             <SectionTitle emoji="⚙️">Administration</SectionTitle>
-            {adminItems.map((item) => (
-              <NavLink key={item.href} item={item} mobile={mobile} />
-            ))}
+            {renderNavItems(adminItems, mobile)}
           </>
         )}
       </nav>
@@ -269,7 +264,7 @@ export const DashboardLayout = ({ children }) => {
     <div className="min-h-screen bg-gradient-to-br from-orange-50 via-white to-orange-50/30">
       {/* Desktop Sidebar */}
       <aside className="hidden lg:flex lg:w-64 lg:flex-col lg:fixed lg:inset-y-0 bg-white border-r border-orange-100 shadow-sm">
-        <SidebarContent />
+        {sidebarContent(false)}
       </aside>
 
       {/* Mobile Header */}
@@ -287,7 +282,7 @@ export const DashboardLayout = ({ children }) => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="p-0 w-72">
-              <SidebarContent mobile />
+              {sidebarContent(true)}
             </SheetContent>
           </Sheet>
         </div>
