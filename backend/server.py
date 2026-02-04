@@ -129,6 +129,12 @@ from routes.money_requests import setup_money_requests_routes, money_requests_ro
 # Import User Extras Module
 from routes.user_extras import setup_user_extras_routes, user_extras_router
 
+# Import Saved Cards Module
+from routes.saved_cards import setup_saved_cards_routes, saved_cards_router
+
+# Import Geo Security Module
+from routes.geo_security import setup_geo_security_routes, geo_security_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
