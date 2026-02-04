@@ -30,7 +30,9 @@ const moneyOperationsItems = [
 // Cards & Vault Section
 const securityItems = [
   { href: '/virtual-cards', icon: CreditCard, label: 'Cartes Virtuelles' },
+  { href: '/saved-cards', icon: CreditCard, label: 'Cartes Bancaires', isNew: true },
   { href: '/vault', icon: Lock, label: 'Coffre-Fort' },
+  { href: '/geo-security', icon: MapPin, label: 'Sécurité Géo', isNew: true },
 ];
 
 // Payments Section
