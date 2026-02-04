@@ -37,17 +37,38 @@ const STATUS_LABELS = {
   cancelled: 'Annulé'
 };
 
-const COUNTRIES = [
+// Liste complète des 21+ pays africains avec Mobile Money
+const ALL_COUNTRIES = [
+  // Afrique de l'Ouest - Zone UEMOA (XOF)
   { code: 'SN', name: 'Sénégal', flag: '🇸🇳', currency: 'XOF' },
   { code: 'CI', name: "Côte d'Ivoire", flag: '🇨🇮', currency: 'XOF' },
   { code: 'ML', name: 'Mali', flag: '🇲🇱', currency: 'XOF' },
   { code: 'BF', name: 'Burkina Faso', flag: '🇧🇫', currency: 'XOF' },
   { code: 'BJ', name: 'Bénin', flag: '🇧🇯', currency: 'XOF' },
   { code: 'TG', name: 'Togo', flag: '🇹🇬', currency: 'XOF' },
-  { code: 'CM', name: 'Cameroun', flag: '🇨🇲', currency: 'XAF' },
+  { code: 'NE', name: 'Niger', flag: '🇳🇪', currency: 'XOF' },
+  { code: 'GW', name: 'Guinée-Bissau', flag: '🇬🇼', currency: 'XOF' },
+  // Afrique de l'Ouest - Hors UEMOA
+  { code: 'GN', name: 'Guinée', flag: '🇬🇳', currency: 'GNF' },
   { code: 'GH', name: 'Ghana', flag: '🇬🇭', currency: 'GHS' },
   { code: 'NG', name: 'Nigeria', flag: '🇳🇬', currency: 'NGN' },
-  { code: 'KE', name: 'Kenya', flag: '🇰🇪', currency: 'KES' }
+  { code: 'LR', name: 'Liberia', flag: '🇱🇷', currency: 'LRD' },
+  { code: 'SL', name: 'Sierra Leone', flag: '🇸🇱', currency: 'SLL' },
+  // Afrique Centrale - Zone CEMAC (XAF)
+  { code: 'CM', name: 'Cameroun', flag: '🇨🇲', currency: 'XAF' },
+  { code: 'GA', name: 'Gabon', flag: '🇬🇦', currency: 'XAF' },
+  { code: 'CG', name: 'Congo-Brazzaville', flag: '🇨🇬', currency: 'XAF' },
+  { code: 'CD', name: 'RD Congo', flag: '🇨🇩', currency: 'CDF' },
+  // Afrique de l'Est
+  { code: 'KE', name: 'Kenya', flag: '🇰🇪', currency: 'KES' },
+  { code: 'TZ', name: 'Tanzanie', flag: '🇹🇿', currency: 'TZS' },
+  { code: 'UG', name: 'Ouganda', flag: '🇺🇬', currency: 'UGX' },
+  { code: 'RW', name: 'Rwanda', flag: '🇷🇼', currency: 'RWF' },
+  // Afrique Australe
+  { code: 'ZM', name: 'Zambie', flag: '🇿🇲', currency: 'ZMW' },
+  { code: 'ZW', name: 'Zimbabwe', flag: '🇿🇼', currency: 'ZWL' },
+  // Afrique du Nord
+  { code: 'MA', name: 'Maroc', flag: '🇲🇦', currency: 'MAD' }
 ];
 
 export default function DepositPage() {
