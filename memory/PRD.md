@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Phase 3 - Agent Cash In/Out)  
+**Last Updated:** February 2026 (Phase 4 - Anti-Fraude & Améliorations)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://africa-wallet-1.preview.emergentagent.com
 
