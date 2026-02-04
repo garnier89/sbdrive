@@ -179,8 +179,8 @@ def setup_deposits_v2_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         """Create a Mobile Money deposit request"""
         user = await get_current_user(authorization)
         
-        # Validate provider
-        providers = MOBILE_MONEY_PROVIDERS.get(request.country.upper(), [])
+        # Validate provider using centralized config
+        providers = get_mobile_money_providers(request.country.upper())
         provider = next((p for p in providers if p["code"] == request.provider), None)
         if not provider:
             raise HTTPException(status_code=400, detail="Opérateur Mobile Money non supporté")

@@ -38,7 +38,7 @@ const STATUS_LABELS = {
 };
 
 // Liste complète des 21+ pays africains avec Mobile Money
-const ALL_COUNTRIES = [
+const COUNTRIES = [
   // Afrique de l'Ouest - Zone UEMOA (XOF)
   { code: 'SN', name: 'Sénégal', flag: '🇸🇳', currency: 'XOF' },
   { code: 'CI', name: "Côte d'Ivoire", flag: '🇨🇮', currency: 'XOF' },
