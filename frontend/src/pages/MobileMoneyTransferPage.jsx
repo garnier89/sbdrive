@@ -202,7 +202,7 @@ export default function MobileMoneyTransferPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-bold font-['Manrope']">Transfert Mobile Money</h1>
-            <p className="text-muted-foreground">Envoyez de l'argent entre différents opérateurs</p>
+            <p className="text-muted-foreground">Envoyez de l&apos;argent entre différents opérateurs</p>
           </div>
           <div className="flex items-center gap-2 px-3 py-1 bg-orange-100 text-orange-700 rounded-full text-sm">
             <RefreshCw className="w-4 h-4" />
