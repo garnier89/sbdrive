@@ -147,6 +147,31 @@ export default function WithdrawPage() {
     fetchData();
   }, [fetchData]);
 
+  // Fetch mobile providers when country changes
+  useEffect(() => {
+    const fetchProviders = async () => {
+      try {
+        const res = await axios.get(`${API}/withdrawals/providers/${mobileForm.country}`);
+        if (res.data.providers?.length > 0) {
+          setMobileForm(f => ({ ...f, provider: res.data.providers[0].code, currency: res.data.currency || 'XOF' }));
+        }
+        // Update config with new providers
+        setConfig(c => c ? { ...c, mobile_money_providers: res.data.providers } : c);
+      } catch (error) {
+        console.error('Error fetching providers:', error);
+      }
+    };
+    if (mobileForm.country) {
+      fetchProviders();
+    }
+  }, [mobileForm.country]);
+
+  // Get country currency
+  const getCountryCurrency = (countryCode) => {
+    const country = COUNTRIES.find(c => c.code === countryCode);
+    return country?.currency || 'XOF';
+  };
+
   // Get wallet balance
   const getWalletBalance = (currency) => {
     const wallet = wallets.find(w => w.currency === currency);
