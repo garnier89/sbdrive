@@ -225,35 +225,81 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         # Get today's stats
         today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
         
+        # Withdrawals stats
         today_withdrawals = await db.partner_withdrawals.count_documents({
             "partner_id": partner["id"],
             "created_at": {"$gte": today.isoformat()},
             "status": "completed"
         })
         
-        today_amount = 0
+        today_withdrawn_amount = 0
         cursor = db.partner_withdrawals.find({
             "partner_id": partner["id"],
             "created_at": {"$gte": today.isoformat()},
             "status": "completed"
         })
         async for w in cursor:
-            today_amount += w.get("amount", 0)
+            today_withdrawn_amount += w.get("amount", 0)
         
-        # Recent withdrawals
-        recent = await db.partner_withdrawals.find(
+        # Deposits stats (Cash In)
+        today_deposits = await db.partner_deposits.count_documents({
+            "partner_id": partner["id"],
+            "created_at": {"$gte": today.isoformat()},
+            "status": "completed"
+        })
+        
+        today_deposited_amount = 0
+        today_commission = 0
+        cursor = db.partner_deposits.find({
+            "partner_id": partner["id"],
+            "created_at": {"$gte": today.isoformat()},
+            "status": "completed"
+        })
+        async for d in cursor:
+            today_deposited_amount += d.get("amount", 0)
+            today_commission += d.get("commission", 0)
+        
+        # Recent transactions (combined)
+        recent_withdrawals = await db.partner_withdrawals.find(
             {"partner_id": partner["id"]},
             {"_id": 0}
-        ).sort("created_at", -1).limit(10).to_list(10)
+        ).sort("created_at", -1).limit(5).to_list(5)
+        
+        recent_deposits = await db.partner_deposits.find(
+            {"partner_id": partner["id"]},
+            {"_id": 0, "otp_hash": 0}
+        ).sort("created_at", -1).limit(5).to_list(5)
+        
+        # Mark transaction types
+        for w in recent_withdrawals:
+            w["tx_type"] = "withdrawal"
+        for d in recent_deposits:
+            d["tx_type"] = "deposit"
+        
+        # Combine and sort
+        recent_transactions = sorted(
+            recent_withdrawals + recent_deposits,
+            key=lambda x: x.get("created_at", ""),
+            reverse=True
+        )[:10]
         
         return {
             "wallet_balance": partner.get("wallet_balance", 0),
-            "wallet_currency": partner.get("wallet_currency", "EUR"),
+            "wallet_currency": partner.get("wallet_currency", "XOF"),
             "daily_limit": partner.get("daily_limit", 5000),
-            "daily_withdrawn": today_amount,
+            "commission_rate": partner.get("commission_rate", 0.01),
+            # Withdrawal stats
+            "daily_withdrawn": today_withdrawn_amount,
             "today_withdrawals": today_withdrawals,
             "total_withdrawals": partner.get("total_withdrawals", 0),
-            "recent_withdrawals": recent
+            # Deposit stats
+            "daily_deposited": today_deposited_amount,
+            "today_deposits": today_deposits,
+            "today_commission": today_commission,
+            "total_deposits": partner.get("total_deposits", 0),
+            "total_commission": partner.get("total_commission", 0),
+            # Recent activity
+            "recent_transactions": recent_transactions
         }
 
     # ==================== CASH WITHDRAWAL PROCESS ====================
