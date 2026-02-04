@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Airtime + Transfer Multi-Methods + 21 Countries)  
+**Last Updated:** February 2026 (Bug Fixes - 24 Countries Integration)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://afripay-1.preview.emergentagent.com
 
