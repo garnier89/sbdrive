@@ -3759,6 +3759,10 @@ app.include_router(transfers_v2_router)
 setup_money_requests_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification, send_sms_notification)
 app.include_router(money_requests_router)
 
+# Setup and include User Extras module routes
+user_extras_configured_router = setup_user_extras_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
+app.include_router(user_extras_configured_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
