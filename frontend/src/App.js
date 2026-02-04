@@ -479,6 +479,9 @@ function App() {
             <Route path="/admin/limits" element={
               <ProtectedRoute adminOnly><AdminLimitsPage /></ProtectedRoute>
             } />
+            <Route path="/admin/anti-fraud" element={
+              <ProtectedRoute adminOnly><AdminAntiFraudPage /></ProtectedRoute>
+            } />
             
             {/* Public Pages */}
             <Route path="/mobile-money" element={<MobileMoneyPage />} />
