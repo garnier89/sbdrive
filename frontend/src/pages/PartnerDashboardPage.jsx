@@ -49,6 +49,15 @@ export default function PartnerDashboardPage() {
   const [processingWithdrawal, setProcessingWithdrawal] = useState(false);
   const [showWithdrawalDialog, setShowWithdrawalDialog] = useState(false);
   
+  // Cash In (Deposit) state
+  const [showDepositDialog, setShowDepositDialog] = useState(false);
+  const [depositStep, setDepositStep] = useState('search'); // search, confirm, otp
+  const [depositSearchInput, setDepositSearchInput] = useState('');
+  const [depositAmount, setDepositAmount] = useState('');
+  const [depositData, setDepositData] = useState(null);
+  const [depositOtp, setDepositOtp] = useState('');
+  const [processingDeposit, setProcessingDeposit] = useState(false);
+  
   // Mobile Money recharge state
   const [showRechargeDialog, setShowRechargeDialog] = useState(false);
   const [rechargeStep, setRechargeStep] = useState('search'); // search, confirm, otp
