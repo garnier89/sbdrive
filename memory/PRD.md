@@ -34,6 +34,26 @@
 
 ### ✅ COMPLETED FEATURES
 
+#### 🆕 Phase 3 - Agent Network Cash In/Out (NEW - Feb 2026)
+- [x] **Cash In (Dépôt espèces)**
+  - Page: /partner/dashboard > Onglet "Dépôt Cash"
+  - Recherche client par téléphone, email, ou ID SBPAYGO
+  - Montants rapides : 5K, 10K, 25K, 50K, 100K XOF
+  - Confirmation par OTP envoyé au client
+  - Commission automatique pour l'agent (1%)
+  - API endpoints:
+    - POST /api/partners/deposit/initiate
+    - POST /api/partners/deposit/confirm
+    - GET /api/partners/deposits
+    - GET /api/partners/deposits/stats
+- [x] **Cash Out (Retrait espèces)** - Déjà existant, amélioré
+  - Recherche client par téléphone ou QR code
+  - Confirmation par OTP
+- [x] **Dashboard Agent Amélioré**
+  - 3 onglets : Dépôt Cash, Retrait Cash, Recharge Mobile
+  - Statistiques : Solde, Dépôts/Retraits du jour, Commissions
+  - Historique des transactions combiné
+
 #### 🆕 Phase 2 - Security & Cards (NEW - Feb 2026)
 - [x] **Cartes Bancaires Enregistrées**
   - Page: /saved-cards
