@@ -425,8 +425,69 @@ export default function MobileMoneyTransferPage() {
             </Card>
           </div>
 
-          {/* Recent Transfers */}
-          <div>
+          {/* Favorites & Recent Transfers */}
+          <div className="space-y-6">
+            {/* Favorites */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-500" />
+                  Favoris
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-2">
+                {favorites.length === 0 ? (
+                  <p className="text-center text-muted-foreground py-4 text-sm">
+                    Aucun favori. Ajoutez des opérateurs pour un accès rapide.
+                  </p>
+                ) : (
+                  favorites.map((fav) => (
+                    <div 
+                      key={fav.id} 
+                      className="flex items-center justify-between p-2 bg-yellow-50 hover:bg-yellow-100 rounded-lg cursor-pointer transition-colors group"
+                      onClick={() => selectFavorite(fav)}
+                      data-testid={`favorite-${fav.operator_code}`}
+                    >
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{OPERATOR_LOGOS[fav.operator_code] || '📱'}</span>
+                        <div>
+                          <p className="text-sm font-medium">{fav.operator_name}</p>
+                          <p className="text-xs text-muted-foreground">{fav.country}</p>
+                        </div>
+                      </div>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 opacity-0 group-hover:opacity-100 text-red-500 hover:text-red-600 hover:bg-red-50"
+                        onClick={(e) => { e.stopPropagation(); removeFromFavorites(fav.id); }}
+                        data-testid={`remove-favorite-${fav.id}`}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  ))
+                )}
+                
+                {/* Add to favorites button for selected operator */}
+                {destOperator && !isFavorite(destOperator) && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full mt-2 border-yellow-300 text-yellow-700 hover:bg-yellow-50"
+                    onClick={() => {
+                      const op = destOps.find(o => o.code === destOperator);
+                      if (op) addToFavorites(destOperator, op.name, destCountry);
+                    }}
+                    data-testid="add-favorite-btn"
+                  >
+                    <Star className="w-4 h-4 mr-2" />
+                    Ajouter aux favoris
+                  </Button>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Recent Transfers */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Transferts récents</CardTitle>
