@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Airtime + Transfer Multi-Methods + 21 Countries)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://african-wallet.preview.emergentagent.com
+**Preview URL:** https://afripay-1.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO

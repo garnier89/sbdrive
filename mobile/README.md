@@ -69,7 +69,7 @@ yarn ios
 
 L'URL de l'API est configurée dans `src/config.js`:
 ```javascript
-API_URL: 'https://african-wallet.preview.emergentagent.com/api'
+API_URL: 'https://afripay-1.preview.emergentagent.com/api'
 ```
 
 ## 📋 Fonctionnalités
