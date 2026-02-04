@@ -135,6 +135,9 @@ from routes.saved_cards import setup_saved_cards_routes, saved_cards_router
 # Import Geo Security Module
 from routes.geo_security import setup_geo_security_routes, geo_security_router
 
+# Import Anti-Fraud Module
+from routes.anti_fraud import setup_anti_fraud_routes, anti_fraud_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
