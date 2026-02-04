@@ -81,16 +81,30 @@ def setup_deposits_v2_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         """Get deposit configuration for user's country"""
         user = await get_current_user(authorization)
         country = user.get("country", "FR")
-        currency = COUNTRY_CURRENCIES.get(country, "EUR")
+        
+        # Get country config from centralized config
+        country_config = get_country_config(country)
+        currency = country_config["currency"] if country_config else "EUR"
         
         # Available methods based on country
         methods = ["card"]  # Card always available
-        if country in MOBILE_MONEY_PROVIDERS and len(MOBILE_MONEY_PROVIDERS[country]) > 0:
+        providers = get_mobile_money_providers(country)
+        if providers and len(providers) > 0:
             methods.append("mobile_money")
         methods.append("bank_transfer")  # Bank transfer always available
         
-        providers = MOBILE_MONEY_PROVIDERS.get(country, [])
-        quick_amounts = QUICK_AMOUNTS.get(currency, QUICK_AMOUNTS.get("EUR"))
+        quick_amounts = get_quick_amounts(currency)
+        
+        # Get all supported countries with mobile money
+        supported_countries = []
+        for code, config in AFRICAN_COUNTRIES_CONFIG.items():
+            if config.get("mobile_money"):
+                supported_countries.append({
+                    "code": code,
+                    "name": config["name"],
+                    "flag": config["flag"],
+                    "currency": config["currency"]
+                })
         
         # Get wallets
         wallets = await db.wallets.find(
@@ -105,6 +119,7 @@ def setup_deposits_v2_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
             "mobile_money_providers": providers,
             "quick_amounts": quick_amounts,
             "wallets": wallets,
+            "supported_countries": supported_countries,
             "bank_account": SBPAYGO_BANK_ACCOUNTS.get(currency),
             "limits": {
                 "min_amount": 1 if currency in ["EUR", "USD"] else 500,
@@ -114,10 +129,14 @@ def setup_deposits_v2_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         }
 
     @deposits_router.get("/providers/{country}")
-    async def get_mobile_money_providers(country: str):
+    async def get_providers_for_country(country: str):
         """Get Mobile Money providers for a specific country"""
-        providers = MOBILE_MONEY_PROVIDERS.get(country.upper(), [])
-        currency = COUNTRY_CURRENCIES.get(country.upper(), "XOF")
+        country_config = get_country_config(country)
+        if not country_config:
+            raise HTTPException(status_code=404, detail="Pays non supporté")
+        
+        providers = country_config.get("mobile_money", [])
+        currency = country_config.get("currency", "XOF")
         return {
             "country": country.upper(), 
             "currency": currency,
