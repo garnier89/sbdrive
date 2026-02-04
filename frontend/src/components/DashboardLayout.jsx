@@ -5,29 +5,44 @@ import { useTheme } from '@/components/ThemeProvider';
 import { 
   Home, Send, ArrowDownCircle, ArrowUpCircle, Receipt, 
   History, User, LogOut, Shield, Menu, X, Settings, Bell, Building2, Link2,
-  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun, Store, Banknote, Globe, Percent, MapPin
+  QrCode, Gift, Smartphone, Phone, Zap, CreditCard, FileText, Crown, BarChart3, AlertTriangle, Users, Lock, HelpCircle, Headphones, Moon, Sun, Store, Banknote, Globe, Percent, MapPin, Wallet, Copy, ChevronDown, ChevronRight, HandCoins
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { toast } from 'sonner';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_9e19f0cd-3f17-4ed6-9cf2-ef66d2aec5e9/artifacts/qhg0pnr1_1024x1024%20%281030%20x%201024%20px%29_20251125_175331_0000.png";
 
-const navItems = [
-  { href: '/dashboard', icon: Home, label: 'Dashboard' },
-  { href: '/transfer', icon: Send, label: 'Transfert' },
-  { href: '/user-transfer', icon: Users, label: 'Entre Utilisateurs' },
-  { href: '/virtual-cards', icon: CreditCard, label: 'Cartes Virtuelles' },
-  { href: '/vault', icon: Lock, label: 'Coffre-Fort' },
+// Reorganized Navigation Structure
+const mainNavItems = [
+  { href: '/dashboard', icon: Home, label: 'Tableau de bord' },
+];
+
+// Money Operations Section
+const moneyOperationsItems = [
   { href: '/deposit', icon: ArrowDownCircle, label: 'Dépôt' },
   { href: '/withdraw', icon: ArrowUpCircle, label: 'Retrait' },
-  { href: '/cash-withdrawal', icon: Banknote, label: 'Retrait Cash Agent' },
+  { href: '/transfer', icon: Send, label: 'Transfert' },
+  { href: '/user-transfer', icon: Users, label: 'Entre Utilisateurs' },
+  { href: '/request-money', icon: HandCoins, label: 'Demander Argent', isNew: true },
+];
+
+// Cards & Vault Section
+const securityItems = [
+  { href: '/virtual-cards', icon: CreditCard, label: 'Cartes Virtuelles' },
+  { href: '/vault', icon: Lock, label: 'Coffre-Fort' },
+];
+
+// Payments Section
+const paymentsItems = [
+  { href: '/qr-payment', icon: QrCode, label: 'Paiement QR' },
+  { href: '/payment-links', icon: Link2, label: 'Liens de Paiement' },
+];
+
+// Agent Network Section
+const agentItems = [
+  { href: '/cash-withdrawal', icon: Banknote, label: 'Retrait Cash' },
   { href: '/find-agent', icon: MapPin, label: 'Localiser Agent' },
-  { href: '/qr-payment', icon: QrCode, label: 'QR Code' },
-  { href: '/payment-links', icon: Link2, label: 'Liens Paiement' },
-  { href: '/rewards', icon: Gift, label: 'Récompenses' },
-  { href: '/history', icon: History, label: 'Historique' },
-  { href: '/help', icon: HelpCircle, label: 'Centre d\'Aide' },
-  { href: '/settings', icon: Settings, label: 'Paramètres' },
 ];
 
 // Africa Module items
@@ -35,6 +50,14 @@ const africaItems = [
   { href: '/mobile-money-transfer', icon: Smartphone, label: 'Mobile Money' },
   { href: '/airtime', icon: Phone, label: 'Crédit Téléphone' },
   { href: '/bill-payment', icon: Zap, label: 'Factures' },
+];
+
+// User section items
+const userItems = [
+  { href: '/rewards', icon: Gift, label: 'Récompenses' },
+  { href: '/history', icon: History, label: 'Historique' },
+  { href: '/help', icon: HelpCircle, label: 'Centre d\'Aide' },
+  { href: '/settings', icon: Settings, label: 'Paramètres' },
 ];
 
 const adminItems = [
