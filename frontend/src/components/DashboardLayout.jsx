@@ -217,8 +217,8 @@ export const DashboardLayout = ({ children }) => {
         )}
       </nav>
 
-      {/* User Section Footer */}
-      <div className="p-3 border-t border-orange-100 bg-orange-50/50">
+      {/* User Section Footer - Fixed */}
+      <div className="flex-shrink-0 p-3 border-t border-orange-100 bg-orange-50/50">
         {/* Theme Toggle */}
         <Button 
           variant="ghost" 
