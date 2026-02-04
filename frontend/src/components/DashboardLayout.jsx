@@ -150,18 +150,18 @@ export const DashboardLayout = ({ children }) => {
   };
 
   const sidebarContent = (mobile = false) => (
-    <div className="flex flex-col h-full bg-white">
-      {/* Logo */}
-      <div className="p-4 border-b border-orange-100">
+    <div className="flex flex-col h-full max-h-screen bg-white">
+      {/* Logo - Fixed Header */}
+      <div className="flex-shrink-0 p-4 border-b border-orange-100">
         <Link to="/dashboard" className="flex items-center gap-3" data-testid="sidebar-logo">
           <img src={LOGO_URL} alt="SBPAYGO" className="w-9 h-9 object-contain" />
           <span className="text-lg font-bold font-['Manrope'] bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">SBPAYGO</span>
         </Link>
       </div>
 
-      {/* User ID Card */}
+      {/* User ID Card - Fixed */}
       {user?.sbpaygo_id && (
-        <div className="mx-4 mt-4 p-3 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-lg border border-orange-200">
+        <div className="flex-shrink-0 mx-4 mt-4 p-3 bg-gradient-to-r from-orange-50 to-orange-100/50 rounded-lg border border-orange-200">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[10px] text-slate-500 uppercase tracking-wider">Mon ID SBPAYGO</p>
@@ -180,8 +180,8 @@ export const DashboardLayout = ({ children }) => {
         </div>
       )}
 
-      {/* Navigation */}
-      <nav className="flex-1 px-3 py-2 space-y-1 overflow-y-auto">
+      {/* Navigation - Scrollable */}
+      <nav className="flex-1 min-h-0 px-3 py-2 space-y-1 overflow-y-auto scrollbar-thin scrollbar-thumb-orange-200 scrollbar-track-transparent hover:scrollbar-thumb-orange-300">
         {/* Main */}
         {renderNavItems(mainNavItems, mobile)}
         
