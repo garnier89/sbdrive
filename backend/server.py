@@ -3665,7 +3665,7 @@ async def root():
 app.include_router(api_router)
 
 # Setup and include Africa module routes
-setup_africa_routes(db, get_current_user)
+setup_africa_routes(db, get_current_user, send_push_notification, send_email_notification, send_sms_notification)
 app.include_router(africa_router)
 
 # Setup and include Admin Advanced module routes
