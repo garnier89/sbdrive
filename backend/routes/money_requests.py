@@ -127,11 +127,12 @@ async def create_money_request(
     await db.money_requests.insert_one(money_request)
     
     # Send notification to recipient
+    requester_name = current_user.get('full_name', 'Quelqu un')
     background_tasks.add_task(
         send_push_notification,
         recipient["id"],
         "Demande d'argent reçue",
-        f"{current_user.get('full_name', 'Quelqu\'un')} vous demande {request_data.amount} {request_data.currency}"
+        f"{requester_name} vous demande {request_data.amount} {request_data.currency}"
     )
     
     # Send email if available
@@ -140,7 +141,7 @@ async def create_money_request(
             send_email_notification,
             recipient["email"],
             "Nouvelle demande d'argent - SBPAYGO",
-            f"{current_user.get('full_name')} vous demande {request_data.amount} {request_data.currency}. Connectez-vous à SBPAYGO pour répondre.",
+            f"{requester_name} vous demande {request_data.amount} {request_data.currency}. Connectez-vous pour repondre.",
             recipient.get("preferred_language", "fr")
         )
     
