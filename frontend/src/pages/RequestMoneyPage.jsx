@@ -180,7 +180,7 @@ export default function RequestMoneyPage() {
             <HandCoins className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-slate-800">Demander de l'argent</h1>
+            <h1 className="text-2xl font-bold text-slate-800">Demander de l&apos;argent</h1>
             <p className="text-sm text-slate-500">Envoyez une demande de paiement</p>
           </div>
           
