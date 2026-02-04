@@ -10,8 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { 
-  Store, Wallet, Users, TrendingUp, ArrowDownLeft, 
-  Search, CheckCircle2, XCircle, Clock, LogOut,
+  Store, Wallet, Users, TrendingUp, ArrowDownLeft, ArrowUpRight,
+  Search, CheckCircle2, XCircle, Clock, LogOut, Plus,
   Phone, QrCode, AlertCircle, Smartphone, ArrowUpCircle,
   RefreshCw, History, CreditCard
 } from 'lucide-react';
