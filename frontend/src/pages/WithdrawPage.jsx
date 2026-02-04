@@ -609,16 +609,11 @@ export default function WithdrawPage() {
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="SN">🇸🇳 Sénégal</SelectItem>
-                              <SelectItem value="CI">🇨🇮 Côte d'Ivoire</SelectItem>
-                              <SelectItem value="ML">🇲🇱 Mali</SelectItem>
-                              <SelectItem value="BF">🇧🇫 Burkina Faso</SelectItem>
-                              <SelectItem value="BJ">🇧🇯 Bénin</SelectItem>
-                              <SelectItem value="TG">🇹🇬 Togo</SelectItem>
-                              <SelectItem value="CM">🇨🇲 Cameroun</SelectItem>
-                              <SelectItem value="GH">🇬🇭 Ghana</SelectItem>
-                              <SelectItem value="NG">🇳🇬 Nigeria</SelectItem>
-                              <SelectItem value="KE">🇰🇪 Kenya</SelectItem>
+                              {COUNTRIES.map(c => (
+                                <SelectItem key={c.code} value={c.code}>
+                                  {c.flag} {c.name}
+                                </SelectItem>
+                              ))}
                             </SelectContent>
                           </Select>
                         </div>
@@ -641,7 +636,7 @@ export default function WithdrawPage() {
 
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <Label>Montant *</Label>
+                          <Label>Montant ({getCountryCurrency(mobileForm.country)}) *</Label>
                           <Input
                             type="number"
                             value={mobileForm.amount}
@@ -650,7 +645,7 @@ export default function WithdrawPage() {
                             data-testid="mobile-amount"
                           />
                           <p className="text-xs text-muted-foreground mt-1">
-                            Solde: {getWalletBalance(mobileForm.currency).toLocaleString()} {CURRENCY_SYMBOLS[mobileForm.currency]}
+                            Solde: {getWalletBalance(getCountryCurrency(mobileForm.country)).toLocaleString()} {CURRENCY_SYMBOLS[getCountryCurrency(mobileForm.country)]}
                           </p>
                         </div>
                         <div>
