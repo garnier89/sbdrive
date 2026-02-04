@@ -40,6 +40,16 @@ class WithdrawalConfirm(BaseModel):
     withdrawal_id: str
     otp_code: str
 
+class CashInRequest(BaseModel):
+    client_identifier: str  # Phone, email, or SBPAYGO ID
+    amount: float
+    currency: str = "XOF"
+    payment_method: str = "cash"  # cash, mobile_money
+
+class CashInConfirm(BaseModel):
+    deposit_id: str
+    otp_code: str
+
 class MobileMoneyRechargeRequest(BaseModel):
     provider: str  # orange, wave, mtn, free
     phone_number: str
