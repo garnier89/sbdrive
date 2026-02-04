@@ -228,13 +228,18 @@
   - GET /api/transfers-v2/history
 - [x] **Page**: /transfer (refonte complète)
 
-#### 🌍 Configuration 21+ Pays Africains (NEW - Feb 2026)
+#### 🌍 Configuration 24+ Pays Africains (Updated - Feb 2026)
 - [x] **Fichier de configuration centralisé**
   - `/app/backend/config/countries_config.py`
-  - 25 pays avec Mobile Money
+  - 24 pays africains avec Mobile Money + France
   - Opérateurs téléphoniques par pays
   - Devises et taux de change
   - Montants rapides par devise
+- [x] **Bug Fixes (Feb 2026)**
+  - Correction variable COUNTRIES dans DepositPage.jsx
+  - Ajout liste COUNTRIES + useEffect dans WithdrawPage.jsx
+  - Backend utilise get_mobile_money_providers() centralisé
+  - 62 tests backend passés (100% réussite)
 
 #### 📄 Reçus PDF & Améliorations UX (Feb 2026)
 - [x] **Reçus PDF téléchargeables**
