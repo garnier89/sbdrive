@@ -214,84 +214,127 @@ const AgentLocatorPage = () => {
   };
 
   // Agent Card Component
-  const AgentCard = ({ agent, compact = false }) => (
-    <Card 
-      className={`cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.id === agent.id ? 'ring-2 ring-orange-500' : ''}`}
-      onClick={() => {
-        setSelectedAgent(agent);
-        setMapCenter([agent.latitude, agent.longitude]);
-      }}
-      data-testid={`agent-card-${agent.id}`}
-    >
-      <CardContent className={compact ? 'p-3' : 'p-4'}>
-        <div className="flex justify-between items-start mb-2">
-          <div>
-            <h3 className={`font-semibold ${compact ? 'text-sm' : 'text-base'}`}>{agent.business_name}</h3>
-            <p className="text-xs text-muted-foreground flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {agent.city}, {countries[agent.country]?.name || agent.country}
-            </p>
-          </div>
-          {agent.distance !== undefined && (
-            <Badge variant="secondary" className="text-xs">
-              {agent.distance} km
-            </Badge>
-          )}
-        </div>
-        
-        <p className="text-xs text-muted-foreground mb-2">{agent.address}</p>
-        
-        {/* Services */}
-        <div className="flex flex-wrap gap-1 mb-2">
-          {agent.services?.slice(0, compact ? 3 : 6).map(service => (
-            <ServiceBadge key={service} serviceCode={service} />
-          ))}
-          {agent.services?.length > (compact ? 3 : 6) && (
-            <Badge variant="outline" className="text-xs">
-              +{agent.services.length - (compact ? 3 : 6)}
-            </Badge>
-          )}
-        </div>
+  const AgentCard = ({ agent, compact = false }) => {
+    // Check if agent is currently open
+    const isOpen = () => {
+      if (!agent.opening_hours) return null;
+      const now = new Date();
+      const day = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][now.getDay()];
+      const hours = agent.opening_hours[day];
+      if (!hours || hours.closed) return false;
+      
+      const currentTime = now.getHours() * 60 + now.getMinutes();
+      const [openH, openM] = (hours.open || '08:00').split(':').map(Number);
+      const [closeH, closeM] = (hours.close || '18:00').split(':').map(Number);
+      const openTime = openH * 60 + openM;
+      const closeTime = closeH * 60 + closeM;
+      
+      return currentTime >= openTime && currentTime <= closeTime;
+    };
 
-        {/* Rating and Actions */}
-        <div className="flex items-center justify-between mt-2">
-          <div className="flex items-center gap-1 text-xs text-muted-foreground">
-            <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-            <span>{agent.rating?.toFixed(1) || 'N/A'}</span>
-            <span>({agent.total_reviews || 0} avis)</span>
+    const openStatus = isOpen();
+    const todayHours = () => {
+      if (!agent.opening_hours) return null;
+      const day = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][new Date().getDay()];
+      const hours = agent.opening_hours[day];
+      if (!hours || hours.closed) return 'Fermé';
+      return `${hours.open || '08:00'} - ${hours.close || '18:00'}`;
+    };
+
+    return (
+      <Card 
+        className={`cursor-pointer transition-all hover:shadow-lg ${selectedAgent?.id === agent.id ? 'ring-2 ring-orange-500' : ''}`}
+        onClick={() => {
+          setSelectedAgent(agent);
+          setMapCenter([agent.latitude, agent.longitude]);
+        }}
+        data-testid={`agent-card-${agent.id}`}
+      >
+        <CardContent className={compact ? 'p-3' : 'p-4'}>
+          <div className="flex justify-between items-start mb-2">
+            <div>
+              <h3 className={`font-semibold ${compact ? 'text-sm' : 'text-base'}`}>{agent.business_name}</h3>
+              <p className="text-xs text-muted-foreground flex items-center gap-1">
+                <MapPin className="w-3 h-3" />
+                {agent.city}, {countries[agent.country]?.name || agent.country}
+              </p>
+            </div>
+            <div className="flex flex-col items-end gap-1">
+              {agent.distance !== undefined && (
+                <Badge variant="secondary" className="text-xs">
+                  {agent.distance} km
+                </Badge>
+              )}
+              {openStatus !== null && (
+                <Badge className={`text-xs ${openStatus ? 'bg-green-500 hover:bg-green-600' : 'bg-red-500 hover:bg-red-600'}`}>
+                  {openStatus ? 'Ouvert' : 'Fermé'}
+                </Badge>
+              )}
+            </div>
           </div>
           
-          {!compact && (
-            <div className="flex gap-2">
-              <Button 
-                size="sm" 
-                variant="outline"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  window.open(`tel:${agent.phone}`, '_self');
-                }}
-                data-testid={`call-agent-${agent.id}`}
-              >
-                <Phone className="w-3 h-3 mr-1" />
-                Appeler
-              </Button>
-              <Button 
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  openNavigation(agent);
-                }}
-                data-testid={`navigate-agent-${agent.id}`}
-              >
-                <Navigation className="w-3 h-3 mr-1" />
-                Y aller
-              </Button>
+          <p className="text-xs text-muted-foreground mb-2">{agent.address}</p>
+          
+          {/* Opening Hours */}
+          {!compact && todayHours() && (
+            <div className="flex items-center gap-1 text-xs text-muted-foreground mb-2">
+              <Clock className="w-3 h-3" />
+              <span>Aujourd&apos;hui: {todayHours()}</span>
             </div>
           )}
-        </div>
-      </CardContent>
-    </Card>
-  );
+          
+          {/* Services */}
+          <div className="flex flex-wrap gap-1 mb-2">
+            {agent.services?.slice(0, compact ? 3 : 6).map(service => (
+              <ServiceBadge key={service} serviceCode={service} />
+            ))}
+            {agent.services?.length > (compact ? 3 : 6) && (
+              <Badge variant="outline" className="text-xs">
+                +{agent.services.length - (compact ? 3 : 6)}
+              </Badge>
+            )}
+          </div>
+
+          {/* Rating and Actions */}
+          <div className="flex items-center justify-between mt-2">
+            <div className="flex items-center gap-1 text-xs text-muted-foreground">
+              <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
+              <span>{agent.rating?.toFixed(1) || 'N/A'}</span>
+              <span>({agent.total_reviews || 0} avis)</span>
+            </div>
+            
+            {!compact && (
+              <div className="flex gap-2">
+                <Button 
+                  size="sm" 
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    window.open(`tel:${agent.phone}`, '_self');
+                  }}
+                  data-testid={`call-agent-${agent.id}`}
+                >
+                  <Phone className="w-3 h-3 mr-1" />
+                  Appeler
+                </Button>
+                <Button 
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openNavigation(agent);
+                  }}
+                  data-testid={`navigate-agent-${agent.id}`}
+                >
+                  <Navigation className="w-3 h-3 mr-1" />
+                  Y aller
+                </Button>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    );
+  };
 
   return (
     <DashboardLayout>
