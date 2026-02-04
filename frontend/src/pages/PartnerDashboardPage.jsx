@@ -106,6 +106,78 @@ export default function PartnerDashboardPage() {
     navigate('/partner/login');
   };
 
+  // ==================== CASH IN (DEPOSIT) FUNCTIONS ====================
+  
+  const handleInitiateDeposit = async () => {
+    if (!depositSearchInput || !depositAmount) {
+      toast.error('Veuillez remplir tous les champs');
+      return;
+    }
+    
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast.error('Montant invalide');
+      return;
+    }
+    
+    setProcessingDeposit(true);
+    try {
+      const token = localStorage.getItem('sbpaygo_partner_token');
+      const response = await axios.post(`${API}/partners/deposit/initiate`, {
+        client_identifier: depositSearchInput,
+        amount: amount,
+        currency: 'XOF'
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      setDepositData(response.data);
+      setDepositStep('otp');
+      toast.success('Code OTP envoyé au client');
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de l\'initiation du dépôt');
+    } finally {
+      setProcessingDeposit(false);
+    }
+  };
+
+  const handleConfirmDeposit = async () => {
+    if (!depositOtp || depositOtp.length !== 6) {
+      toast.error('Veuillez entrer un code OTP valide (6 chiffres)');
+      return;
+    }
+    
+    setProcessingDeposit(true);
+    try {
+      const token = localStorage.getItem('sbpaygo_partner_token');
+      const response = await axios.post(`${API}/partners/deposit/confirm`, {
+        deposit_id: depositData.deposit_id,
+        otp_code: depositOtp
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      toast.success(`Dépôt de ${response.data.amount_deposited} XOF effectué! Commission: ${response.data.commission} XOF`);
+      setShowDepositDialog(false);
+      resetDepositState();
+      fetchDashboard(localStorage.getItem('sbpaygo_partner_token'));
+    } catch (error) {
+      toast.error(error.response?.data?.detail || 'Erreur lors de la confirmation');
+    } finally {
+      setProcessingDeposit(false);
+    }
+  };
+
+  const resetDepositState = () => {
+    setDepositStep('search');
+    setDepositSearchInput('');
+    setDepositAmount('');
+    setDepositData(null);
+    setDepositOtp('');
+  };
+
+  // ==================== WITHDRAWAL FUNCTIONS ====================
+
   const handleInitiateWithdrawal = async () => {
     if (!searchInput || !withdrawalAmount) {
       toast.error('Veuillez remplir tous les champs');
