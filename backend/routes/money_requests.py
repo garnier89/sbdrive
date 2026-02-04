@@ -3,17 +3,19 @@ Money Requests Module for SBPAYGO
 Allows users to request money from other users via email, phone, or SBPAYGO ID
 """
 
-from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
-from pydantic import BaseModel, EmailStr
-from typing import Optional, List
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks, Header
+from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime, timezone, timedelta
 import uuid
+import jwt
 
-money_requests_router = APIRouter(prefix="/money-requests", tags=["Money Requests"])
+money_requests_router = APIRouter(prefix="/api/money-requests", tags=["Money Requests"])
 
 # Will be set by setup function
 db = None
-get_current_user = None
+JWT_SECRET_KEY = None
+JWT_ALGORITHM = None
 send_push_notification = None
 send_email_notification = None
 send_sms_notification = None
@@ -29,22 +31,43 @@ class MoneyRequestResponse(BaseModel):
     request_id: str
     action: str  # approve, reject
 
-def setup_money_requests_routes(database, current_user_dep, push_notif, email_notif, sms_notif):
-    global db, get_current_user, send_push_notification, send_email_notification, send_sms_notification
+def setup_money_requests_routes(database, jwt_secret, jwt_algo, push_notif, email_notif, sms_notif):
+    global db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification, send_sms_notification
     db = database
-    get_current_user = current_user_dep
+    JWT_SECRET_KEY = jwt_secret
+    JWT_ALGORITHM = jwt_algo
     send_push_notification = push_notif
     send_email_notification = email_notif
     send_sms_notification = sms_notif
+
+async def get_current_user_local(authorization: str = Header(None)):
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Invalid authorization header")
+    
+    token = authorization.split(" ")[1]
+    try:
+        payload = jwt.decode(token, JWT_SECRET_KEY, algorithms=[JWT_ALGORITHM])
+        user_id = payload.get("sub")
+        if not user_id:
+            raise HTTPException(status_code=401, detail="Invalid token")
+        
+        user = await db.users.find_one({"id": user_id}, {"_id": 0})
+        if not user:
+            raise HTTPException(status_code=401, detail="User not found")
+        
+        return user
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
 
 @money_requests_router.post("/create")
 async def create_money_request(
     request_data: MoneyRequestCreate,
     background_tasks: BackgroundTasks,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_local)
 ):
     """Create a new money request"""
-    current_user = await get_current_user()
     
     # Find recipient based on type
     recipient = None
@@ -129,9 +152,8 @@ async def create_money_request(
     }
 
 @money_requests_router.get("/sent")
-async def get_sent_requests(current_user: dict = Depends(lambda: get_current_user)):
+async def get_sent_requests(current_user: dict = Depends(get_current_user_local)):
     """Get money requests sent by current user"""
-    current_user = await get_current_user()
     
     requests = await db.money_requests.find(
         {"requester_id": current_user["id"]},
@@ -141,9 +163,8 @@ async def get_sent_requests(current_user: dict = Depends(lambda: get_current_use
     return {"requests": requests}
 
 @money_requests_router.get("/received")
-async def get_received_requests(current_user: dict = Depends(lambda: get_current_user)):
+async def get_received_requests(current_user: dict = Depends(get_current_user_local)):
     """Get money requests received by current user"""
-    current_user = await get_current_user()
     
     requests = await db.money_requests.find(
         {"recipient_id": current_user["id"]},
@@ -156,10 +177,9 @@ async def get_received_requests(current_user: dict = Depends(lambda: get_current
 async def respond_to_request(
     response: MoneyRequestResponse,
     background_tasks: BackgroundTasks,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_local)
 ):
     """Respond to a money request (approve or reject)"""
-    current_user = await get_current_user()
     
     # Find the request
     request = await db.money_requests.find_one(
@@ -280,10 +300,9 @@ async def respond_to_request(
 @money_requests_router.post("/cancel/{request_id}")
 async def cancel_request(
     request_id: str,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_local)
 ):
     """Cancel a pending money request (requester only)"""
-    current_user = await get_current_user()
     
     request = await db.money_requests.find_one(
         {"id": request_id, "requester_id": current_user["id"]},
@@ -307,10 +326,9 @@ async def cancel_request(
 async def lookup_user(
     type: str,
     value: str,
-    current_user: dict = Depends(lambda: get_current_user)
+    current_user: dict = Depends(get_current_user_local)
 ):
     """Look up a user by email, phone, or SBPAYGO ID"""
-    current_user = await get_current_user()
     
     search_field = None
     
