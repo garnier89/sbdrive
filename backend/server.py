@@ -3769,6 +3769,14 @@ app.include_router(money_requests_router)
 user_extras_configured_router = setup_user_extras_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification, send_email_notification)
 app.include_router(user_extras_configured_router)
 
+# Setup and include Saved Cards module routes
+setup_saved_cards_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
+app.include_router(saved_cards_router)
+
+# Setup and include Geo Security module routes
+setup_geo_security_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
+app.include_router(geo_security_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
