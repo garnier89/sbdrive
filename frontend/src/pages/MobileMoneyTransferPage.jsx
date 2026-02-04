@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 import { API } from '@/App';
 import axios from 'axios';
-import { ArrowRight, RefreshCw, Smartphone, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
+import { ArrowRight, RefreshCw, Smartphone, CheckCircle, AlertCircle, Loader2, Star, Trash2 } from 'lucide-react';
 
 const COUNTRIES = [
   { code: 'SN', name: 'Sénégal', flag: '🇸🇳' },
