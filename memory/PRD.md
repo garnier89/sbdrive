@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Phase 1 UX & Navigation)  
+**Last Updated:** February 2026 (Phase 2 - Security & Cards)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://africa-wallet-1.preview.emergentagent.com
 
@@ -32,13 +32,46 @@
 
 ## Features Summary
 
-### ✅ COMPLETED FEATURES (Phase 1 - Feb 2026)
+### ✅ COMPLETED FEATURES
 
-#### 🆕 Phase 1 UX & Navigation (NEW - Feb 2026)
+#### 🆕 Phase 2 - Security & Cards (NEW - Feb 2026)
+- [x] **Cartes Bancaires Enregistrées**
+  - Page: /saved-cards
+  - Ajout de cartes avec validation Luhn
+  - Détection automatique du type (Visa, Mastercard, Amex)
+  - Masquage sécurisé (**** **** **** 1234)
+  - Design visuel moderne (carte style bancaire)
+  - Carte par défaut
+  - API endpoints:
+    - POST /api/saved-cards/add
+    - GET /api/saved-cards/list
+    - DELETE /api/saved-cards/{id}
+    - POST /api/saved-cards/{id}/set-default
+- [x] **Sécurité Géographique**
+  - Page: /geo-security
+  - Activation/désactivation de la protection
+  - Définition de la position de référence (GPS)
+  - Rayon autorisé configurable (1-500 km)
+  - Calcul de distance avec formule Haversine
+  - Historique des vérifications
+  - Notifications de blocage
+  - API endpoints:
+    - GET /api/security/geo/settings
+    - POST /api/security/geo/settings
+    - POST /api/security/geo/check
+    - GET /api/security/geo/logs
+- [x] **Gestion Avancée du Personnel (Admin)**
+  - Page: /admin/staff
+  - 12 rôles prédéfinis (Super Admin, Admin Pays, Finance, Support, etc.)
+  - Attribution de zones/pays aux employés
+  - Permissions granulaires par fonctionnalité
+  - Historique des activités
+
+#### ✅ Phase 1 - UX & Navigation (Feb 2026)
 - [x] **Sidebar Reorganized**
   - Sections logiques avec emojis
   - 💰 Opérations (Dépôt, Retrait, Transfert, Entre Utilisateurs, Demander Argent)
-  - 🔐 Cartes & Sécurité (Cartes Virtuelles, Coffre-Fort)
+  - 🔐 Cartes & Sécurité (Cartes Virtuelles, Cartes Bancaires, Coffre-Fort, Sécurité Géo)
   - 💳 Paiements (Paiement QR, Liens de Paiement)
   - 🏪 Réseau Agents (Retrait Cash, Localiser Agent)
   - 🌍 Afrique (Mobile Money, Crédit Téléphone, Factures)
@@ -56,21 +89,10 @@
   - Onglets: Nouvelle, Envoyées, Reçues
   - Approbation/Rejet des demandes reçues
   - Annulation des demandes envoyées
-  - API endpoints:
-    - GET /api/money-requests/lookup
-    - POST /api/money-requests/create
-    - GET /api/money-requests/sent
-    - GET /api/money-requests/received
-    - POST /api/money-requests/respond
-    - POST /api/money-requests/cancel/{id}
 - [x] **Système de Favoris Mobile Money**
   - Page: /mobile-money-transfer
   - Ajout/suppression d'opérateurs favoris
   - Sélection rapide via clic sur favori
-  - API endpoints:
-    - GET /api/user/favorite-operators
-    - POST /api/user/favorite-operators
-    - DELETE /api/user/favorite-operators/{id}
 
 #### Core Payment Features
 - [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, etc.)
