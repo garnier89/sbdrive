@@ -260,6 +260,13 @@ def create_access_token(data: dict) -> str:
 def generate_otp() -> str:
     return ''.join(random.choices(string.digits, k=6))
 
+def generate_sbpaygo_id() -> str:
+    """Generate unique SBPAYGO ID in format SBP-XXXX-XXXX"""
+    chars = string.ascii_uppercase + string.digits
+    part1 = ''.join(random.choices(chars, k=4))
+    part2 = ''.join(random.choices(chars, k=4))
+    return f"SBP-{part1}-{part2}"
+
 async def get_current_user(authorization: str = Header(None)):
     if not authorization or not authorization.startswith("Bearer "):
         raise HTTPException(status_code=401, detail="Invalid authorization header")
