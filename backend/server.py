@@ -539,6 +539,7 @@ async def register(user_data: UserCreate, background_tasks: BackgroundTasks):
         "token_type": "bearer",
         "user": {
             "id": user_id,
+            "sbpaygo_id": sbpaygo_id,
             "email": user_data.email,
             "first_name": user_data.first_name,
             "last_name": user_data.last_name,
