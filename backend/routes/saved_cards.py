@@ -133,10 +133,11 @@ async def add_card(
     if not validate_expiry(card_data.expiry_month, card_data.expiry_year):
         raise HTTPException(status_code=400, detail="Date d'expiration invalide")
     
-    # Check for duplicate (last 4 digits match)
+    # Check for duplicate (last 4 digits match) - only check active cards
     existing = await db.saved_cards.find_one({
         "user_id": current_user["id"],
-        "last_four": clean_number[-4:]
+        "last_four": clean_number[-4:],
+        "is_active": True
     })
     if existing:
         raise HTTPException(status_code=400, detail="Cette carte est deja enregistree")
