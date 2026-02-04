@@ -146,8 +146,17 @@ def generate_reference(prefix: str = "SB") -> str:
 
 # ==================== ROUTES - MOBILE MONEY INTEROP ====================
 
-def setup_africa_routes(db, get_current_user):
-    """Setup all Africa module routes with database access"""
+# Global notification functions
+_send_push_notification = None
+_send_email_notification = None
+_send_sms_notification = None
+
+def setup_africa_routes(db, get_current_user, send_push_notification=None, send_email_notification=None, send_sms_notification=None):
+    """Setup all Africa module routes with database access and notifications"""
+    global _send_push_notification, _send_email_notification, _send_sms_notification
+    _send_push_notification = send_push_notification
+    _send_email_notification = send_email_notification
+    _send_sms_notification = send_sms_notification
     
     @africa_router.get("/mobile-money/operators")
     async def get_mm_operators(country: Optional[str] = None):
