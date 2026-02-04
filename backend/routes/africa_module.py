@@ -82,43 +82,24 @@ MM_FEES = {
     ("moov", "mtn_momo"): {"fixed": 150, "percent": 1.5},
 }
 
-# Opérateurs Mobile Money par pays
+# Import configuration from centralized config
+from config.countries_config import AFRICAN_COUNTRIES_CONFIG, get_mobile_money_providers, get_telecom_operators
+
+# Opérateurs Mobile Money par pays - Généré depuis la config centralisée
 MM_OPERATORS_BY_COUNTRY = {
-    "SN": ["wave", "orange_money", "free_money"],
-    "CI": ["wave", "orange_money", "mtn_momo", "moov"],
-    "ML": ["wave", "orange_money", "moov"],
-    "BF": ["wave", "orange_money", "moov"],
-    "BJ": ["wave", "mtn_momo", "moov"],
-    "TG": ["wave", "moov"],
-    "CM": ["orange_money", "mtn_momo"],
-    "GH": ["mtn_momo"],
+    code: [op["code"] for op in config.get("mobile_money", [])]
+    for code, config in AFRICAN_COUNTRIES_CONFIG.items()
+    if config.get("mobile_money")
 }
 
-# Opérateurs télécom pour Airtime
+# Opérateurs télécom pour Airtime - Généré depuis la config centralisée
 AIRTIME_OPERATORS = {
-    "SN": [
-        {"code": "orange_sn", "name": "Orange Sénégal", "min": 100, "max": 50000},
-        {"code": "free_sn", "name": "Free Sénégal", "min": 100, "max": 50000},
-        {"code": "expresso_sn", "name": "Expresso", "min": 100, "max": 25000},
-    ],
-    "CI": [
-        {"code": "orange_ci", "name": "Orange Côte d'Ivoire", "min": 100, "max": 100000},
-        {"code": "mtn_ci", "name": "MTN Côte d'Ivoire", "min": 100, "max": 100000},
-        {"code": "moov_ci", "name": "Moov Côte d'Ivoire", "min": 100, "max": 50000},
-    ],
-    "ML": [
-        {"code": "orange_ml", "name": "Orange Mali", "min": 100, "max": 50000},
-        {"code": "malitel", "name": "Malitel", "min": 100, "max": 50000},
-    ],
-    "BF": [
-        {"code": "orange_bf", "name": "Orange Burkina", "min": 100, "max": 50000},
-        {"code": "moov_bf", "name": "Moov Burkina", "min": 100, "max": 50000},
-        {"code": "telecel_bf", "name": "Telecel", "min": 100, "max": 25000},
-    ],
-    "CM": [
-        {"code": "orange_cm", "name": "Orange Cameroun", "min": 100, "max": 100000},
-        {"code": "mtn_cm", "name": "MTN Cameroun", "min": 100, "max": 100000},
-    ],
+    code: [
+        {"code": op["code"], "name": op["name"], "min": 100, "max": 100000}
+        for op in config.get("telecom_operators", [])
+    ]
+    for code, config in AFRICAN_COUNTRIES_CONFIG.items()
+    if config.get("telecom_operators")
 }
 
 # Fournisseurs de factures
