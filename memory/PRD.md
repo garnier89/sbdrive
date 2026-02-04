@@ -119,19 +119,21 @@
   - 🏪 Réseau Agents (Retrait Cash, Localiser Agent)
   - 🌍 Afrique (Mobile Money, Crédit Téléphone, Factures)
   - 👤 Mon Compte (Récompenses, Historique, Centre d'Aide, Paramètres)
+  - **🐛 Bug Fix (Feb 2026)**: Correction du défilement de la sidebar pour afficher tous les éléments du menu
 - [x] **ID Utilisateur Unique SBPAYGO**
   - Format: SBP-XXXX-XXXX
   - Généré à l'inscription
   - Généré pour utilisateurs existants au premier login
   - Affiché dans la sidebar avec bouton copier
   - Utilisable pour rechercher des utilisateurs
-- [x] **Demander de l'argent (Request Money)**
+- [x] **Demander de l'argent (Request Money)** ✅ Vérifié fonctionnel (Feb 2026)
   - Page: /request-money
   - Recherche par ID SBPAYGO, téléphone ou email
   - Création de demandes avec montant et message
   - Onglets: Nouvelle, Envoyées, Reçues
   - Approbation/Rejet des demandes reçues
   - Annulation des demandes envoyées
+  - 18/18 tests backend passés
 - [x] **Système de Favoris Mobile Money**
   - Page: /mobile-money-transfer
   - Ajout/suppression d'opérateurs favoris
