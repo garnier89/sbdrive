@@ -63,6 +63,14 @@
     - GET /api/money-requests/received
     - POST /api/money-requests/respond
     - POST /api/money-requests/cancel/{id}
+- [x] **Système de Favoris Mobile Money**
+  - Page: /mobile-money-transfer
+  - Ajout/suppression d'opérateurs favoris
+  - Sélection rapide via clic sur favori
+  - API endpoints:
+    - GET /api/user/favorite-operators
+    - POST /api/user/favorite-operators
+    - DELETE /api/user/favorite-operators/{id}
 
 #### Core Payment Features
 - [x] Multi-currency wallets (12 currencies: EUR, USD, XOF, etc.)
