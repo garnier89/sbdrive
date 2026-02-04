@@ -346,6 +346,12 @@
   - Ajout liste COUNTRIES + useEffect dans WithdrawPage.jsx
   - Backend utilise get_mobile_money_providers() centralisé
   - 62 tests backend passés (100% réussite)
+- [x] **🆕 Mise à jour Mobile Money (Feb 2026)**
+  - Page /mobile-money-transfer mise à jour avec 24 pays
+  - Backend Africa module utilise config centralisée
+  - Notifications Push + Email pour transferts Mobile Money
+  - Pays: SN, CI, ML, BF, BJ, TG, NE, GW, GN, GH, NG, LR, SL, CM, GA, CG, CD, KE, TZ, UG, RW, ZM, ZW, MA
+  - Opérateurs: Wave, Orange Money, MTN MoMo, M-Pesa, OPay, PalmPay, Kuda, etc.
 
 #### 📄 Reçus PDF & Améliorations UX (Feb 2026)
 - [x] **Reçus PDF téléchargeables**
