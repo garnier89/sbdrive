@@ -71,6 +71,7 @@ import AdminZonesConfigPage from "@/pages/admin/AdminZonesConfigPage";
 import AdminStaffPage from "@/pages/admin/AdminStaffPage";
 import AdminCommissionsPage from "@/pages/admin/AdminCommissionsPage";
 import AdminLimitsPage from "@/pages/admin/AdminLimitsPage";
+import AdminAntiFraudPage from "@/pages/admin/AdminAntiFraudPage";
 // Partner Pages
 import PartnerRegisterPage from "@/pages/PartnerRegisterPage";
 import PartnerLoginPage from "@/pages/PartnerLoginPage";
