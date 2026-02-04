@@ -3752,6 +3752,10 @@ app.include_router(airtime_router)
 setup_transfers_v2_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM, send_push_notification)
 app.include_router(transfers_v2_router)
 
+# Setup and include Money Requests module routes
+setup_money_requests_routes(db, get_current_user, send_push_notification, send_email_notification, send_sms_notification)
+app.include_router(money_requests_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
