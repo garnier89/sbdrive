@@ -494,6 +494,316 @@ def setup_partners_routes(db, jwt_secret, jwt_algorithm, hash_password, verify_p
         
         return {"message": "Retrait annulé"}
 
+    # ==================== CASH DEPOSIT (CASH IN) PROCESS ====================
+
+    @partners_router.post("/deposit/initiate")
+    async def initiate_cash_deposit(
+        request: CashInRequest,
+        background_tasks: BackgroundTasks,
+        authorization: str = Header(None)
+    ):
+        """Initiate a cash deposit for a client (Cash In)"""
+        partner = await get_current_partner(authorization)
+        
+        if partner["status"] != "active":
+            raise HTTPException(status_code=403, detail="Compte partenaire non actif")
+        
+        # Find client by phone, email, or SBPAYGO ID
+        client_identifier = request.client_identifier.strip()
+        client = None
+        
+        # Try by SBPAYGO ID first
+        if client_identifier.upper().startswith("SBP-"):
+            client = await db.users.find_one(
+                {"sbpaygo_id": client_identifier.upper()},
+                {"_id": 0}
+            )
+        
+        # Try by phone
+        if not client:
+            client = await db.users.find_one(
+                {"phone": {"$regex": client_identifier.replace("+", "\\+"), "$options": "i"}},
+                {"_id": 0}
+            )
+        
+        # Try by email
+        if not client:
+            client = await db.users.find_one(
+                {"email": client_identifier.lower()},
+                {"_id": 0}
+            )
+        
+        if not client:
+            raise HTTPException(status_code=404, detail="Client non trouve. Verifiez le numero, email ou ID SBPAYGO.")
+        
+        # Validate amount
+        if request.amount <= 0:
+            raise HTTPException(status_code=400, detail="Montant invalide")
+        
+        if request.amount > 1000000:  # Max 1M per deposit
+            raise HTTPException(status_code=400, detail="Montant maximum: 1,000,000")
+        
+        # Calculate fee (agent commission)
+        commission_rate = partner.get("commission_rate", 0.01)  # 1% default
+        commission = round(request.amount * commission_rate, 2)
+        net_amount = request.amount - commission
+        
+        # Generate OTP for client confirmation
+        otp_code = str(secrets.randbelow(900000) + 100000)
+        otp_hash = hashlib.sha256(otp_code.encode()).hexdigest()
+        
+        now = datetime.now(timezone.utc)
+        from datetime import timedelta
+        
+        deposit_id = str(uuid.uuid4())
+        
+        deposit = {
+            "id": deposit_id,
+            "type": "cash_in",
+            "partner_id": partner["id"],
+            "partner_code": partner["partner_code"],
+            "partner_name": partner["business_name"],
+            "client_id": client["id"],
+            "client_name": client.get("full_name", ""),
+            "client_phone": client.get("phone", ""),
+            "client_sbpaygo_id": client.get("sbpaygo_id", ""),
+            "amount": request.amount,
+            "commission": commission,
+            "net_amount": net_amount,
+            "currency": request.currency,
+            "payment_method": request.payment_method,
+            "otp_hash": otp_hash,
+            "otp_expires": (now + timedelta(minutes=10)).isoformat(),
+            "status": "pending_otp",
+            "created_at": now.isoformat()
+        }
+        
+        await db.partner_deposits.insert_one(deposit)
+        
+        # Send OTP to client
+        background_tasks.add_task(
+            send_push_notification,
+            client["id"],
+            "Code de depot",
+            f"Code pour depot de {request.amount} {request.currency} chez {partner['business_name']}: {otp_code}"
+        )
+        
+        # Mask client name for privacy
+        name_parts = client.get("full_name", "Client").split()
+        masked_name = name_parts[0] if name_parts else "Client"
+        if len(name_parts) > 1:
+            masked_name += " " + name_parts[-1][0] + "."
+        
+        return {
+            "deposit_id": deposit_id,
+            "client_name": masked_name,
+            "client_sbpaygo_id": client.get("sbpaygo_id", ""),
+            "client_phone_masked": client.get("phone", "")[-4:].rjust(len(client.get("phone", "")), "*"),
+            "amount": request.amount,
+            "commission": commission,
+            "net_amount": net_amount,
+            "currency": request.currency,
+            "message": "Code OTP envoye au client",
+            "expires_in_minutes": 10
+        }
+
+    @partners_router.post("/deposit/confirm")
+    async def confirm_cash_deposit(
+        request: CashInConfirm,
+        background_tasks: BackgroundTasks,
+        authorization: str = Header(None)
+    ):
+        """Confirm cash deposit with OTP (Cash In)"""
+        partner = await get_current_partner(authorization)
+        
+        # Find pending deposit
+        deposit = await db.partner_deposits.find_one({
+            "id": request.deposit_id,
+            "partner_id": partner["id"],
+            "status": "pending_otp"
+        })
+        
+        if not deposit:
+            raise HTTPException(status_code=404, detail="Depot non trouve ou deja traite")
+        
+        # Check OTP expiry
+        otp_expires = datetime.fromisoformat(deposit["otp_expires"].replace("Z", "+00:00"))
+        if datetime.now(timezone.utc) > otp_expires:
+            await db.partner_deposits.update_one(
+                {"id": request.deposit_id},
+                {"$set": {"status": "expired"}}
+            )
+            raise HTTPException(status_code=400, detail="Code OTP expire. Veuillez recommencer.")
+        
+        # Verify OTP
+        otp_hash = hashlib.sha256(request.otp_code.encode()).hexdigest()
+        if otp_hash != deposit["otp_hash"]:
+            raise HTTPException(status_code=400, detail="Code OTP incorrect")
+        
+        now = datetime.now(timezone.utc)
+        
+        # Credit client wallet
+        wallet = await db.wallets.find_one({
+            "user_id": deposit["client_id"],
+            "currency": deposit["currency"]
+        })
+        
+        if wallet:
+            await db.wallets.update_one(
+                {"user_id": deposit["client_id"], "currency": deposit["currency"]},
+                {"$inc": {"balance": deposit["net_amount"]}}
+            )
+        else:
+            # Create wallet if doesn't exist
+            await db.wallets.insert_one({
+                "id": str(uuid.uuid4()),
+                "user_id": deposit["client_id"],
+                "currency": deposit["currency"],
+                "balance": deposit["net_amount"],
+                "created_at": now.isoformat()
+            })
+        
+        # Credit partner commission
+        await db.partners.update_one(
+            {"id": partner["id"]},
+            {
+                "$inc": {
+                    "wallet_balance": deposit["commission"],
+                    "total_deposits": 1,
+                    "total_commission": deposit["commission"]
+                }
+            }
+        )
+        
+        # Update deposit status
+        await db.partner_deposits.update_one(
+            {"id": request.deposit_id},
+            {
+                "$set": {
+                    "status": "completed",
+                    "completed_at": now.isoformat()
+                }
+            }
+        )
+        
+        # Create transaction record
+        tx_id = str(uuid.uuid4())
+        await db.transactions.insert_one({
+            "id": tx_id,
+            "type": "cash_in",
+            "user_id": deposit["client_id"],
+            "partner_id": partner["id"],
+            "amount": deposit["amount"],
+            "net_amount": deposit["net_amount"],
+            "fee": deposit["commission"],
+            "currency": deposit["currency"],
+            "status": "completed",
+            "description": f"Depot especes chez {partner['business_name']}",
+            "created_at": now.isoformat()
+        })
+        
+        # Notify client
+        background_tasks.add_task(
+            send_push_notification,
+            deposit["client_id"],
+            "Depot reussi!",
+            f"Vous avez recu {deposit['net_amount']} {deposit['currency']} sur votre compte SBPAYGO."
+        )
+        
+        return {
+            "success": True,
+            "transaction_id": tx_id,
+            "amount_deposited": deposit["amount"],
+            "commission": deposit["commission"],
+            "net_credited": deposit["net_amount"],
+            "currency": deposit["currency"],
+            "client_name": deposit["client_name"],
+            "message": "Depot effectue avec succes"
+        }
+
+    @partners_router.get("/deposits")
+    async def get_partner_deposits(
+        limit: int = 20,
+        status: str = None,
+        authorization: str = Header(None)
+    ):
+        """Get partner deposit history"""
+        partner = await get_current_partner(authorization)
+        
+        query = {"partner_id": partner["id"]}
+        if status:
+            query["status"] = status
+        
+        deposits = await db.partner_deposits.find(
+            query,
+            {"_id": 0, "otp_hash": 0}
+        ).sort("created_at", -1).limit(limit).to_list(limit)
+        
+        return {"deposits": deposits}
+
+    @partners_router.get("/deposits/stats")
+    async def get_partner_deposit_stats(authorization: str = Header(None)):
+        """Get partner deposit statistics"""
+        partner = await get_current_partner(authorization)
+        
+        # Today's stats
+        today = datetime.now(timezone.utc).replace(hour=0, minute=0, second=0, microsecond=0)
+        
+        today_deposits = await db.partner_deposits.count_documents({
+            "partner_id": partner["id"],
+            "created_at": {"$gte": today.isoformat()},
+            "status": "completed"
+        })
+        
+        today_amount = 0
+        today_commission = 0
+        cursor = db.partner_deposits.find({
+            "partner_id": partner["id"],
+            "created_at": {"$gte": today.isoformat()},
+            "status": "completed"
+        })
+        async for d in cursor:
+            today_amount += d.get("amount", 0)
+            today_commission += d.get("commission", 0)
+        
+        # Total stats
+        total_deposits = await db.partner_deposits.count_documents({
+            "partner_id": partner["id"],
+            "status": "completed"
+        })
+        
+        return {
+            "today": {
+                "count": today_deposits,
+                "amount": today_amount,
+                "commission": today_commission
+            },
+            "total_deposits": total_deposits,
+            "total_commission": partner.get("total_commission", 0)
+        }
+
+    @partners_router.post("/deposit/cancel/{deposit_id}")
+    async def cancel_deposit(
+        deposit_id: str,
+        authorization: str = Header(None)
+    ):
+        """Cancel a pending deposit"""
+        partner = await get_current_partner(authorization)
+        
+        result = await db.partner_deposits.update_one(
+            {
+                "id": deposit_id,
+                "partner_id": partner["id"],
+                "status": "pending_otp"
+            },
+            {"$set": {"status": "cancelled", "cancelled_at": datetime.now(timezone.utc).isoformat()}}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=400, detail="Depot non trouvable ou deja traite")
+        
+        return {"message": "Depot annule"}
+
     # ==================== MOBILE MONEY RECHARGE ====================
 
     @partners_router.post("/mobile-money/recharge/initiate")
