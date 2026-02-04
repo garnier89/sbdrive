@@ -83,11 +83,30 @@ def setup_withdrawals_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         """Get withdrawal configuration for user's country"""
         user = await get_current_user(authorization)
         country = user.get("country", "FR")
-        currency = user.get("default_currency", "EUR")
         
-        methods = WITHDRAWAL_METHODS.get(country, ["bank"])
-        providers = MOBILE_MONEY_PROVIDERS.get(country, [])
+        # Get country config from centralized config
+        country_config = get_country_config(country)
+        currency = country_config["currency"] if country_config else "EUR"
+        
+        # Get methods based on country
+        methods = ["bank"]
+        providers = get_mobile_money_providers(country)
+        if providers and len(providers) > 0:
+            methods.append("mobile_money")
+        methods.append("card")
+        
         quick_amounts = QUICK_AMOUNTS.get(currency, QUICK_AMOUNTS.get("EUR"))
+        
+        # Get all supported countries with mobile money
+        supported_countries = []
+        for code, config in AFRICAN_COUNTRIES_CONFIG.items():
+            if config.get("mobile_money"):
+                supported_countries.append({
+                    "code": code,
+                    "name": config["name"],
+                    "flag": config["flag"],
+                    "currency": config["currency"]
+                })
         
         # Get user's saved bank accounts
         bank_accounts = await db.bank_accounts.find(
@@ -116,6 +135,7 @@ def setup_withdrawals_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
             "bank_accounts": bank_accounts,
             "mobile_money_accounts": mm_accounts,
             "cards": cards,
+            "supported_countries": supported_countries,
             "limits": {
                 "min_amount": 1,
                 "max_daily": 10000 if currency == "EUR" else 5000000,
@@ -124,19 +144,26 @@ def setup_withdrawals_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         }
 
     @withdrawals_router.get("/providers/{country}")
-    async def get_mobile_money_providers(country: str):
+    async def get_providers_for_country(country: str):
         """Get Mobile Money providers for a specific country"""
-        providers = MOBILE_MONEY_PROVIDERS.get(country.upper(), [])
-        return {"country": country.upper(), "providers": providers}
+        country_config = get_country_config(country)
+        if not country_config:
+            raise HTTPException(status_code=404, detail="Pays non supporté")
+        providers = country_config.get("mobile_money", [])
+        return {"country": country.upper(), "currency": country_config.get("currency", "XOF"), "providers": providers}
 
     @withdrawals_router.get("/methods/{country}")
     async def get_withdrawal_methods(country: str):
         """Get available withdrawal methods for a country"""
-        methods = WITHDRAWAL_METHODS.get(country.upper(), ["bank"])
+        country_config = get_country_config(country)
+        methods = ["bank"]
+        if country_config and country_config.get("mobile_money"):
+            methods.append("mobile_money")
+        methods.append("card")
         return {"country": country.upper(), "methods": methods}
 
     @withdrawals_router.get("/quick-amounts/{currency}")
-    async def get_quick_amounts(currency: str):
+    async def get_quick_withdrawal_amounts(currency: str):
         """Get quick withdrawal amounts for a currency"""
         amounts = QUICK_AMOUNTS.get(currency.upper(), QUICK_AMOUNTS.get("EUR"))
         return {"currency": currency.upper(), "amounts": amounts}
