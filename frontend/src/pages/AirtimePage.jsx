@@ -522,7 +522,7 @@ export default function AirtimePage() {
                       <div key={fav.id} className="flex items-center justify-between p-2 bg-muted/50 rounded-lg">
                         <div 
                           className="flex-1 cursor-pointer"
-                          onClick={() => useFavorite(fav)}
+                          onClick={() => selectFavorite(fav)}
                         >
                           <p className="text-sm font-medium">{fav.nickname || fav.phone_number}</p>
                           <p className="text-xs text-muted-foreground">{fav.operator_name}</p>
