@@ -359,6 +359,9 @@ function App() {
             <Route path="/rewards" element={
               <ProtectedRoute><RewardsPage /></ProtectedRoute>
             } />
+            <Route path="/request-money" element={
+              <ProtectedRoute><RequestMoneyPage /></ProtectedRoute>
+            } />
             
             {/* Africa Module Routes */}
             <Route path="/mobile-money-transfer" element={
