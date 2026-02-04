@@ -7,6 +7,9 @@ from pydantic import BaseModel
 from typing import Optional, List
 import jwt
 import uuid
+import sys
+sys.path.append('/app/backend')
+from config.countries_config import AFRICAN_COUNTRIES_CONFIG, get_country_config, get_mobile_money_providers, get_quick_amounts
 
 deposits_router = APIRouter(prefix="/api/deposits-v2", tags=["Deposits V2"])
 
