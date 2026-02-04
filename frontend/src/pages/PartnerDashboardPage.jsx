@@ -412,7 +412,24 @@ export default function PartnerDashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Retraits aujourd'hui</p>
+                  <p className="text-sm text-slate-400">Dépôts aujourd&apos;hui</p>
+                  <p className="text-2xl font-bold text-orange-400">{dashboard?.today_deposits || 0}</p>
+                  <p className="text-xs text-green-400 mt-1">
+                    +{dashboard?.today_commission?.toLocaleString() || 0} commission
+                  </p>
+                </div>
+                <div className="w-12 h-12 bg-orange-500/20 rounded-full flex items-center justify-center">
+                  <ArrowUpRight className="w-6 h-6 text-orange-500" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-slate-800 border-slate-700">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-slate-400">Retraits aujourd&apos;hui</p>
                   <p className="text-2xl font-bold text-white">{dashboard?.today_withdrawals || 0}</p>
                 </div>
                 <div className="w-12 h-12 bg-blue-500/20 rounded-full flex items-center justify-center">
@@ -426,9 +443,9 @@ export default function PartnerDashboardPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm text-slate-400">Montant du jour</p>
-                  <p className="text-2xl font-bold text-white">
-                    {dashboard?.daily_withdrawn?.toLocaleString() || 0} {dashboard?.wallet_currency}
+                  <p className="text-sm text-slate-400">Total commissions</p>
+                  <p className="text-2xl font-bold text-green-400">
+                    {dashboard?.total_commission?.toLocaleString() || 0} {dashboard?.wallet_currency}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-amber-500/20 rounded-full flex items-center justify-center">
