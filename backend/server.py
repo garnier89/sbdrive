@@ -123,6 +123,9 @@ from routes.airtime import setup_airtime_routes, airtime_router
 # Import Transfers V2 Module
 from routes.transfers_v2 import setup_transfers_v2_routes, transfers_v2_router
 
+# Import Money Requests Module
+from routes.money_requests import setup_money_requests_routes, money_requests_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
