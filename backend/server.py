@@ -563,6 +563,14 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
     if not user.get("is_active", True):
         raise HTTPException(status_code=403, detail="Account is disabled")
     
+    # Generate sbpaygo_id for existing users who don't have one
+    if not user.get("sbpaygo_id"):
+        sbpaygo_id = generate_sbpaygo_id()
+        while await db.users.find_one({"sbpaygo_id": sbpaygo_id}):
+            sbpaygo_id = generate_sbpaygo_id()
+        await db.users.update_one({"id": user["id"]}, {"$set": {"sbpaygo_id": sbpaygo_id}})
+        user["sbpaygo_id"] = sbpaygo_id
+    
     if user.get("two_factor_enabled") and user.get("two_factor_phone"):
         otp = generate_otp()
         otp_hash = hashlib.sha256(otp.encode()).hexdigest()
@@ -604,6 +612,7 @@ async def login(credentials: UserLogin, background_tasks: BackgroundTasks):
         "token_type": "bearer",
         "user": {
             "id": user["id"],
+            "sbpaygo_id": user.get("sbpaygo_id"),
             "email": user["email"],
             "full_name": user["full_name"],
             "role": user.get("role", "user"),
