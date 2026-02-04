@@ -177,7 +177,8 @@ async def add_card(
     await db.saved_cards.insert_one(card_doc)
     
     # Remove sensitive fields before returning
-    del card_doc["_id"] if "_id" in card_doc else None
+    if "_id" in card_doc:
+        del card_doc["_id"]
     
     return {
         "success": True,
