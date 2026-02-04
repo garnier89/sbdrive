@@ -1,7 +1,7 @@
 # Module Afrique - Mobile Money Interop & Airtime
 # Routes pour les transferts inter-opérateurs et recharges téléphoniques
 
-from fastapi import APIRouter, HTTPException, Depends
+from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from pydantic import BaseModel, Field
 from typing import List, Optional, Dict, Any
 from datetime import datetime, timezone
