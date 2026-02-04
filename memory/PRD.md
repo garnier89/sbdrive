@@ -34,6 +34,29 @@
 
 ### ✅ COMPLETED FEATURES
 
+#### 🆕 Phase 4 - Anti-Fraude & Améliorations (NEW - Feb 2026)
+- [x] **Système Anti-Double Compte**
+  - Page admin: /admin/anti-fraud
+  - Détection d'appareils dupliqués (fingerprint)
+  - Détection de numéros de téléphone partagés
+  - Score de risque utilisateur (0-100)
+  - Alertes automatiques et manuelles
+  - Actions: Ignorer, Bloquer utilisateur, Bloquer les deux
+  - API endpoints:
+    - POST /api/security/anti-fraud/register-device
+    - POST /api/security/anti-fraud/check-phone
+    - GET /api/security/anti-fraud/alerts
+    - POST /api/security/anti-fraud/alerts/{id}/resolve
+    - GET /api/security/anti-fraud/user/{id}/risk-score
+    - GET /api/security/anti-fraud/stats
+- [x] **Carte des Agents Améliorée**
+  - Page: /find-agent
+  - Badge "Ouvert/Fermé" basé sur horaires
+  - Affichage des horaires du jour
+  - Distance en temps réel
+  - Services disponibles par agent
+  - Notes et avis clients
+
 #### 🆕 Phase 3 - Agent Network Cash In/Out (NEW - Feb 2026)
 - [x] **Cash In (Dépôt espèces)**
   - Page: /partner/dashboard > Onglet "Dépôt Cash"
