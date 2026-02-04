@@ -751,6 +751,158 @@ export default function PartnerDashboardPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Cash In (Deposit) Dialog */}
+      <Dialog open={showDepositDialog} onOpenChange={(open) => {
+        if (!open) resetDepositState();
+        setShowDepositDialog(open);
+      }}>
+        <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-white flex items-center gap-2">
+              <ArrowUpRight className="w-5 h-5 text-orange-500" />
+              {depositStep === 'search' ? 'Nouveau dépôt espèces' : 'Confirmation OTP'}
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              {depositStep === 'search' 
+                ? 'Recherchez le client et entrez le montant à déposer'
+                : 'Demandez le code OTP au client pour confirmer'
+              }
+            </DialogDescription>
+          </DialogHeader>
+
+          {depositStep === 'search' && (
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label className="text-slate-300">Téléphone, Email ou ID SBPAYGO</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+                  <Input
+                    value={depositSearchInput}
+                    onChange={(e) => setDepositSearchInput(e.target.value)}
+                    placeholder="+221 77 123 4567 ou SBP-XXXX-XXXX"
+                    className="bg-slate-700 border-slate-600 text-white pl-10"
+                    data-testid="deposit-client-input"
+                  />
+                </div>
+              </div>
+              
+              <div className="space-y-2">
+                <Label className="text-slate-300">Montant du dépôt (XOF)</Label>
+                <Input
+                  type="number"
+                  value={depositAmount}
+                  onChange={(e) => setDepositAmount(e.target.value)}
+                  placeholder="10000"
+                  className="bg-slate-700 border-slate-600 text-white text-lg"
+                  data-testid="deposit-amount-input"
+                />
+                <div className="flex gap-2 flex-wrap">
+                  {[5000, 10000, 25000, 50000, 100000].map(amt => (
+                    <button
+                      key={amt}
+                      type="button"
+                      onClick={() => setDepositAmount(amt.toString())}
+                      className="px-3 py-1 text-sm bg-slate-700 hover:bg-slate-600 text-white rounded"
+                    >
+                      {amt.toLocaleString()}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowDepositDialog(false)}
+                  className="flex-1 border-slate-600 text-slate-300"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleInitiateDeposit}
+                  disabled={processingDeposit}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700"
+                  data-testid="deposit-initiate-btn"
+                >
+                  {processingDeposit ? 'Recherche...' : 'Continuer'}
+                </Button>
+              </div>
+            </div>
+          )}
+
+          {depositStep === 'otp' && depositData && (
+            <div className="space-y-4">
+              <div className="bg-slate-700/50 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Client</span>
+                  <span className="text-white font-medium">{depositData.client_name}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">ID SBPAYGO</span>
+                  <span className="text-orange-400 font-mono">{depositData.client_sbpaygo_id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Téléphone</span>
+                  <span className="text-white">{depositData.client_phone_masked}</span>
+                </div>
+                <div className="border-t border-slate-600 my-2"></div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Montant reçu</span>
+                  <span className="text-orange-400 font-bold text-lg">
+                    {depositData.amount?.toLocaleString()} {depositData.currency}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Votre commission</span>
+                  <span className="text-green-400">
+                    +{depositData.commission?.toLocaleString()} {depositData.currency}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400">Crédité au client</span>
+                  <span className="text-white font-semibold">
+                    {depositData.net_amount?.toLocaleString()} {depositData.currency}
+                  </span>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-slate-300">Code OTP du client</Label>
+                <Input
+                  value={depositOtp}
+                  onChange={(e) => setDepositOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                  placeholder="______"
+                  maxLength={6}
+                  className="bg-slate-700 border-slate-600 text-white text-center text-2xl tracking-widest"
+                  data-testid="deposit-otp-input"
+                />
+                <p className="text-xs text-slate-400 text-center">
+                  Le client a reçu un code de 6 chiffres
+                </p>
+              </div>
+
+              <div className="flex gap-2 pt-4">
+                <Button 
+                  variant="outline"
+                  onClick={resetDepositState}
+                  className="flex-1 border-slate-600 text-slate-300"
+                >
+                  Annuler
+                </Button>
+                <Button 
+                  onClick={handleConfirmDeposit}
+                  disabled={processingDeposit || depositOtp.length !== 6}
+                  className="flex-1 bg-orange-600 hover:bg-orange-700"
+                  data-testid="deposit-confirm-btn"
+                >
+                  {processingDeposit ? 'Traitement...' : 'Confirmer le dépôt'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
       {/* Mobile Money Recharge Dialog */}
       <Dialog open={showRechargeDialog} onOpenChange={(open) => {
         if (!open) resetRechargeState();
