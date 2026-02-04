@@ -5,7 +5,7 @@
 **Website:** sbpaygo.com  
 **Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Phase 4 - Anti-Fraude & Améliorations)  
+**Last Updated:** February 2026 (Bug Fixes - Sidebar Scroll & Request Money Verification)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://money-transfer-hub-11.preview.emergentagent.com
 
