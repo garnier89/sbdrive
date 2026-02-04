@@ -144,9 +144,9 @@ def setup_deposits_v2_routes(db, jwt_secret, jwt_algorithm, send_push_notificati
         }
 
     @deposits_router.get("/quick-amounts/{currency}")
-    async def get_quick_amounts(currency: str):
+    async def get_deposit_quick_amounts(currency: str):
         """Get quick deposit amounts for a currency"""
-        amounts = QUICK_AMOUNTS.get(currency.upper(), QUICK_AMOUNTS.get("EUR"))
+        amounts = get_quick_amounts(currency.upper())
         return {"currency": currency.upper(), "amounts": amounts}
 
     @deposits_router.get("/bank-info/{currency}")
