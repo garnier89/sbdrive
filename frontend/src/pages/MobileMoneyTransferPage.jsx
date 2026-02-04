@@ -10,14 +10,38 @@ import { API } from '@/App';
 import axios from 'axios';
 import { ArrowRight, RefreshCw, Smartphone, CheckCircle, AlertCircle, Loader2, Star, Trash2 } from 'lucide-react';
 
+// 21 Pays africains avec Mobile Money + France
 const COUNTRIES = [
-  { code: 'SN', name: 'Sénégal', flag: '🇸🇳' },
-  { code: 'CI', name: 'Côte d\'Ivoire', flag: '🇨🇮' },
-  { code: 'ML', name: 'Mali', flag: '🇲🇱' },
-  { code: 'BF', name: 'Burkina Faso', flag: '🇧🇫' },
-  { code: 'BJ', name: 'Bénin', flag: '🇧🇯' },
-  { code: 'TG', name: 'Togo', flag: '🇹🇬' },
-  { code: 'CM', name: 'Cameroun', flag: '🇨🇲' },
+  // Afrique de l'Ouest - Zone UEMOA (XOF)
+  { code: 'SN', name: 'Sénégal', flag: '🇸🇳', region: 'Afrique de l\'Ouest' },
+  { code: 'CI', name: 'Côte d\'Ivoire', flag: '🇨🇮', region: 'Afrique de l\'Ouest' },
+  { code: 'ML', name: 'Mali', flag: '🇲🇱', region: 'Afrique de l\'Ouest' },
+  { code: 'BF', name: 'Burkina Faso', flag: '🇧🇫', region: 'Afrique de l\'Ouest' },
+  { code: 'BJ', name: 'Bénin', flag: '🇧🇯', region: 'Afrique de l\'Ouest' },
+  { code: 'TG', name: 'Togo', flag: '🇹🇬', region: 'Afrique de l\'Ouest' },
+  { code: 'NE', name: 'Niger', flag: '🇳🇪', region: 'Afrique de l\'Ouest' },
+  { code: 'GW', name: 'Guinée-Bissau', flag: '🇬🇼', region: 'Afrique de l\'Ouest' },
+  // Afrique de l'Ouest - Hors UEMOA
+  { code: 'GN', name: 'Guinée', flag: '🇬🇳', region: 'Afrique de l\'Ouest' },
+  { code: 'GH', name: 'Ghana', flag: '🇬🇭', region: 'Afrique de l\'Ouest' },
+  { code: 'NG', name: 'Nigeria', flag: '🇳🇬', region: 'Afrique de l\'Ouest' },
+  { code: 'LR', name: 'Liberia', flag: '🇱🇷', region: 'Afrique de l\'Ouest' },
+  { code: 'SL', name: 'Sierra Leone', flag: '🇸🇱', region: 'Afrique de l\'Ouest' },
+  // Afrique Centrale - Zone CEMAC (XAF)
+  { code: 'CM', name: 'Cameroun', flag: '🇨🇲', region: 'Afrique Centrale' },
+  { code: 'GA', name: 'Gabon', flag: '🇬🇦', region: 'Afrique Centrale' },
+  { code: 'CG', name: 'Congo-Brazzaville', flag: '🇨🇬', region: 'Afrique Centrale' },
+  { code: 'CD', name: 'RD Congo', flag: '🇨🇩', region: 'Afrique Centrale' },
+  // Afrique de l'Est
+  { code: 'KE', name: 'Kenya', flag: '🇰🇪', region: 'Afrique de l\'Est' },
+  { code: 'TZ', name: 'Tanzanie', flag: '🇹🇿', region: 'Afrique de l\'Est' },
+  { code: 'UG', name: 'Ouganda', flag: '🇺🇬', region: 'Afrique de l\'Est' },
+  { code: 'RW', name: 'Rwanda', flag: '🇷🇼', region: 'Afrique de l\'Est' },
+  // Afrique Australe
+  { code: 'ZM', name: 'Zambie', flag: '🇿🇲', region: 'Afrique Australe' },
+  { code: 'ZW', name: 'Zimbabwe', flag: '🇿🇼', region: 'Afrique Australe' },
+  // Afrique du Nord
+  { code: 'MA', name: 'Maroc', flag: '🇲🇦', region: 'Afrique du Nord' },
 ];
 
 const OPERATOR_LOGOS = {
