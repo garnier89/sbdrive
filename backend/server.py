@@ -126,6 +126,9 @@ from routes.transfers_v2 import setup_transfers_v2_routes, transfers_v2_router
 # Import Money Requests Module
 from routes.money_requests import setup_money_requests_routes, money_requests_router
 
+# Import User Extras Module
+from routes.user_extras import setup_user_extras_routes, user_extras_router
+
 # Configure logging
 logging.basicConfig(
     level=logging.INFO,
