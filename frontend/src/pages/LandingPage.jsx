@@ -547,43 +547,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Mobile Money Section */}
-      <section id="mobile-money" className="py-20 px-4 bg-gradient-to-b from-orange-50 to-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
-              Mobile Money dans 24+ Pays Africains
-            </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Connecté aux principaux opérateurs Mobile Money du continent africain.
-            </p>
-          </div>
-          
-          {/* Operators Grid */}
-          <div className="flex flex-wrap justify-center gap-4 mb-12">
-            {mobileMoneyOperators.map((op, idx) => (
-              <div key={idx} className={`${op.color} text-white px-6 py-3 rounded-xl font-medium shadow-lg`}>
-                {op.name}
-              </div>
-            ))}
-          </div>
-
-          {/* Countries */}
-          <div className="bg-white rounded-2xl p-8 border border-orange-200 shadow-sm">
-            <h3 className="text-lg font-bold mb-4 text-slate-800 text-center">Pays disponibles :</h3>
-            <div className="flex flex-wrap justify-center gap-3">
-              {africanCountries.map((country, idx) => (
-                <span key={idx} className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">
-                  🌍 {country}
-                </span>
-              ))}
-            </div>
-          </div>
-        </div>
+      {/* Global Regions Section */}
+      <section id="mobile-money">
+        <GlobalRegions />
       </section>
-
-      {/* Global Regions Section - Replaces Mobile Money */}
-      <GlobalRegions />
 
       {/* Partners Section */}
       <section id="partners" className="py-20 px-4 bg-white">
