@@ -189,10 +189,10 @@ export default function TransferCalculator({ onStartTransfer }) {
   }, [sourceRegion, sourceCountry, destRegion, destCountry, amount, liveRates, isLive]);
 
   useEffect(() => {
-    if (amount > 0) {
+    if (amount > 0 && liveRates) {
       calculateTransfer();
     }
-  }, [sourceRegion, sourceCountry, destRegion, destCountry, amount]);
+  }, [calculateTransfer, amount, liveRates]);
 
   const sourceCountryData = getCountry(sourceRegion, sourceCountry);
   const destCountryData = getCountry(destRegion, destCountry);
@@ -200,11 +200,31 @@ export default function TransferCalculator({ onStartTransfer }) {
   return (
     <Card className="bg-white border-slate-200 shadow-xl overflow-hidden">
       <CardHeader className="bg-gradient-to-r from-orange-500 to-orange-600 text-white">
-        <CardTitle className="flex items-center gap-2 text-xl">
-          <Calculator className="w-6 h-6" />
-          Simulez votre transfert
-        </CardTitle>
-        <p className="text-orange-100 text-sm">Calculez les frais et le montant reçu instantanément</p>
+        <div className="flex items-center justify-between">
+          <div>
+            <CardTitle className="flex items-center gap-2 text-xl">
+              <Calculator className="w-6 h-6" />
+              Simulez votre transfert
+            </CardTitle>
+            <p className="text-orange-100 text-sm">Calculez les frais et le montant reçu instantanément</p>
+          </div>
+          {/* Live Rate Indicator */}
+          <div className="flex items-center gap-2">
+            {loading ? (
+              <RefreshCw className="w-4 h-4 animate-spin text-orange-200" />
+            ) : isLive ? (
+              <div className="flex items-center gap-1.5 bg-green-500/20 px-3 py-1.5 rounded-full">
+                <Wifi className="w-4 h-4 text-green-300" />
+                <span className="text-xs text-green-200 font-medium">Taux en direct</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5 bg-orange-400/20 px-3 py-1.5 rounded-full">
+                <WifiOff className="w-4 h-4 text-orange-200" />
+                <span className="text-xs text-orange-200">Mode hors ligne</span>
+              </div>
+            )}
+          </div>
+        </div>
       </CardHeader>
       <CardContent className="p-6">
         <div className="grid md:grid-cols-2 gap-6">
