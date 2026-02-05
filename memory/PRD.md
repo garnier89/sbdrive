@@ -906,3 +906,67 @@ All features implemented. To go fully live:
 3. Set up Tawk.to for live chat
 4. Enable Twilio for real SMS
 5. Build and publish mobile apps to stores
+
+---
+
+## 🆕 Mises à Jour Février 2026
+
+### 🌐 Landing Page Professionnelle (Feb 2026)
+- [x] **Hero Section redessinée**
+  - Nouveau slogan : "Votre argent, partout, en toute sécurité"
+  - Badge "Plateforme fintech panafricaine & internationale"
+  - Partenaires de paiement affichés (Visa, Mastercard, Mobile Money, Alipay, WeChat Pay)
+- [x] **Section "Comment ça marche"**
+  - 4 étapes visuelles : Créer compte → Vérifier identité → Ajouter paiement → Envoyer/Recevoir
+- [x] **Section Sécurité (dark theme)**
+  - Chiffrement bancaire AES-256
+  - Surveillance 24/7
+  - Authentification biométrique
+  - Détection anti-fraude
+  - Protection géographique
+  - Traçabilité complète
+- [x] **Section Conformité**
+  - KYC (Know Your Customer)
+  - AML (Anti-Money Laundering)
+  - Audits réguliers
+  - Transparence totale
+- [x] **Footer Légal Complet**
+  - Conditions Générales (/legal/terms)
+  - Politique de Confidentialité (/legal/privacy)
+  - Politique KYC/AML (/legal/kyc-aml)
+  - Tarifs & Commissions (/legal/pricing)
+  - Politique de Remboursement (/legal/refund)
+
+### 💳 Paiements Internationaux (Feb 2026)
+- [x] **Module International Payments** (`/app/backend/routes/international_payments.py`)
+- [x] **Europe**
+  - SEPA Transfer (gratuit, 1-2 jours)
+  - PayPal (2.9% + 0.35€)
+  - Carte bancaire (2.5%)
+- [x] **USA**
+  - ACH Transfer (0.5% + 0.25$, 2-3 jours)
+  - PayPal (2.9% + 0.30$)
+  - Credit/Debit Card (2.9% + 0.30$)
+- [x] **Asie (Chine)**
+  - 🔷 Alipay (支付宝) - 2.2%, instant
+  - 🟢 WeChat Pay (微信支付) - 2.0%, instant
+  - 🔴 UnionPay (银联) - 1.5%, 1-2 jours
+- [x] **Afrique**
+  - Mobile Money (1.5%) - 24 pays
+- [x] **API Endpoints**
+  - GET /api/payments/international/providers
+  - GET /api/payments/international/providers/{region}
+  - GET /api/payments/international/exchange-rate
+  - POST /api/payments/international/deposit/initiate
+  - POST /api/payments/international/withdraw/initiate
+  - Webhooks pour Alipay, WeChat Pay, PayPal
+
+### 📱 Mobile Money - 24 Pays Africains
+Liste complète des pays et opérateurs :
+- **Afrique de l'Ouest (UEMOA)** : SN, CI, ML, BF, BJ, TG, NE, GW
+- **Afrique de l'Ouest (autres)** : GN, GH, NG, LR, SL
+- **Afrique Centrale (CEMAC)** : CM, GA, CG, CD
+- **Afrique de l'Est** : KE, TZ, UG, RW
+- **Afrique Australe** : ZM, ZW
+- **Afrique du Nord** : MA
+
