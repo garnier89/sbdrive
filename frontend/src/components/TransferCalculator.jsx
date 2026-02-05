@@ -93,27 +93,12 @@ const REGIONS = {
   }
 };
 
-// Exchange rates (demo) - Including Maghreb currencies
-const EXCHANGE_RATES = {
-  EUR: { 
-    USD: 1.08, GBP: 0.86, CNY: 7.82, XOF: 655.96, XAF: 655.96, 
-    NGN: 1750, KES: 165, GHS: 16.5, CAD: 1.47, JPY: 162, INR: 90,
-    MAD: 10.85, DZD: 145.5, TND: 3.35, EGP: 33.2, LYD: 5.2, MRU: 42.5,
-    TZS: 2700, UGX: 4050, RWF: 1350, CDF: 2750
-  },
-  USD: { 
-    EUR: 0.93, GBP: 0.79, CNY: 7.24, XOF: 607, XAF: 607, 
-    NGN: 1620, KES: 153, GHS: 15.3, CAD: 1.36, JPY: 150, INR: 83,
-    MAD: 10.05, DZD: 134.8, TND: 3.1, EGP: 30.75
-  },
-  CNY: { EUR: 0.13, USD: 0.14, XOF: 84, NGN: 224, KES: 21 },
-  XOF: { EUR: 0.00152, USD: 0.00165, CNY: 0.012, MAD: 0.0165 },
-  XAF: { EUR: 0.00152, USD: 0.00165, CNY: 0.012 },
-  GBP: { EUR: 1.16, USD: 1.26, CNY: 9.1 },
-  MAD: { EUR: 0.092, USD: 0.0995, XOF: 60.5 },
-  DZD: { EUR: 0.00687, USD: 0.00742 },
-  TND: { EUR: 0.298, USD: 0.323 },
-  EGP: { EUR: 0.0301, USD: 0.0325 }
+// Fallback exchange rates (used if API fails)
+const FALLBACK_RATES = {
+  EUR: 1, USD: 1.08, GBP: 0.86, CNY: 7.82, XOF: 655.96, XAF: 655.96, 
+  NGN: 1750, KES: 165, GHS: 16.5, CAD: 1.47, JPY: 162, INR: 90,
+  MAD: 10.85, DZD: 145.5, TND: 3.35, EGP: 33.2, LYD: 5.2, MRU: 42.5,
+  TZS: 2700, UGX: 4050, RWF: 1350, CDF: 2750, CHF: 0.94
 };
 
 // Fee structure
@@ -132,17 +117,52 @@ export default function TransferCalculator({ onStartTransfer }) {
   const [destCountry, setDestCountry] = useState('SN');
   const [amount, setAmount] = useState(100);
   const [result, setResult] = useState(null);
+  const [liveRates, setLiveRates] = useState(null);
+  const [isLive, setIsLive] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [lastUpdate, setLastUpdate] = useState(null);
 
   const getCountry = (regionKey, countryCode) => {
     return REGIONS[regionKey]?.countries.find(c => c.code === countryCode);
   };
 
+  // Fetch live exchange rates from API
+  const fetchLiveRates = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(`${API}/api/exchange-rates/latest`);
+      if (response.data.success) {
+        setLiveRates(response.data.rates);
+        setIsLive(!response.data.cached || response.data.provider !== 'fallback');
+        setLastUpdate(new Date().toLocaleTimeString('fr-FR'));
+      }
+    } catch (error) {
+      console.error('Failed to fetch live rates:', error);
+      setLiveRates(FALLBACK_RATES);
+      setIsLive(false);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch rates on mount
+  useEffect(() => {
+    fetchLiveRates();
+  }, [fetchLiveRates]);
+
   const getExchangeRate = (from, to) => {
     if (from === to) return 1;
-    return EXCHANGE_RATES[from]?.[to] || EXCHANGE_RATES[to]?.[from] ? (1 / EXCHANGE_RATES[to][from]) : 1;
+    
+    const rates = liveRates || FALLBACK_RATES;
+    
+    // Convert through EUR as base
+    const fromRate = from === 'EUR' ? 1 : (rates[from] || FALLBACK_RATES[from] || 1);
+    const toRate = to === 'EUR' ? 1 : (rates[to] || FALLBACK_RATES[to] || 1);
+    
+    return toRate / fromRate;
   };
 
-  const calculateTransfer = () => {
+  const calculateTransfer = useCallback(() => {
     const source = getCountry(sourceRegion, sourceCountry);
     const dest = getCountry(destRegion, destCountry);
     
@@ -162,10 +182,11 @@ export default function TransferCalculator({ onStartTransfer }) {
       rate: rate.toFixed(4),
       fee: totalFee.toFixed(2),
       feePercent: feeConfig.percent,
-      deliveryTime: destRegion === 'africa' ? '1-24 heures' : 'Instantané',
-      methods: REGIONS[destRegion].methods
+      deliveryTime: destRegion === 'africa' || destRegion === 'maghreb' ? '1-24 heures' : 'Instantané',
+      methods: REGIONS[destRegion].methods,
+      isLive: isLive
     });
-  };
+  }, [sourceRegion, sourceCountry, destRegion, destCountry, amount, liveRates, isLive]);
 
   useEffect(() => {
     if (amount > 0) {
