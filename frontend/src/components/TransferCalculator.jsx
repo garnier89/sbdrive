@@ -317,6 +317,7 @@ export default function TransferCalculator({ onStartTransfer }) {
               <div className="bg-slate-50 p-3 rounded-lg">
                 <p className="text-slate-500">Taux de change</p>
                 <p className="font-bold text-slate-800">1 {result.sourceCurrency} = {result.rate} {result.destCurrency}</p>
+                {isLive && <p className="text-[10px] text-green-600 mt-1">📡 En direct</p>}
               </div>
               <div className="bg-slate-50 p-3 rounded-lg">
                 <p className="text-slate-500">Frais ({result.feePercent}%)</p>
@@ -335,6 +336,13 @@ export default function TransferCalculator({ onStartTransfer }) {
               </div>
             </div>
 
+            {/* Last update info */}
+            {lastUpdate && (
+              <p className="text-center text-xs text-slate-400 mt-4">
+                Dernière mise à jour : {lastUpdate} • Source : ExchangeRate-API
+              </p>
+            )}
+
             <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <Button 
                 className="flex-1 bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white"
@@ -343,9 +351,14 @@ export default function TransferCalculator({ onStartTransfer }) {
                 Envoyer maintenant
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button variant="outline" className="border-slate-300" onClick={calculateTransfer}>
-                <RefreshCw className="w-4 h-4 mr-2" />
-                Actualiser
+              <Button 
+                variant="outline" 
+                className="border-slate-300" 
+                onClick={fetchLiveRates}
+                disabled={loading}
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${loading ? 'animate-spin' : ''}`} />
+                {loading ? 'Chargement...' : 'Actualiser les taux'}
               </Button>
             </div>
           </div>
