@@ -15,18 +15,24 @@ import {
   CreditCard, Send, Users, CheckCircle, MessageCircle, Loader2, Mail,
   Phone, Wallet, Lock, Building, Repeat, Download, ChevronDown,
   MapPin, Clock, FileText, HelpCircle, Star, ArrowUpRight,
-  Banknote, QrCode, RefreshCw, PiggyBank, BadgeCheck, Headphones
+  Banknote, QrCode, RefreshCw, PiggyBank, BadgeCheck, Headphones,
+  Eye, ShieldCheck, AlertTriangle, Award, Fingerprint, Scale, FileCheck,
+  CreditCard as CardIcon, Landmark, ScanLine
 } from 'lucide-react';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_9e19f0cd-3f17-4ed6-9cf2-ef66d2aec5e9/artifacts/qhg0pnr1_1024x1024%20%281030%20x%201024%20px%29_20251125_175331_0000.png";
 
-// Mobile Money Operators
-const mobileMoneyOperators = [
-  { name: "Wave", color: "bg-blue-500" },
-  { name: "Orange Money", color: "bg-orange-500" },
-  { name: "MTN MoMo", color: "bg-yellow-500" },
-  { name: "Moov Money", color: "bg-cyan-500" },
-  { name: "Free Money", color: "bg-red-500" }
+// Payment Partners Logos
+const paymentPartners = [
+  { name: "Visa", logo: "💳" },
+  { name: "Mastercard", logo: "💳" },
+  { name: "Wave", logo: "🌊" },
+  { name: "Orange Money", logo: "🟠" },
+  { name: "MTN MoMo", logo: "🟡" },
+  { name: "M-Pesa", logo: "🟢" },
+  { name: "PayPal", logo: "🔵" },
+  { name: "Alipay", logo: "🔷" },
+  { name: "WeChat Pay", logo: "🟢" },
 ];
 
 // Features data
@@ -39,7 +45,7 @@ const mainFeatures = [
   },
   {
     icon: CreditCard,
-    title: "SBPAYGO Cards",
+    title: "Cartes SBPAYGO",
     description: "Créez des cartes virtuelles personnalisées pour vos achats en ligne et paiements sans contact.",
     color: "from-purple-500 to-purple-600"
   },
@@ -52,19 +58,19 @@ const mainFeatures = [
   {
     icon: Globe,
     title: "Mobile Money Afrique",
-    description: "Interopérabilité complète : Wave, Orange Money, MTN, Moov et plus encore.",
+    description: "Interopérabilité complète : Wave, Orange Money, MTN, Moov, M-Pesa et plus dans 21+ pays.",
     color: "from-orange-500 to-orange-600"
   },
   {
     icon: Users,
-    title: "SBPAYGO Partners",
-    description: "Réseau d'agents pour retraits cash, dépôts et recharges Mobile Money.",
+    title: "Réseau d'Agents",
+    description: "Réseau de partenaires pour retraits cash, dépôts et recharges Mobile Money.",
     color: "from-teal-500 to-teal-600"
   },
   {
-    icon: RefreshCw,
-    title: "Remboursements",
-    description: "Récupération automatique des fonds en cas d'erreur avec délai de réclamation.",
+    icon: Landmark,
+    title: "Paiements Internationaux",
+    description: "Connecté aux systèmes bancaires européens, américains et asiatiques (Alipay, WeChat Pay).",
     color: "from-rose-500 to-rose-600"
   }
 ];
@@ -73,8 +79,104 @@ const mainFeatures = [
 const stats = [
   { value: "500K+", label: "Utilisateurs Actifs", icon: Users },
   { value: "50M€", label: "Transactions/Mois", icon: Banknote },
-  { value: "15+", label: "Pays Africains", icon: Globe },
+  { value: "24+", label: "Pays Africains", icon: Globe },
   { value: "99.9%", label: "Disponibilité", icon: Zap }
+];
+
+// How it works steps
+const howItWorksSteps = [
+  {
+    step: "1",
+    title: "Créez votre compte",
+    description: "Inscription gratuite en quelques minutes avec votre email ou téléphone.",
+    icon: Users
+  },
+  {
+    step: "2", 
+    title: "Vérifiez votre identité",
+    description: "Processus KYC sécurisé pour protéger votre compte et vos fonds.",
+    icon: ShieldCheck
+  },
+  {
+    step: "3",
+    title: "Ajoutez un moyen de paiement",
+    description: "Carte bancaire, Mobile Money, virement ou dépôt via agent partenaire.",
+    icon: CreditCard
+  },
+  {
+    step: "4",
+    title: "Envoyez et recevez",
+    description: "Transférez de l'argent partout dans le monde en toute sécurité.",
+    icon: Send
+  }
+];
+
+// Security features detailed
+const securityFeaturesDetailed = [
+  {
+    icon: Lock,
+    title: "Chiffrement Bancaire",
+    description: "Toutes vos données sont protégées par un chiffrement AES-256 de niveau bancaire."
+  },
+  {
+    icon: Eye,
+    title: "Surveillance 24/7",
+    description: "Nos systèmes surveillent en permanence toute activité suspecte sur votre compte."
+  },
+  {
+    icon: Fingerprint,
+    title: "Authentification Biométrique",
+    description: "Accédez à votre compte avec Face ID, Touch ID ou empreinte digitale."
+  },
+  {
+    icon: AlertTriangle,
+    title: "Détection Anti-Fraude",
+    description: "Intelligence artificielle pour détecter et bloquer les transactions frauduleuses."
+  },
+  {
+    icon: MapPin,
+    title: "Protection Géographique",
+    description: "Définissez une zone de sécurité pour autoriser uniquement les transactions dans votre périmètre."
+  },
+  {
+    icon: FileCheck,
+    title: "Traçabilité Complète",
+    description: "Historique complet de toutes vos opérations avec reçus téléchargeables."
+  }
+];
+
+// Compliance features
+const complianceFeatures = [
+  {
+    icon: BadgeCheck,
+    title: "KYC (Know Your Customer)",
+    description: "Vérification d'identité obligatoire pour tous les utilisateurs afin de garantir la sécurité de la plateforme."
+  },
+  {
+    icon: Scale,
+    title: "AML (Anti-Money Laundering)",
+    description: "Conformité stricte aux réglementations anti-blanchiment d'argent internationales."
+  },
+  {
+    icon: ShieldCheck,
+    title: "Audits Réguliers",
+    description: "Contrôles internes et audits de sécurité effectués régulièrement par des partenaires certifiés."
+  },
+  {
+    icon: FileText,
+    title: "Transparence Totale",
+    description: "Tarifs clairs, conditions générales accessibles et politique de confidentialité détaillée."
+  }
+];
+
+// Transfer types
+const transferTypes = [
+  { icon: Phone, label: "Par numéro de téléphone" },
+  { icon: Mail, label: "Par email" },
+  { icon: Building, label: "Vers compte bancaire" },
+  { icon: Smartphone, label: "Vers Mobile Money" },
+  { icon: Users, label: "Entre utilisateurs SBPAYGO" },
+  { icon: MapPin, label: "Via agents partenaires" }
 ];
 
 // Card features
@@ -87,22 +189,21 @@ const cardFeatures = [
   "Paiements en ligne & sans contact"
 ];
 
-// Transfer types
-const transferTypes = [
-  { icon: Phone, label: "Par numéro de téléphone" },
-  { icon: Mail, label: "Par email" },
-  { icon: Building, label: "Vers compte bancaire" },
-  { icon: Smartphone, label: "Vers Mobile Money" },
-  { icon: Users, label: "Entre utilisateurs SBPAYGO" },
-  { icon: MapPin, label: "Via partenaires SBPAYGO" }
+// Mobile Money Operators
+const mobileMoneyOperators = [
+  { name: "Wave", color: "bg-blue-500" },
+  { name: "Orange Money", color: "bg-orange-500" },
+  { name: "MTN MoMo", color: "bg-yellow-500" },
+  { name: "M-Pesa", color: "bg-green-500" },
+  { name: "Moov Money", color: "bg-cyan-500" },
+  { name: "Free Money", color: "bg-red-500" }
 ];
 
-// Security features
-const securityFeatures = [
-  { icon: Lock, label: "Authentification biométrique" },
-  { icon: Shield, label: "Cryptage niveau bancaire" },
-  { icon: BadgeCheck, label: "Vérification KYC complète" },
-  { icon: Clock, label: "Surveillance 24/7" }
+// African countries
+const africanCountries = [
+  "Sénégal", "Côte d'Ivoire", "Mali", "Burkina Faso", "Bénin", "Togo",
+  "Niger", "Guinée", "Ghana", "Nigeria", "Cameroun", "Kenya",
+  "Tanzanie", "Ouganda", "Rwanda", "RD Congo", "Gabon", "Zimbabwe", "Zambie"
 ];
 
 export default function LandingPage() {
@@ -124,7 +225,7 @@ export default function LandingPage() {
   // Scroll spy for navigation
   useEffect(() => {
     const handleScroll = () => {
-      const sections = ['features', 'transfers', 'cards', 'mobile-money', 'partners', 'security'];
+      const sections = ['features', 'how-it-works', 'security', 'compliance', 'mobile-money', 'partners'];
       for (const section of sections) {
         const element = document.getElementById(section);
         if (element) {
@@ -161,24 +262,24 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-orange-50 via-white to-orange-50/50 text-slate-800">
-      {/* Navigation - Responsive */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-orange-100 shadow-sm">
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-14 sm:h-16">
+      {/* Navigation */}
+      <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-xl border-b border-orange-100 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <div className="flex items-center gap-2 sm:gap-3 flex-shrink-0">
-              <img src={LOGO_URL} alt="SBPAYGO" className="h-8 w-8 sm:h-10 sm:w-10 rounded-lg sm:rounded-xl" />
-              <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent hidden xs:inline">
+            <div className="flex items-center gap-3 flex-shrink-0">
+              <img src={LOGO_URL} alt="SBPAYGO" className="h-10 w-10 rounded-xl" />
+              <span className="text-xl font-bold bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 SBPAYGO
               </span>
             </div>
             
             {/* Desktop Menu */}
-            <div className="hidden lg:flex items-center gap-6 xl:gap-8">
+            <div className="hidden lg:flex items-center gap-6">
               {[
-                { id: 'features', label: 'Fonctionnalités' },
-                { id: 'transfers', label: 'Transferts' },
-                { id: 'cards', label: 'Cartes' },
+                { id: 'features', label: 'Services' },
+                { id: 'how-it-works', label: 'Comment ça marche' },
+                { id: 'security', label: 'Sécurité' },
                 { id: 'mobile-money', label: 'Mobile Money' },
                 { id: 'partners', label: 'Partenaires' }
               ].map((item) => (
@@ -194,17 +295,16 @@ export default function LandingPage() {
               ))}
             </div>
 
-            {/* Auth Buttons - Responsive */}
-            <div className="flex items-center gap-2 sm:gap-3">
+            {/* Auth Buttons */}
+            <div className="flex items-center gap-3">
               <Link to="/login">
-                <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-orange-50 hover:text-orange-600 text-sm px-2 sm:px-4">
+                <Button variant="ghost" size="sm" className="text-slate-700 hover:bg-orange-50 hover:text-orange-600">
                   Connexion
                 </Button>
               </Link>
               <Link to="/register">
-                <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white border-0 shadow-lg shadow-orange-500/25 text-xs sm:text-sm px-3 sm:px-4 whitespace-nowrap">
-                  <span className="hidden sm:inline">Créer un compte</span>
-                  <span className="sm:hidden">S'inscrire</span>
+                <Button size="sm" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white shadow-lg shadow-orange-500/25">
+                  Créer un compte
                 </Button>
               </Link>
             </div>
@@ -214,19 +314,18 @@ export default function LandingPage() {
 
       {/* Hero Section */}
       <section className="relative pt-32 pb-20 px-4 overflow-hidden">
-        {/* Background effects */}
         <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-400/30 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-300/20 rounded-full blur-3xl" />
+          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-300/15 rounded-full blur-3xl" />
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="text-center max-w-4xl mx-auto">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-8">
-              <span className="text-orange-600 text-sm font-medium">🌍 La Fintech #1 en Afrique</span>
+              <span className="text-orange-600 text-sm font-medium">🌍 Plateforme fintech panafricaine & internationale</span>
             </div>
             
-            <h1 className="text-4xl sm:text-5xl lg:text-7xl font-bold mb-6 leading-tight text-slate-800">
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-slate-800">
               Votre argent,{' '}
               <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
                 partout
@@ -250,60 +349,81 @@ export default function LandingPage() {
                   <ArrowRight className="ml-2 w-5 h-5" />
                 </Button>
               </Link>
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-orange-300 text-orange-600 hover:bg-orange-50 px-8 py-6 text-lg rounded-xl"
-                onClick={() => scrollToSection('features')}
-              >
+              <Button size="lg" variant="outline" className="border-slate-300 hover:bg-slate-50 px-8 py-6 text-lg rounded-xl">
                 <Download className="mr-2 w-5 h-5" />
                 Télécharger l'app
               </Button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto">
-              {stats.map((stat, i) => (
-                <div key={i} className="text-center p-4 rounded-2xl bg-white border border-orange-100 shadow-sm hover:shadow-md hover:border-orange-200 transition-all">
-                  <stat.icon className="w-6 h-6 mx-auto mb-2 text-orange-500" />
-                  <div className="text-2xl sm:text-3xl font-bold text-slate-800">{stat.value}</div>
-                  <div className="text-sm text-slate-500">{stat.label}</div>
-                </div>
-              ))}
+            {/* Quick Features */}
+            <div className="flex flex-wrap justify-center gap-4 mb-8">
+              <div className="flex items-center gap-2 text-slate-600">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-sm">Rapide</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-600">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-sm">Sécurisé</span>
+              </div>
+              <div className="flex items-center gap-2 text-slate-600">
+                <CheckCircle className="w-5 h-5 text-green-500" />
+                <span className="text-sm">24+ pays</span>
+              </div>
+            </div>
+
+            {/* Payment Partners */}
+            <div className="mt-8">
+              <p className="text-sm text-slate-500 mb-4">Nos partenaires de paiement :</p>
+              <div className="flex flex-wrap justify-center items-center gap-6">
+                {paymentPartners.map((partner, idx) => (
+                  <div key={idx} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors">
+                    <span className="text-2xl">{partner.logo}</span>
+                    <span className="text-sm font-medium">{partner.name}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce">
-          <ChevronDown className="w-8 h-8 text-orange-400" />
+      {/* Stats Section */}
+      <section className="py-12 bg-white border-y border-orange-100">
+        <div className="max-w-7xl mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            {stats.map((stat, idx) => (
+              <div key={idx} className="text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 bg-orange-100 rounded-xl mb-3">
+                  <stat.icon className="w-6 h-6 text-orange-600" />
+                </div>
+                <div className="text-3xl font-bold text-slate-800">{stat.value}</div>
+                <div className="text-sm text-slate-500">{stat.label}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* Main Features Section */}
-      <section id="features" className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-white">
+      <section id="features" className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
-              Pourquoi choisir{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                SBPAYGO
-              </span>
-              ?
+              Nos Services Principaux
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
-              Transferts rapides. Paiements sécurisés. Contrôle total.
+              Une plateforme complète pour tous vos besoins financiers, locaux et internationaux.
             </p>
           </div>
-
+          
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mainFeatures.map((feature, i) => (
-              <Card key={i} className="bg-white border-orange-100 hover:border-orange-200 hover:shadow-lg hover:shadow-orange-100/50 transition-all duration-300 group">
+            {mainFeatures.map((feature, idx) => (
+              <Card key={idx} className="bg-white border-slate-200 hover:border-orange-300 hover:shadow-lg transition-all group">
                 <CardContent className="p-6">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
+                  <div className={`w-14 h-14 rounded-xl bg-gradient-to-br ${feature.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                     <feature.icon className="w-7 h-7 text-white" />
                   </div>
-                  <h3 className="text-xl font-bold text-slate-800 mb-2">{feature.title}</h3>
+                  <h3 className="text-xl font-bold mb-2 text-slate-800">{feature.title}</h3>
                   <p className="text-slate-600">{feature.description}</p>
                 </CardContent>
               </Card>
@@ -312,305 +432,236 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Transfers Section */}
-      <section id="transfers" className="py-20 px-4 bg-white">
+      {/* How It Works Section */}
+      <section id="how-it-works" className="py-20 px-4 bg-gradient-to-b from-orange-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
-                <Send className="w-4 h-4 text-orange-600" />
-                <span className="text-orange-600 text-sm font-medium">Transferts d'argent</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
-                Envoyez de l'argent en{' '}
-                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                  quelques secondes
-                </span>
-              </h2>
-              <p className="text-slate-600 mb-8">
-                Avec SBPAYGO, vous pouvez envoyer de l'argent de multiples façons, 
-                avec vérification du destinataire et possibilité de remboursement en cas d'erreur.
-              </p>
-              
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                {transferTypes.map((type, i) => (
-                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-orange-50 border border-orange-100">
-                    <type.icon className="w-5 h-5 text-orange-600" />
-                    <span className="text-sm text-slate-700">{type.label}</span>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
+              Comment ça marche ?
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Envoyer de l'argent n'a jamais été aussi simple. Suivez ces 4 étapes.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-4 gap-8">
+            {howItWorksSteps.map((step, idx) => (
+              <div key={idx} className="text-center relative">
+                {idx < 3 && (
+                  <div className="hidden md:block absolute top-8 left-1/2 w-full h-0.5 bg-orange-200" />
+                )}
+                <div className="relative z-10">
+                  <div className="w-16 h-16 mx-auto bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center mb-4 shadow-lg shadow-orange-500/30">
+                    <span className="text-2xl font-bold text-white">{step.step}</span>
                   </div>
-                ))}
-              </div>
-
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-blue-50 border border-blue-200">
-                <RefreshCw className="w-6 h-6 text-blue-600" />
-                <div>
-                  <p className="font-medium text-slate-800">Remboursement garanti</p>
-                  <p className="text-sm text-slate-600">Récupérez vos fonds en cas d'erreur (délai 48h)</p>
+                  <h3 className="text-lg font-bold mb-2 text-slate-800">{step.title}</h3>
+                  <p className="text-slate-600 text-sm">{step.description}</p>
                 </div>
               </div>
-            </div>
+            ))}
+          </div>
 
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-orange-300/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-white rounded-3xl p-8 border border-orange-100 shadow-xl shadow-orange-100/50">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Envoyer à</span>
-                    <span className="text-slate-800 font-medium">+221 77 123 4567</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Montant</span>
-                    <span className="text-3xl font-bold text-slate-800">50 000 CFA</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-slate-500">Frais</span>
-                    <span className="text-emerald-600">250 CFA</span>
-                  </div>
-                  <div className="h-px bg-orange-100" />
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-500">Total</span>
-                    <span className="text-xl font-bold text-orange-600">50 250 CFA</span>
-                  </div>
-                  <Button className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white py-6 rounded-xl shadow-lg shadow-orange-500/25">
-                    <Send className="w-5 h-5 mr-2" />
-                    Envoyer maintenant
-                  </Button>
-                </div>
-              </div>
-            </div>
+          <div className="text-center mt-12">
+            <Link to="/register">
+              <Button size="lg" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white">
+                Commencer maintenant
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Cards Section */}
-      <section id="cards" className="py-20 px-4 bg-gradient-to-b from-white to-orange-50/50">
+      {/* Security Section */}
+      <section id="security" className="py-20 px-4 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="order-2 lg:order-1 relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-orange-300/20 rounded-3xl blur-3xl" />
-              <div className="relative space-y-4">
-                {/* Card Preview */}
-                <div className="bg-gradient-to-br from-orange-500 via-orange-600 to-orange-700 rounded-2xl p-6 shadow-2xl shadow-orange-500/30 max-w-sm mx-auto">
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="w-12 h-9 bg-gradient-to-br from-yellow-300 to-yellow-500 rounded-md" />
-                    <span className="text-white/80 text-xs">SBPAYGO Cards</span>
-                  </div>
-                  <div className="text-xl tracking-widest font-mono text-white mb-6">
-                    •••• •••• •••• 4589
-                  </div>
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="text-xs text-white/60">TITULAIRE</p>
-                      <p className="text-white font-medium">AMADOU DIALLO</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-xs text-white/60">EXPIRE</p>
-                      <p className="text-white font-medium">12/28</p>
-                    </div>
-                    <span className="text-2xl font-bold text-white/90">VISA</span>
-                  </div>
-                </div>
-                
-                {/* Color options */}
-                <div className="flex justify-center gap-2">
-                  {['bg-orange-500', 'bg-red-500', 'bg-emerald-500', 'bg-purple-500', 'bg-blue-500', 'bg-slate-700', 'bg-amber-500', 'bg-teal-500'].map((color, i) => (
-                    <div key={i} className={`w-8 h-8 rounded-full ${color} ${i === 0 ? 'ring-2 ring-orange-400 ring-offset-2' : ''} shadow-md`} />
-                  ))}
-                </div>
-              </div>
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-green-500/20 border border-green-500/30 mb-6">
+              <Shield className="w-5 h-5 text-green-400" />
+              <span className="text-green-400 text-sm font-medium">Sécurité Maximale</span>
             </div>
-
-            <div className="order-1 lg:order-2">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
-                <CreditCard className="w-4 h-4 text-orange-600" />
-                <span className="text-orange-600 text-sm font-medium">SBPAYGO Cards</span>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4">
+              Votre sécurité est notre priorité absolue
+            </h2>
+            <p className="text-slate-400 max-w-2xl mx-auto">
+              Nous utilisons des technologies de pointe pour garantir la protection 
+              de vos données et de votre argent.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {securityFeaturesDetailed.map((feature, idx) => (
+              <div key={idx} className="bg-slate-800/50 border border-slate-700 rounded-xl p-6 hover:bg-slate-800 transition-colors">
+                <div className="w-12 h-12 bg-green-500/20 rounded-xl flex items-center justify-center mb-4">
+                  <feature.icon className="w-6 h-6 text-green-400" />
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-white">{feature.title}</h3>
+                <p className="text-slate-400 text-sm">{feature.description}</p>
               </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
-                Votre carte,{' '}
-                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                  votre contrôle
-                </span>
-              </h2>
-              <p className="text-slate-600 mb-8">
-                Créez des cartes virtuelles personnalisées pour vos achats en ligne 
-                et paiements sans contact. Choisissez parmi 8 couleurs pour différencier 
-                vos usages.
-              </p>
-              
-              <div className="space-y-3 mb-8">
-                {cardFeatures.map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <CheckCircle className="w-5 h-5 text-orange-500" />
-                    <span className="text-slate-700">{feature}</span>
-                  </div>
-                ))}
-              </div>
+            ))}
+          </div>
+        </div>
+      </section>
 
-              <Link to="/register">
-                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-5 rounded-xl shadow-lg shadow-orange-500/25">
-                  Créer ma première carte
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
+      {/* Compliance Section */}
+      <section id="compliance" className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 border border-blue-200 mb-6">
+              <Scale className="w-5 h-5 text-blue-600" />
+              <span className="text-blue-600 text-sm font-medium">Conformité & Réglementation</span>
             </div>
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
+              Une plateforme conforme aux standards internationaux
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              SBPAYGO applique des procédures strictes pour assurer un environnement 
+              financier sûr et transparent.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {complianceFeatures.map((feature, idx) => (
+              <Card key={idx} className="bg-white border-slate-200 hover:border-blue-300 transition-colors">
+                <CardContent className="p-6 text-center">
+                  <div className="w-14 h-14 mx-auto bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                    <feature.icon className="w-7 h-7 text-blue-600" />
+                  </div>
+                  <h3 className="text-lg font-bold mb-2 text-slate-800">{feature.title}</h3>
+                  <p className="text-slate-600 text-sm">{feature.description}</p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Mobile Money Section */}
-      <section id="mobile-money" className="py-20 px-4 bg-white">
+      <section id="mobile-money" className="py-20 px-4 bg-gradient-to-b from-orange-50 to-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
-              <Smartphone className="w-4 h-4 text-orange-600" />
-              <span className="text-orange-600 text-sm font-medium">Mobile Money</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
-              Connecté à toute{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                l'Afrique
-              </span>
+              Mobile Money dans 24+ Pays Africains
             </h2>
             <p className="text-slate-600 max-w-2xl mx-auto">
-              SBPAYGO permet l'envoi et la réception via tous les principaux 
-              opérateurs Mobile Money du continent.
+              Connecté aux principaux opérateurs Mobile Money du continent africain.
             </p>
           </div>
-
-          <div className="grid md:grid-cols-5 gap-4 mb-12">
-            {mobileMoneyOperators.map((op, i) => (
-              <Card key={i} className="bg-white border-orange-100 hover:border-orange-200 hover:shadow-lg transition-all">
-                <CardContent className="p-6 text-center">
-                  <div className={`w-16 h-16 rounded-2xl ${op.color} mx-auto mb-4 flex items-center justify-center shadow-lg`}>
-                    <Smartphone className="w-8 h-8 text-white" />
-                  </div>
-                  <p className="font-medium text-slate-800">{op.name}</p>
-                </CardContent>
-              </Card>
+          
+          {/* Operators Grid */}
+          <div className="flex flex-wrap justify-center gap-4 mb-12">
+            {mobileMoneyOperators.map((op, idx) => (
+              <div key={idx} className={`${op.color} text-white px-6 py-3 rounded-xl font-medium shadow-lg`}>
+                {op.name}
+              </div>
             ))}
           </div>
 
-          <div className="grid md:grid-cols-3 gap-6">
-            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
-              <Repeat className="w-10 h-10 text-orange-600 mx-auto mb-4" />
-              <h3 className="font-bold text-slate-800 mb-2">Transfert inter-opérateurs</h3>
-              <p className="text-sm text-slate-600">Wave ⇄ Orange ⇄ MTN ⇄ Moov</p>
+          {/* Countries */}
+          <div className="bg-white rounded-2xl p-8 border border-orange-200 shadow-sm">
+            <h3 className="text-lg font-bold mb-4 text-slate-800 text-center">Pays disponibles :</h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {africanCountries.map((country, idx) => (
+                <span key={idx} className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg text-sm font-medium">
+                  🌍 {country}
+                </span>
+              ))}
             </div>
-            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
-              <Phone className="w-10 h-10 text-orange-600 mx-auto mb-4" />
-              <h3 className="font-bold text-slate-800 mb-2">Crédit téléphonique</h3>
-              <p className="text-sm text-slate-600">Rechargez tous les opérateurs</p>
+          </div>
+
+          {/* Services */}
+          <div className="mt-12 grid md:grid-cols-3 gap-6">
+            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
+              <div className="w-12 h-12 mx-auto bg-green-100 rounded-xl flex items-center justify-center mb-4">
+                <ArrowRight className="w-6 h-6 text-green-600 rotate-90" />
+              </div>
+              <h4 className="font-bold text-slate-800 mb-2">Dépôts</h4>
+              <p className="text-slate-600 text-sm">Approvisionnez votre compte via Mobile Money</p>
             </div>
-            <div className="p-6 rounded-2xl bg-orange-50 border border-orange-100 text-center">
-              <MapPin className="w-10 h-10 text-orange-600 mx-auto mb-4" />
-              <h3 className="font-bold text-slate-800 mb-2">Recharge via partenaires</h3>
-              <p className="text-sm text-slate-600">Réseau d'agents partout</p>
+            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
+              <div className="w-12 h-12 mx-auto bg-blue-100 rounded-xl flex items-center justify-center mb-4">
+                <ArrowRight className="w-6 h-6 text-blue-600 -rotate-90" />
+              </div>
+              <h4 className="font-bold text-slate-800 mb-2">Retraits</h4>
+              <p className="text-slate-600 text-sm">Retirez vers votre compte Mobile Money</p>
+            </div>
+            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
+              <div className="w-12 h-12 mx-auto bg-purple-100 rounded-xl flex items-center justify-center mb-4">
+                <Repeat className="w-6 h-6 text-purple-600" />
+              </div>
+              <h4 className="font-bold text-slate-800 mb-2">Transferts</h4>
+              <p className="text-slate-600 text-sm">Envoyez de l'argent entre opérateurs</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Partners Section */}
-      <section id="partners" className="py-20 px-4 bg-gradient-to-b from-orange-50/50 to-white">
+      <section id="partners" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 border border-orange-200 mb-6">
-                <Users className="w-4 h-4 text-orange-600" />
-                <span className="text-orange-600 text-sm font-medium">SBPAYGO Partners</span>
-              </div>
-              <h2 className="text-3xl sm:text-4xl font-bold mb-6 text-slate-800">
-                Devenez agent{' '}
-                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                  SBPAYGO
-                </span>
-              </h2>
-              <p className="text-slate-600 mb-8">
-                Rejoignez notre réseau de partenaires et offrez des services financiers 
-                à votre communauté. Gagnez des commissions sur chaque transaction.
-              </p>
-              
-              <div className="space-y-4 mb-8">
-                {[
-                  { icon: QrCode, text: "Scanner le QR code client" },
-                  { icon: Banknote, text: "Retirer du cash pour les clients" },
-                  { icon: Smartphone, text: "Recharger Mobile Money" },
-                  { icon: Wallet, text: "Gérer votre wallet partenaire" }
-                ].map((item, i) => (
-                  <div key={i} className="flex items-center gap-4 p-4 rounded-xl bg-white border border-orange-100 shadow-sm hover:shadow-md transition-all">
-                    <div className="w-10 h-10 rounded-lg bg-orange-100 flex items-center justify-center">
-                      <item.icon className="w-5 h-5 text-orange-600" />
-                    </div>
-                    <span className="text-slate-700">{item.text}</span>
-                  </div>
-                ))}
-              </div>
-
-              <Link to="/partner/register">
-                <Button className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-6 py-5 rounded-xl shadow-lg shadow-orange-500/25">
-                  Devenir partenaire
-                  <ArrowUpRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-            </div>
-
-            <div className="relative">
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-orange-300/20 rounded-3xl blur-3xl" />
-              <div className="relative bg-white rounded-3xl p-8 border border-orange-100 shadow-xl shadow-orange-100/50">
-                <div className="text-center mb-6">
-                  <div className="w-20 h-20 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-orange-500/30">
-                    <Users className="w-10 h-10 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-slate-800">Espace Partenaire</h3>
-                  <p className="text-slate-500 text-sm">Agent ID: AG-7X9K2M4P</p>
+          <div className="text-center mb-16">
+            <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
+              Réseau d'Agents Partenaires
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Trouvez un agent SBPAYGO près de vous pour vos opérations en espèces.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { icon: Banknote, title: "Dépôts Cash", desc: "Déposez de l'argent sur votre compte" },
+              { icon: Wallet, title: "Retraits Cash", desc: "Retirez de l'argent en espèces" },
+              { icon: Smartphone, title: "Recharge Mobile", desc: "Rechargez votre téléphone" },
+              { icon: Headphones, title: "Assistance", desc: "Obtenez de l'aide personnalisée" }
+            ].map((item, idx) => (
+              <div key={idx} className="bg-orange-50 p-6 rounded-xl text-center hover:bg-orange-100 transition-colors">
+                <div className="w-14 h-14 mx-auto bg-white rounded-xl flex items-center justify-center mb-4 shadow-sm">
+                  <item.icon className="w-7 h-7 text-orange-600" />
                 </div>
-                <div className="space-y-4">
-                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
-                    <span className="text-slate-600">Solde wallet</span>
-                    <span className="font-bold text-slate-800">1 250 000 CFA</span>
-                  </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-orange-50">
-                    <span className="text-slate-600">Transactions/jour</span>
-                    <span className="font-bold text-emerald-600">47</span>
-                  </div>
-                  <div className="flex justify-between p-3 rounded-xl bg-orange-100">
-                    <span className="text-slate-600">Commissions</span>
-                    <span className="font-bold text-orange-600">25 000 CFA</span>
-                  </div>
-                </div>
+                <h3 className="font-bold text-slate-800 mb-2">{item.title}</h3>
+                <p className="text-slate-600 text-sm">{item.desc}</p>
               </div>
-            </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-12">
+            <Link to="/partner/register">
+              <Button size="lg" variant="outline" className="border-orange-500 text-orange-600 hover:bg-orange-50">
+                Devenir agent partenaire
+                <ArrowRight className="ml-2 w-5 h-5" />
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
 
-      {/* Security Section */}
-      <section id="security" className="py-20 px-4 bg-white">
+      {/* Why Choose SBPAYGO */}
+      <section className="py-20 px-4 bg-gradient-to-b from-white to-orange-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 border border-blue-200 mb-6">
-              <Shield className="w-4 h-4 text-blue-600" />
-              <span className="text-blue-600 text-sm font-medium">Sécurité</span>
-            </div>
             <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-slate-800">
-              Plateforme{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                hautement sécurisée
-              </span>
+              Pourquoi choisir SBPAYGO ?
             </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Vos fonds et données personnelles sont protégés par les technologies 
-              de sécurité les plus avancées.
-            </p>
           </div>
-
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {securityFeatures.map((feature, i) => (
-              <div key={i} className="p-6 rounded-2xl bg-gradient-to-b from-orange-50 to-white border border-orange-100 text-center hover:shadow-lg hover:shadow-orange-100/50 transition-all">
-                <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 mx-auto mb-4 flex items-center justify-center shadow-lg shadow-orange-500/20">
-                  <feature.icon className="w-7 h-7 text-white" />
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {[
+              { icon: Globe, title: "Compatible Mobile Money & Banques", desc: "Connecté aux principaux opérateurs et systèmes bancaires" },
+              { icon: Zap, title: "Transferts Rapides", desc: "Envoyez de l'argent en quelques secondes" },
+              { icon: Shield, title: "Paiements Sécurisés", desc: "Protection maximale de vos transactions" },
+              { icon: Wallet, title: "Portefeuille Numérique", desc: "Gérez toutes vos devises en un seul endroit" },
+              { icon: Globe, title: "Gestion Multi-pays", desc: "Disponible dans 24+ pays africains" },
+              { icon: Headphones, title: "Support Client Réactif", desc: "Une équipe disponible pour vous aider" }
+            ].map((item, idx) => (
+              <div key={idx} className="flex items-start gap-4">
+                <div className="w-10 h-10 flex-shrink-0 bg-orange-100 rounded-lg flex items-center justify-center">
+                  <item.icon className="w-5 h-5 text-orange-600" />
                 </div>
-                <p className="font-medium text-slate-800">{feature.label}</p>
+                <div>
+                  <h3 className="font-bold text-slate-800 mb-1">{item.title}</h3>
+                  <p className="text-slate-600 text-sm">{item.desc}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -647,55 +698,84 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 bg-slate-800 text-white border-t border-slate-700">
+      {/* Footer - Complete Legal */}
+      <footer className="py-16 px-4 bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-12">
-            <div>
+          <div className="grid md:grid-cols-5 gap-8 mb-12">
+            {/* Logo & Description */}
+            <div className="md:col-span-2">
               <div className="flex items-center gap-3 mb-4">
-                <img src={LOGO_URL} alt="SBPAYGO" className="h-10 w-10 rounded-xl" />
-                <span className="text-xl font-bold text-white">SBPAYGO</span>
+                <img src={LOGO_URL} alt="SBPAYGO" className="h-12 w-12 rounded-xl" />
+                <span className="text-2xl font-bold text-white">SBPAYGO</span>
               </div>
-              <p className="text-slate-400 text-sm">
-                La plateforme fintech qui connecte l'Afrique au monde.
+              <p className="text-slate-400 text-sm mb-4">
+                Plateforme digitale de services financiers connectant l'Afrique au monde.
               </p>
+              <div className="text-slate-400 text-sm space-y-1">
+                <p>📧 support@sbpaygo.com</p>
+                <p>📞 +33 1 23 45 67 89</p>
+              </div>
             </div>
             
+            {/* Products */}
             <div>
               <h4 className="font-bold text-white mb-4">Produits</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><button onClick={() => scrollToSection('transfers')} className="hover:text-orange-400">Transferts</button></li>
-                <li><button onClick={() => scrollToSection('cards')} className="hover:text-orange-400">Cartes virtuelles</button></li>
-                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-orange-400">Mobile Money</button></li>
-                <li><Link to="/login" className="hover:text-orange-400">Coffre-fort</Link></li>
+                <li><button onClick={() => scrollToSection('features')} className="hover:text-orange-400 transition-colors">Transferts</button></li>
+                <li><Link to="/login" className="hover:text-orange-400 transition-colors">Cartes virtuelles</Link></li>
+                <li><button onClick={() => scrollToSection('mobile-money')} className="hover:text-orange-400 transition-colors">Mobile Money</button></li>
+                <li><Link to="/login" className="hover:text-orange-400 transition-colors">Coffre-fort</Link></li>
+                <li><Link to="/login" className="hover:text-orange-400 transition-colors">Paiement factures</Link></li>
               </ul>
             </div>
             
+            {/* Company */}
             <div>
               <h4 className="font-bold text-white mb-4">Entreprise</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><button onClick={() => scrollToSection('partners')} className="hover:text-orange-400">Devenir partenaire</button></li>
-                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-orange-400">Contact</button></li>
-                <li><Link to="/help" className="hover:text-orange-400">Centre d'aide</Link></li>
+                <li><button onClick={() => scrollToSection('partners')} className="hover:text-orange-400 transition-colors">Devenir partenaire</button></li>
+                <li><button onClick={() => setShowContactDialog(true)} className="hover:text-orange-400 transition-colors">Contact</button></li>
+                <li><Link to="/help" className="hover:text-orange-400 transition-colors">Centre d'aide</Link></li>
+                <li><Link to="/find-agent" className="hover:text-orange-400 transition-colors">Trouver un agent</Link></li>
               </ul>
             </div>
             
+            {/* Legal */}
             <div>
               <h4 className="font-bold text-white mb-4">Légal</h4>
               <ul className="space-y-2 text-slate-400 text-sm">
-                <li><a href="#" className="hover:text-orange-400">Conditions d'utilisation</a></li>
-                <li><a href="#" className="hover:text-orange-400">Politique de confidentialité</a></li>
-                <li><a href="#" className="hover:text-orange-400">Conformité KYC/AML</a></li>
+                <li><Link to="/legal/terms" className="hover:text-orange-400 transition-colors">Conditions Générales</Link></li>
+                <li><Link to="/legal/privacy" className="hover:text-orange-400 transition-colors">Politique de Confidentialité</Link></li>
+                <li><Link to="/legal/kyc-aml" className="hover:text-orange-400 transition-colors">Politique KYC/AML</Link></li>
+                <li><Link to="/legal/pricing" className="hover:text-orange-400 transition-colors">Tarifs & Commissions</Link></li>
+                <li><Link to="/legal/refund" className="hover:text-orange-400 transition-colors">Politique de Remboursement</Link></li>
               </ul>
             </div>
           </div>
           
-          <div className="pt-8 border-t border-slate-700 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-slate-400 text-sm">
-              © 2026 SBPAYGO. Tous droits réservés.
-            </p>
-            <div className="flex items-center gap-4">
-              <span className="text-slate-400 text-sm">sbpaygo.com</span>
+          {/* Payment Methods */}
+          <div className="border-t border-slate-800 pt-8 mb-8">
+            <p className="text-slate-500 text-sm text-center mb-4">Moyens de paiement acceptés :</p>
+            <div className="flex flex-wrap justify-center items-center gap-6">
+              {paymentPartners.map((partner, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-slate-500">
+                  <span className="text-xl">{partner.logo}</span>
+                  <span className="text-xs">{partner.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* Legal Notice */}
+          <div className="border-t border-slate-800 pt-8">
+            <div className="text-center text-slate-500 text-xs space-y-2">
+              <p>
+                SBPAYGO est une plateforme digitale de services financiers. 
+                L'utilisation du service implique l'acceptation de nos conditions générales.
+              </p>
+              <p>
+                © 2026 SBPAYGO – Tous droits réservés | sbpaygo.com
+              </p>
             </div>
           </div>
         </div>
@@ -703,7 +783,7 @@ export default function LandingPage() {
 
       {/* Contact Dialog */}
       <Dialog open={showContactDialog} onOpenChange={setShowContactDialog}>
-        <DialogContent className="bg-white border-sky-100 text-slate-800">
+        <DialogContent className="bg-white border-slate-200 text-slate-800">
           <DialogHeader>
             <DialogTitle className="text-slate-800">Contactez-nous</DialogTitle>
             <DialogDescription className="text-slate-500">
@@ -717,7 +797,7 @@ export default function LandingPage() {
                 required
                 value={contactForm.name}
                 onChange={(e) => setContactForm({...contactForm, name: e.target.value})}
-                className="border-sky-200 focus:border-sky-400"
+                className="border-slate-200 focus:border-orange-400"
                 placeholder="Votre nom"
               />
             </div>
@@ -728,14 +808,14 @@ export default function LandingPage() {
                 required
                 value={contactForm.email}
                 onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                className="border-sky-200 focus:border-sky-400"
+                className="border-slate-200 focus:border-orange-400"
                 placeholder="votre@email.com"
               />
             </div>
             <div className="space-y-2">
               <Label className="text-slate-700">Sujet</Label>
               <Select value={contactForm.subject} onValueChange={(v) => setContactForm({...contactForm, subject: v})}>
-                <SelectTrigger className="border-sky-200">
+                <SelectTrigger className="border-slate-200">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -752,7 +832,7 @@ export default function LandingPage() {
                 required
                 value={contactForm.message}
                 onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                className="border-sky-200 focus:border-sky-400"
+                className="border-slate-200 focus:border-orange-400"
                 placeholder="Votre message..."
                 rows={4}
               />
@@ -760,7 +840,7 @@ export default function LandingPage() {
             <Button 
               type="submit" 
               disabled={submitting}
-              className="w-full bg-gradient-to-r from-sky-500 to-orange-500 hover:from-sky-600 hover:to-orange-600"
+              className="w-full bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"
             >
               {submitting ? <Loader2 className="w-4 h-4 animate-spin mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               Envoyer
