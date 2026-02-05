@@ -321,6 +321,13 @@ function App() {
               <Route path="/quick-login" element={<QuickPinLoginPage />} />
               <Route path="/register" element={<RegisterPage />} />
               
+              {/* Legal Pages (Public) */}
+              <Route path="/legal/terms" element={<TermsPage />} />
+              <Route path="/legal/privacy" element={<PrivacyPage />} />
+              <Route path="/legal/kyc-aml" element={<KycAmlPage />} />
+              <Route path="/legal/pricing" element={<PricingPage />} />
+              <Route path="/legal/refund" element={<RefundPage />} />
+              
               {/* Partner Public Routes */}
               <Route path="/partner/register" element={<PartnerRegisterPage />} />
               <Route path="/partner/login" element={<PartnerLoginPage />} />
