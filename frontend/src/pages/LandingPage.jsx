@@ -321,77 +321,97 @@ export default function LandingPage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-32 pb-20 px-4 overflow-hidden">
+      <section className="relative pt-28 pb-16 px-4 overflow-hidden">
         <div className="absolute inset-0 overflow-hidden">
           <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-orange-400/20 rounded-full blur-3xl" />
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-orange-300/15 rounded-full blur-3xl" />
+          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-300/15 rounded-full blur-3xl" />
         </div>
         
         <div className="max-w-7xl mx-auto relative z-10">
-          <div className="text-center max-w-4xl mx-auto">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-100 border border-orange-200 mb-8">
-              <span className="text-orange-600 text-sm font-medium">🌍 Plateforme fintech panafricaine & internationale</span>
-            </div>
-            
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-slate-800">
-              Votre argent,{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
-                partout
-              </span>
-              , en toute{' '}
-              <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
-                sécurité
-              </span>
-            </h1>
-            
-            <p className="text-lg sm:text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
-              SBPAYGO est la plateforme digitale qui vous permet d'envoyer, recevoir, 
-              stocker et gérer votre argent facilement — entre proches, vers les banques 
-              et vers les services Mobile Money.
-            </p>
-            
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12">
-              <Link to="/register">
-                <Button size="lg" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-orange-500/30">
-                  Créer un compte gratuit
-                  <ArrowRight className="ml-2 w-5 h-5" />
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            {/* Left Content */}
+            <div className="text-left">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-orange-100 to-blue-100 border border-orange-200 mb-6">
+                <Globe className="w-4 h-4 text-orange-600" />
+                <span className="text-slate-700 text-sm font-medium">🌍 Europe • 🌎 Amérique • 🌏 Asie • 🌍 Afrique</span>
+              </div>
+              
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 leading-tight text-slate-800">
+                Votre argent,{' '}
+                <span className="bg-gradient-to-r from-orange-500 to-orange-600 bg-clip-text text-transparent">
+                  partout
+                </span>
+                , en toute{' '}
+                <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+                  sécurité
+                </span>
+              </h1>
+              
+              <p className="text-lg text-slate-600 mb-8 max-w-xl">
+                SBPAYGO connecte le monde entier. Envoyez de l'argent vers l'Europe (SEPA), 
+                l'Amérique (ACH), l'Asie (Alipay, WeChat Pay) et l'Afrique (Mobile Money) 
+                depuis une seule plateforme.
+              </p>
+              
+              <div className="flex flex-col sm:flex-row gap-4 mb-8">
+                <Link to="/register">
+                  <Button size="lg" className="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-orange-500/30">
+                    Créer un compte gratuit
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                <Button size="lg" variant="outline" className="border-slate-300 hover:bg-slate-50 px-8 py-6 text-lg rounded-xl">
+                  <Download className="mr-2 w-5 h-5" />
+                  Télécharger l'app
                 </Button>
-              </Link>
-              <Button size="lg" variant="outline" className="border-slate-300 hover:bg-slate-50 px-8 py-6 text-lg rounded-xl">
-                <Download className="mr-2 w-5 h-5" />
-                Télécharger l'app
-              </Button>
-            </div>
+              </div>
 
-            {/* Quick Features */}
-            <div className="flex flex-wrap justify-center gap-4 mb-8">
-              <div className="flex items-center gap-2 text-slate-600">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm">Rapide</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-600">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm">Sécurisé</span>
-              </div>
-              <div className="flex items-center gap-2 text-slate-600">
-                <CheckCircle className="w-5 h-5 text-green-500" />
-                <span className="text-sm">24+ pays</span>
+              {/* Quick Features */}
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center gap-2 text-slate-600">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-medium">Transferts instantanés</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-600">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-medium">70+ pays</span>
+                </div>
+                <div className="flex items-center gap-2 text-slate-600">
+                  <CheckCircle className="w-5 h-5 text-green-500" />
+                  <span className="text-sm font-medium">Frais réduits</span>
+                </div>
               </div>
             </div>
 
-            {/* Payment Partners */}
-            <div className="mt-8">
-              <p className="text-sm text-slate-500 mb-4">Nos partenaires de paiement :</p>
-              <div className="flex flex-wrap justify-center items-center gap-6">
-                {paymentPartners.map((partner, idx) => (
-                  <div key={idx} className="flex items-center gap-2 text-slate-400 hover:text-slate-600 transition-colors">
-                    <span className="text-2xl">{partner.logo}</span>
-                    <span className="text-sm font-medium">{partner.name}</span>
-                  </div>
-                ))}
-              </div>
+            {/* Right - Hero Illustration */}
+            <div className="hidden lg:block">
+              <img 
+                src={HERO_ILLUSTRATION} 
+                alt="Transferts mondiaux SBPAYGO" 
+                className="w-full h-auto rounded-2xl shadow-2xl"
+              />
             </div>
           </div>
+
+          {/* Payment Partners */}
+          <div className="mt-16 text-center">
+            <p className="text-sm text-slate-500 mb-6">Moyens de paiement acceptés dans le monde entier :</p>
+            <div className="flex flex-wrap justify-center items-center gap-4 md:gap-8">
+              {paymentPartners.map((partner, idx) => (
+                <div key={idx} className="flex items-center gap-2 text-slate-500 hover:text-slate-700 transition-colors bg-white/80 px-3 py-2 rounded-lg border border-slate-100">
+                  <span className="text-xl">{partner.logo}</span>
+                  <span className="text-sm font-medium">{partner.name}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Transfer Calculator Section */}
+      <section className="py-16 px-4 bg-gradient-to-b from-white to-slate-50" id="calculator">
+        <div className="max-w-4xl mx-auto">
+          <TransferCalculator onStartTransfer={() => navigate('/register')} />
         </div>
       </section>
 
