@@ -139,6 +139,8 @@ from routes.geo_security import setup_geo_security_routes, geo_security_router
 from routes.anti_fraud import setup_anti_fraud_routes, anti_fraud_router
 # International Payments (Alipay, WeChat Pay, PayPal)
 from routes.international_payments import setup_international_payments_routes, international_router
+# Exchange Rates API (Real-time)
+from routes.exchange_rates import setup_exchange_rate_routes, exchange_rate_router
 
 # Configure logging
 logging.basicConfig(
