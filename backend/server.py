@@ -3792,6 +3792,10 @@ app.include_router(anti_fraud_router)
 setup_international_payments_routes(db, get_current_user, send_push_notification, send_email_notification)
 app.include_router(international_router)
 
+# Setup and include Exchange Rates routes (Real-time)
+setup_exchange_rate_routes(db)
+app.include_router(exchange_rate_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
