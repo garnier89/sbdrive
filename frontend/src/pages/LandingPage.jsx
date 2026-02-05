@@ -87,7 +87,7 @@ const mainFeatures = [
 const stats = [
   { value: "500K+", label: "Utilisateurs Actifs", icon: Users },
   { value: "50M€", label: "Transactions/Mois", icon: Banknote },
-  { value: "24+", label: "Pays Africains", icon: Globe },
+  { value: "70+", label: "Pays disponibles", icon: Globe },
   { value: "99.9%", label: "Disponibilité", icon: Zap }
 ];
 
@@ -108,7 +108,7 @@ const howItWorksSteps = [
   {
     step: "3",
     title: "Ajoutez un moyen de paiement",
-    description: "Carte bancaire, Mobile Money, virement ou dépôt via agent partenaire.",
+    description: "Carte bancaire, Mobile Money, Alipay, WeChat Pay, SEPA ou PayPal.",
     icon: CreditCard
   },
   {
