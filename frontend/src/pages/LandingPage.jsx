@@ -596,33 +596,11 @@ export default function LandingPage() {
               ))}
             </div>
           </div>
-
-          {/* Services */}
-          <div className="mt-12 grid md:grid-cols-3 gap-6">
-            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
-              <div className="w-12 h-12 mx-auto bg-green-100 rounded-xl flex items-center justify-center mb-4">
-                <ArrowRight className="w-6 h-6 text-green-600 rotate-90" />
-              </div>
-              <h4 className="font-bold text-slate-800 mb-2">Dépôts</h4>
-              <p className="text-slate-600 text-sm">Approvisionnez votre compte via Mobile Money</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
-              <div className="w-12 h-12 mx-auto bg-blue-100 rounded-xl flex items-center justify-center mb-4">
-                <ArrowRight className="w-6 h-6 text-blue-600 -rotate-90" />
-              </div>
-              <h4 className="font-bold text-slate-800 mb-2">Retraits</h4>
-              <p className="text-slate-600 text-sm">Retirez vers votre compte Mobile Money</p>
-            </div>
-            <div className="bg-white p-6 rounded-xl border border-slate-200 text-center">
-              <div className="w-12 h-12 mx-auto bg-purple-100 rounded-xl flex items-center justify-center mb-4">
-                <Repeat className="w-6 h-6 text-purple-600" />
-              </div>
-              <h4 className="font-bold text-slate-800 mb-2">Transferts</h4>
-              <p className="text-slate-600 text-sm">Envoyez de l'argent entre opérateurs</p>
-            </div>
-          </div>
         </div>
       </section>
+
+      {/* Global Regions Section - Replaces Mobile Money */}
+      <GlobalRegions />
 
       {/* Partners Section */}
       <section id="partners" className="py-20 px-4 bg-white">
