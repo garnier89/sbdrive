@@ -81,6 +81,12 @@ import CashWithdrawalPage from "@/pages/CashWithdrawalPage";
 import AgentLocatorPage from "@/pages/AgentLocatorPage";
 // Public Pages
 import MobileMoneyPage from "@/pages/MobileMoneyPage";
+// Legal Pages
+import TermsPage from "@/pages/legal/TermsPage";
+import PrivacyPage from "@/pages/legal/PrivacyPage";
+import KycAmlPage from "@/pages/legal/KycAmlPage";
+import PricingPage from "@/pages/legal/PricingPage";
+import RefundPage from "@/pages/legal/RefundPage";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 export const API = `${BACKEND_URL}/api`;
