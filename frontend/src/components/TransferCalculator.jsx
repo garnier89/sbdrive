@@ -90,13 +90,27 @@ const REGIONS = {
   }
 };
 
-// Exchange rates (demo)
+// Exchange rates (demo) - Including Maghreb currencies
 const EXCHANGE_RATES = {
-  EUR: { USD: 1.08, GBP: 0.86, CNY: 7.82, XOF: 655.96, XAF: 655.96, NGN: 1750, KES: 165, GHS: 16.5, CAD: 1.47, JPY: 162, INR: 90 },
-  USD: { EUR: 0.93, GBP: 0.79, CNY: 7.24, XOF: 607, XAF: 607, NGN: 1620, KES: 153, GHS: 15.3, CAD: 1.36, JPY: 150, INR: 83 },
+  EUR: { 
+    USD: 1.08, GBP: 0.86, CNY: 7.82, XOF: 655.96, XAF: 655.96, 
+    NGN: 1750, KES: 165, GHS: 16.5, CAD: 1.47, JPY: 162, INR: 90,
+    MAD: 10.85, DZD: 145.5, TND: 3.35, EGP: 33.2, LYD: 5.2, MRU: 42.5,
+    TZS: 2700, UGX: 4050, RWF: 1350, CDF: 2750
+  },
+  USD: { 
+    EUR: 0.93, GBP: 0.79, CNY: 7.24, XOF: 607, XAF: 607, 
+    NGN: 1620, KES: 153, GHS: 15.3, CAD: 1.36, JPY: 150, INR: 83,
+    MAD: 10.05, DZD: 134.8, TND: 3.1, EGP: 30.75
+  },
   CNY: { EUR: 0.13, USD: 0.14, XOF: 84, NGN: 224, KES: 21 },
-  XOF: { EUR: 0.00152, USD: 0.00165, CNY: 0.012 },
-  GBP: { EUR: 1.16, USD: 1.26, CNY: 9.1 }
+  XOF: { EUR: 0.00152, USD: 0.00165, CNY: 0.012, MAD: 0.0165 },
+  XAF: { EUR: 0.00152, USD: 0.00165, CNY: 0.012 },
+  GBP: { EUR: 1.16, USD: 1.26, CNY: 9.1 },
+  MAD: { EUR: 0.092, USD: 0.0995, XOF: 60.5 },
+  DZD: { EUR: 0.00687, USD: 0.00742 },
+  TND: { EUR: 0.298, USD: 0.323 },
+  EGP: { EUR: 0.0301, USD: 0.0325 }
 };
 
 // Fee structure
@@ -104,6 +118,7 @@ const FEES = {
   europe: { percent: 0.5, fixed: 0 },
   america: { percent: 1.5, fixed: 0.50 },
   asia: { percent: 2.0, fixed: 0 },
+  maghreb: { percent: 1.2, fixed: 0 },
   africa: { percent: 1.5, fixed: 0 }
 };
 
