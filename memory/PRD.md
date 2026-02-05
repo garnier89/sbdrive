@@ -3,9 +3,9 @@
 ## Project Overview
 **Name:** SBPAYGO  
 **Website:** sbpaygo.com  
-**Type:** Fintech Super App (Mobile Money, Wallet, Cards, Agent Network)  
+**Type:** Fintech Super App Global (Europe, Amérique, Asie, Afrique)  
 **Created:** December 2025  
-**Last Updated:** February 2026 (Landing Page Pro + Paiements Internationaux)  
+**Last Updated:** February 2026 (Global Coverage + Transfer Calculator)  
 **Stack:** React + FastAPI + MongoDB  
 **Preview URL:** https://money-transfer-hub-11.preview.emergentagent.com
 
