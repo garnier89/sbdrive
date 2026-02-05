@@ -19,20 +19,28 @@ import {
   Eye, ShieldCheck, AlertTriangle, Award, Fingerprint, Scale, FileCheck,
   CreditCard as CardIcon, Landmark, ScanLine
 } from 'lucide-react';
+import TransferCalculator from '@/components/TransferCalculator';
+import GlobalRegions from '@/components/GlobalRegions';
 
 const LOGO_URL = "https://customer-assets.emergentagent.com/job_9e19f0cd-3f17-4ed6-9cf2-ef66d2aec5e9/artifacts/qhg0pnr1_1024x1024%20%281030%20x%201024%20px%29_20251125_175331_0000.png";
+
+// Custom illustrations
+const HERO_ILLUSTRATION = "https://static.prod-images.emergentagent.com/jobs/f6885a89-e935-404b-96ad-6649703cdda6/images/a508e46c9b56971ebd46b87b36a2394d827b3ddba0c7675b0c679a84d3c77d29.png";
+const PAYMENT_WORLD_ILLUSTRATION = "https://static.prod-images.emergentagent.com/jobs/f6885a89-e935-404b-96ad-6649703cdda6/images/f71cc9be23d7ea456eb91a218d0ef32376165d14ba7accbe7593a701bcf9fe50.png";
+const SECURITY_ILLUSTRATION = "https://static.prod-images.emergentagent.com/jobs/f6885a89-e935-404b-96ad-6649703cdda6/images/608a5581e5942a8cdc9134590e0cc510417fb57959cb038755153b52ad65ecea.png";
 
 // Payment Partners Logos
 const paymentPartners = [
   { name: "Visa", logo: "💳" },
   { name: "Mastercard", logo: "💳" },
-  { name: "Wave", logo: "🌊" },
-  { name: "Orange Money", logo: "🟠" },
-  { name: "MTN MoMo", logo: "🟡" },
-  { name: "M-Pesa", logo: "🟢" },
+  { name: "SEPA", logo: "🇪🇺" },
   { name: "PayPal", logo: "🔵" },
   { name: "Alipay", logo: "🔷" },
   { name: "WeChat Pay", logo: "🟢" },
+  { name: "Wave", logo: "🌊" },
+  { name: "M-Pesa", logo: "🟢" },
+  { name: "Orange Money", logo: "🟠" },
+  { name: "MTN MoMo", logo: "🟡" },
 ];
 
 // Features data
