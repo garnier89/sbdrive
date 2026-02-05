@@ -197,23 +197,6 @@ const cardFeatures = [
   "Paiements en ligne & sans contact"
 ];
 
-// Mobile Money Operators
-const mobileMoneyOperators = [
-  { name: "Wave", color: "bg-blue-500" },
-  { name: "Orange Money", color: "bg-orange-500" },
-  { name: "MTN MoMo", color: "bg-yellow-500" },
-  { name: "M-Pesa", color: "bg-green-500" },
-  { name: "Moov Money", color: "bg-cyan-500" },
-  { name: "Free Money", color: "bg-red-500" }
-];
-
-// African countries
-const africanCountries = [
-  "Sénégal", "Côte d'Ivoire", "Mali", "Burkina Faso", "Bénin", "Togo",
-  "Niger", "Guinée", "Ghana", "Nigeria", "Cameroun", "Kenya",
-  "Tanzanie", "Ouganda", "Rwanda", "RD Congo", "Gabon", "Zimbabwe", "Zambie"
-];
-
 export default function LandingPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
