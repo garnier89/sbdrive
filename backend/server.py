@@ -3786,6 +3786,10 @@ app.include_router(geo_security_router)
 setup_anti_fraud_routes(db, JWT_SECRET_KEY, JWT_ALGORITHM)
 app.include_router(anti_fraud_router)
 
+# Setup and include International Payments routes (Alipay, WeChat Pay, PayPal)
+setup_international_payments_routes(db, get_current_user, send_push_notification, send_email_notification)
+app.include_router(international_router)
+
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
