@@ -7,7 +7,7 @@
 **Created:** December 2025  
 **Last Updated:** February 2026 (Global Coverage + Transfer Calculator)  
 **Stack:** React + FastAPI + MongoDB  
-**Preview URL:** https://money-transfer-hub-11.preview.emergentagent.com
+**Preview URL:** https://sbpaygo-superapp.preview.emergentagent.com
 
 ## Branding
 - **Application:** SBPAYGO
